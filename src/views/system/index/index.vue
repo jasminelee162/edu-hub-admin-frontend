@@ -367,9 +367,13 @@ export default {
             }
         })
         var that = this
-        window.onresize = function() {
+        window.onresize = function () {
+          if (that.myChart && typeof that.myChart.resize === 'function') {
             that.myChart.resize();
+          }
+          if (that.pieChart && typeof that.pieChart.resize === 'function') {
             that.pieChart.resize();
+          }
         }
     }
 }

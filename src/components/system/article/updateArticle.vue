@@ -75,6 +75,8 @@
 <script>
   import { mixin } from '../../../minix/index';
   import {editApeArticle,getApeArticleById,getApeTaskList,getApeTaskByTeacherId} from '../../../api/api'
+  import hljs from 'highlight.js'
+  import 'highlight.js/styles/atom-one-dark.css' // 你也可以换其他主题
   export default {
     mixins: [mixin],
     data() {

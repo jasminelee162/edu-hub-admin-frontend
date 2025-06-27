@@ -229,7 +229,9 @@
             if(res.code == 1000) {
               this.form = res.data
               this.form.type = res.data.type + ""
-              this.content = JSON.parse(this.form.content)
+              this.content = this.form.content ? JSON.parse(this.form.content) : [
+                { value: "", option: "" }
+              ]
             } else {
               this.$notify.error({
                 title: '错误',
