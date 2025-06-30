@@ -150,7 +150,7 @@
 
 <script>
   import {mixin} from "../../../minix";
-  import {saveUser,getApeSchoolList,getApeMajorList} from '../../../api/api'
+  import {saveUser,getSchoolList,getMajorList} from '../../../api/api'
   export default {
     mixins: [mixin],
     data() {
@@ -259,7 +259,7 @@
         this.dialogImageUrl = file.url;
         this.dialogVisible = true;
       },
-      getApeSchoolList() {
+      getSchoolList() {
         getApeSchoolList().then(res=> {
           if(res.code == 1000) {
             this.school = res.data

@@ -48,7 +48,7 @@
 </template>
 
 <script>
-import {editApeMajor,getApeMajorById} from '../../../api/api'
+import {editMajor,getMajorById} from '../../../api/api'
 export default {
   data() {
     return{
@@ -67,7 +67,7 @@ export default {
     submit() {
       this.$refs["ruleForm"].validate((valid) => {
         if (valid) {
-          editApeMajor(this.form).then(res => {
+          editMajor(this.form).then(res => {
             if(res.code == 1000) {
               this.$notify.success({
                 title: '成功',
@@ -93,7 +93,7 @@ export default {
   watch: {
     updateId(newVal) {
       if(newVal) {
-        getApeMajorById({id:newVal}).then(res => {
+        getMajorById({id:newVal}).then(res => {
           if(res.code == 1000) {
             this.form = res.data
           } else {

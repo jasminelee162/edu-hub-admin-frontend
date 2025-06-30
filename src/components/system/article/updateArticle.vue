@@ -82,7 +82,7 @@
 
 <script>
   import { mixin } from '../../../minix/index';
-  import {editApeArticle,getApeArticleById,getApeTaskList,getApeTaskByTeacherId} from '../../../api/api'
+  import {editArticle,getArticleById,getTaskList,getTaskByTeacherId} from '../../../api/api'
   import hljs from 'highlight.js'
   import 'highlight.js/styles/atom-one-dark.css' // 你也可以换其他主题
   export default {
@@ -158,7 +158,7 @@
         this.$refs["ruleForm"].validate((valid) => {
           if (valid) {
             this.form.state = 2
-            editApeArticle(this.form).then(res => {
+            editArticle(this.form).then(res => {
               if(res.code == 1000) {
                 this.$notify.success({
                   title: '成功',
@@ -199,8 +199,8 @@
       handleClose() {
         this.$emit("updateFalse")
       },
-      getApeTaskList() {
-          getApeTaskList().then(res => {
+      getTaskList() {
+          getTaskList().then(res => {
               if(res.code == 1000) {
                 this.task = res.data;
               } else {
@@ -211,8 +211,8 @@
               }
           })
       },
-      getApeTaskByTeacherId() {
-        getApeTaskByTeacherId().then(res => {
+      getTaskByTeacherId() {
+        getTaskByTeacherId().then(res => {
               if(res.code == 1000) {
                 this.task = res.data;
               } else {
@@ -229,9 +229,9 @@
     },
     mounted() {
       if(this.flag == 2) {
-        this.getApeTaskByTeacherId()
+        this.getTaskByTeacherId()
       } else {
-        this.getApeTaskList()
+        this.getTaskList()
       }
     },
     watch: {

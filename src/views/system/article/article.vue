@@ -189,7 +189,7 @@
 </template>
 
 <script>
-  import {getApeArticlePage,removeApeArticle,editApeArticle} from '../../../api/api' 
+  import {getArticlePage,removeArticle,editArticle} from '../../../api/api'
   import add from '../../../components/system/article/addArticle'
   import update from '../../../components/system/article/updateArticle'
   export default {
@@ -256,7 +256,7 @@
           id: id,
           state: 0
         }
-        editApeArticle(param).then(res => {
+        editArticle(param).then(res => {
           if(res.code == 1000) {
             this.$notify.success({
               title: '成功',
@@ -276,7 +276,7 @@
           id: id,
           state: 1
         }
-        editApeArticle(param).then(res => {
+        editArticle(param).then(res => {
           if(res.code == 1000) {
             this.$notify.success({
               title: '成功',
@@ -296,7 +296,7 @@
         this.query()
       },
       query() {
-        getApeArticlePage(this.search).then(res => {
+        getArticlePage(this.search).then(res => {
           if(res.code == 1000) {
             this.tableData = res.data.records
             this.total = res.data.total
@@ -363,7 +363,7 @@
         });
       },
       deleteDate(ids) {
-        removeApeArticle({ids:ids}).then(res => {
+        removeArticle({ids:ids}).then(res => {
             if(res.code == 1000) {
               this.$message({
                 type: 'success',

@@ -148,7 +148,7 @@
 </template>
 
 <script>
-  import {getApeArticleCommentPage,removeApeArticleComment} from '../../../api/api' 
+  import {getArticleCommentPage,removeArticleComment} from '../../../api/api'
   export default {
     data() {
       return{
@@ -191,7 +191,7 @@
           this.query()
       },
       query() {
-        getApeArticleCommentPage(this.search).then(res => {
+        getArticleCommentPage(this.search).then(res => {
           if(res.code == 1000) {
             this.tableData = res.data.records
             this.total = res.data.total
@@ -238,7 +238,7 @@
         }).catch(() => {});
       },
       deleteDate(ids) {
-        removeApeArticleComment({ids:ids}).then(res => {
+        removeArticleComment({ids:ids}).then(res => {
             if(res.code == 1000) {
               this.$message({
                 type: 'success',

@@ -44,7 +44,7 @@
 </template>
 
 <script>
-  import {editApeQuestion,getApeQuestionById} from '../../../api/api'
+  import {editQuestion,getApeQuestionById} from '../../../api/api'
   export default {
     data() {
       return{

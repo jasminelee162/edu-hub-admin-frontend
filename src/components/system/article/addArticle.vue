@@ -82,7 +82,7 @@
 
 <script>
   import { mixin } from '../../../minix/index';
-  import {saveApeArticle,getApeTaskList,getApeTaskByTeacherId} from '../../../api/api'
+  import {saveArticle,getTaskList,getTaskByTeacherId} from '../../../api/api'
   export default {
     mixins: [mixin],
     data() {

@@ -133,7 +133,7 @@
 </template>
 
 <script>
-  import {editApeTestItem,getApeTestItemById} from '../../../api/api'
+  import {editTestItem,getTestItemById} from '../../../api/api'
   export default {
     data() {
       return{
@@ -250,7 +250,7 @@
               this.form.keyword = ""
             }
             this.form.testId = this.testId
-            editApeTestItem(this.form).then(res => {
+            editTestItem(this.form).then(res => {
               if(res.code == 1000) {
                 this.$notify.success({
                   title: '成功',
@@ -295,7 +295,7 @@
     watch: {
       updateId(newVal) {
         if(newVal) {
-          getApeTestItemById({id:newVal}).then(res => {
+          getTestItemById({id:newVal}).then(res => {
             if(res.code == 1000) {
               this.form = res.data
               this.form.type = res.data.type + ""

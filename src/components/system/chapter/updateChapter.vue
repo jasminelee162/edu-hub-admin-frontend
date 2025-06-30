@@ -91,7 +91,7 @@
 
 <script>
   import {mixin} from "../../../minix";
-  import {editApeChapter,getApeChapterById,getApeTaskList,getApeTaskByTeacherId} from '../../../api/api'
+  import {editChapter,getApeChapterById,getApeTaskList,getApeTaskByTeacherId} from '../../../api/api'
   export default {
     mixins: [mixin],
     data() {

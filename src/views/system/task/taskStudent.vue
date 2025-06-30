@@ -117,7 +117,7 @@
 </template>
 
 <script>
-  import {getApeTaskStudentPage,removeApeTaskStudent,editApeTaskStudent} from '../../../api/api' 
+  import {getTaskStudentPage,removeTaskStudent,editTaskStudent} from '../../../api/api'
   export default {
     data() {
       return{
@@ -146,7 +146,7 @@
         this.query()
       },
       query() {
-        getApeTaskStudentPage(this.search).then(res => {
+        getTaskStudentPage(this.search).then(res => {
           if(res.code == 1000) {
             this.tableData = res.data.records
             this.total = res.data.total
@@ -164,7 +164,7 @@
               id: id,
               state: state
           }
-          editApeTaskStudent(param).then(res => {
+          editTaskStudent(param).then(res => {
               if (res.code == 1000) {
                   this.$message({
                     type: 'success',
@@ -208,7 +208,7 @@
         });
       },
       deleteDate(ids) {
-        removeApeTaskStudent({ids:ids}).then(res => {
+        removeTaskStudent({ids:ids}).then(res => {
             if(res.code == 1000) {
               this.$message({
                 type: 'success',

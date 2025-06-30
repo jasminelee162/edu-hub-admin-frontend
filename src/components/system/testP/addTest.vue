@@ -95,7 +95,7 @@
 
 <script>
   import { mixin } from '../../../minix/index';
-  import {saveApeTest,getApeTaskList,getApeTaskByTeacherId} from '../../../api/api'
+  import {saveTest,getTaskList,getTaskByTeacherId} from '../../../api/api'
   export default {
     mixins: [mixin],
     data() {
@@ -140,7 +140,7 @@
       submit() {
         this.$refs["ruleForm"].validate((valid) => {
           if (valid) {
-            saveApeTest(this.form).then(res => {
+            saveTest(this.form).then(res => {
               if(res.code == 1000) {
                 this.$notify.success({
                   title: '成功',
@@ -173,8 +173,8 @@
         },
         this.$emit("addFalse")
       },
-      getApeTaskList() {
-          getApeTaskList().then(res => {
+      getTaskList() {
+          getTaskList().then(res => {
               if(res.code == 1000) {
                 this.task = res.data;
               } else {
@@ -185,8 +185,8 @@
               }
           })
       },
-      getApeTaskByTeacherId() {
-        getApeTaskByTeacherId().then(res => {
+      getTaskByTeacherId() {
+        getTaskByTeacherId().then(res => {
               if(res.code == 1000) {
                 this.task = res.data;
               } else {
@@ -203,9 +203,9 @@
     },
     mounted() {
       if(this.flag == 2) {
-        this.getApeTaskByTeacherId()
+        this.getTaskByTeacherId()
       } else {
-        this.getApeTaskList()
+        this.getTaskList()
       }
     }
  }

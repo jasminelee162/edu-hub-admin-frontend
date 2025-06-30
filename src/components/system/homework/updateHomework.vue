@@ -108,7 +108,7 @@
 </template>
 
 <script>
-  import {editApeHomework,getApeHomeworkById} from '../../../api/api'
+  import {editHomework,getApeHomeworkById} from '../../../api/api'
   export default {
     data() {
       return{

@@ -48,7 +48,7 @@
 </template>
 
 <script>
-import {saveApeMajor} from '../../../api/api'
+import {saveMajor} from '../../../api/api'
 export default {
   data() {
     return{
@@ -67,7 +67,7 @@ export default {
     submit() {
       this.$refs["ruleForm"].validate((valid) => {
         if (valid) {
-          saveApeMajor(this.form).then(res => {
+          saveMajor(this.form).then(res => {
             if(res.code == 1000) {
               this.$notify.success({
                 title: '成功',

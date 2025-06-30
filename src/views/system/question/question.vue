@@ -127,7 +127,7 @@
 </template>
 
 <script>
-  import {getApeQuestionPage,removeApeQuestion} from '../../../api/api' 
+  import {getQuestionPage,removeQuestion} from '../../../api/api'
   import update from '../../../components/system/question/updateQuestion'
   export default {
     data() {
@@ -162,7 +162,7 @@
         },
       query() {
         this.search.teacherId = this.user.id
-        getApeQuestionPage(this.search).then(res => {
+        getQuestionPage(this.search).then(res => {
           if(res.code == 1000) {
             this.tableData = res.data.records
             this.total = res.data.total
@@ -230,7 +230,7 @@
         });
       },
       deleteDate(ids) {
-        removeApeQuestion({ids:ids}).then(res => {
+        removeQuestion({ids:ids}).then(res => {
             if(res.code == 1000) {
               this.$message({
                 type: 'success',

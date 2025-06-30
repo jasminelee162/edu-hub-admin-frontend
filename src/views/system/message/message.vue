@@ -157,7 +157,7 @@
 </template>
 
 <script>
-import {getApeMessagePage,removeApeMessage} from '../../../api/api' 
+import {getMessagePage,removeMessage} from '../../../api/api'
 import update from '../../../components/system/message/updateMessage'
 export default {
   data() {
@@ -204,7 +204,7 @@ export default {
       this.query()
     },
     query() {
-      getApeMessagePage(this.search).then(res => {
+      getMessagePage(this.search).then(res => {
         if(res.code == 1000) {
           this.tableData = res.data.records
           this.total = res.data.total
@@ -265,7 +265,7 @@ export default {
       }).catch(() => {})
     },
     deleteDate(ids) {
-      removeApeMessage({ids:ids}).then(res => {
+      removeMessage({ids:ids}).then(res => {
         if(res.code == 1000) {
           this.$message({
             type: 'success',

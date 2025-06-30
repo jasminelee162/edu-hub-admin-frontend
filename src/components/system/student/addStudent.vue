@@ -111,7 +111,7 @@
 
 <script>
   import {mixin} from "../../../minix";
-  import {saveUser,getApeSchoolList,getApeMajorList} from '../../../api/api'
+  import {saveUser,getSchoolList,getMajorList} from '../../../api/api'
   export default {
     mixins: [mixin],
     data() {
@@ -183,8 +183,8 @@
     },
     props: ['addUserVisible'],
     methods: {
-      getApeSchoolList() {
-        getApeSchoolList().then(res=> {
+      getSchoolList() {
+        getSchoolList().then(res=> {
           if(res.code == 1000) {
             this.school = res.data
           } else {
@@ -195,8 +195,8 @@
           }
         })
       },
-      getApeMajorList() {
-        getApeMajorList().then(res => {
+      getMajorList() {
+        getMajorList().then(res => {
           if(res.code == 1000) {
             this.major = res.data
           } else {
@@ -258,8 +258,8 @@
      
     },
     mounted() {
-      this.getApeMajorList()
-      this.getApeSchoolList()
+      this.getMajorList()
+      this.getSchoolList()
     }
  }
 </script>

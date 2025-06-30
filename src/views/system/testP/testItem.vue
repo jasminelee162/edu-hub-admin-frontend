@@ -110,7 +110,7 @@
 </template>
 
 <script>
-  import {getApeTestItemPage,removeApeTestItem} from '../../../api/api' 
+  import {getTestItemPage,removeTestItem} from '../../../api/api'
   import add from '../../../components/system/testP/addTestItem'
   import update from '../../../components/system/testP/updateTestItem'
   export default {
@@ -143,7 +143,7 @@
         this.query()
       },
       query() {
-        getApeTestItemPage(this.search).then(res => {
+        getTestItemPage(this.search).then(res => {
           if(res.code == 1000) {
             this.tableData = res.data.records
             this.total = res.data.total
@@ -208,7 +208,7 @@
         });
       },
       deleteDate(ids) {
-        removeApeTestItem({ids:ids}).then(res => {
+        removeTestItem({ids:ids}).then(res => {
             if(res.code == 1000) {
               this.$message({
                 type: 'success',

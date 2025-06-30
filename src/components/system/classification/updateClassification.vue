@@ -24,7 +24,7 @@
 </template>
 
 <script>
-  import {editApeClassification,getApeClassificationById} from '../../../api/api'
+  import {editClassification,getApeClassificationById} from '../../../api/api'
   export default {
     data() {
       return{

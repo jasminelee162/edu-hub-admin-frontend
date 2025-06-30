@@ -177,167 +177,167 @@ export const preview = (params) => get("/genTable/preview",params)
 
 //-------------------------------学校表---------------------------------------
 //查询学校表
-export const getApeSchoolPage = (params) => post("/school/getApeSchoolPage",params)
+export const getSchoolPage = (params) => post("/school/getSchoolPage",params)
 //获取学校列表
-export const getApeSchoolList = () => get("/school/getApeSchoolList")
+export const getSchoolList = () => get("/school/getSchoolList")
 //根据id查询学校表
-export const getApeSchoolById = (params) => get("/school/getApeSchoolById",params)
+export const getSchoolById = (params) => get("/school/getSchoolById",params)
 //保存学校表
-export const saveApeSchool = (params) => post("/school/saveApeSchool",params)
+export const saveSchool = (params) => post("/school/saveSchool",params)
 //更新学校表
-export const editApeSchool = (params) => post("/school/editApeSchool",params)
-//删除ApeSchool
-export const removeApeSchool = (params) => get("/school/removeApeSchool",params)
+export const editSchool = (params) => post("/school/editSchool",params)
+//删除School
+export const removeSchool = (params) => get("/school/removeSchool",params)
 
 //-------------------------------专业表---------------------------------------
 //查询专业表
-export const getApeMajorPage = (params) => post("/major/getApeMajorPage",params)
+export const getMajorPage = (params) => post("/major/getMajorPage",params)
 //获取专业列表
-export const getApeMajorList = () => get("/major/getApeMajorList")
+export const getMajorList = () => get("/major/getMajorList")
 //根据id查询专业表
-export const getApeMajorById = (params) => get("/major/getApeMajorById",params)
+export const getMajorById = (params) => get("/major/getMajorById",params)
 //保存专业表
-export const saveApeMajor = (params) => post("/major/saveApeMajor",params)
+export const saveMajor = (params) => post("/major/saveMajor",params)
 //更新专业表
-export const editApeMajor = (params) => post("/major/editApeMajor",params)
-//删除ApeMajor
-export const removeApeMajor = (params) => get("/major/removeApeMajor",params)
+export const editMajor = (params) => post("/major/editMajor",params)
+//删除Major
+export const removeMajor = (params) => get("/major/removeMajor",params)
 
 //-------------------------------留言表---------------------------------------
 //查询留言表
-export const getApeMessagePage = (params) => post("/message/getApeMessagePage",params)
+export const getMessagePage = (params) => post("/message/getMessagePage",params)
 //根据id查询留言表
-export const getApeMessageById = (params) => get("/message/getApeMessageById",params)
+export const getMessageById = (params) => get("/message/getMessageById",params)
 //保存留言表
-export const saveApeMessage = (params) => post("/message/saveApeMessage",params)
+export const saveMessage = (params) => post("/message/saveMessage",params)
 //更新留言表
-export const editApeMessage = (params) => post("/message/editApeMessage",params)
-//删除ApeMessage
-export const removeApeMessage = (params) => get("/message/removeApeMessage",params)
+export const editMessage = (params) => post("/message/editMessage",params)
+//删除Message
+export const removeMessage = (params) => get("/message/removeMessage",params)
 
 //-------------------------------课程---------------------------------------
 //查询课程
-export const getApeTaskPage = (params) => post("/task/getApeTaskPage",params)
+export const getTaskPage = (params) => post("/task/getTaskPage",params)
 //查询课程列表
-export const getApeTaskList = (params) => get("/task/getApeTaskList",params)
+export const getTaskList = (params) => get("/task/getTaskList",params)
 //根据id查询课程
-export const getApeTaskById = (params) => get("/task/getApeTaskById",params)
+export const getTaskById = (params) => get("/task/getTaskById",params)
 //保存课程
-export const saveApeTask = (params) => post("/task/saveApeTask",params)
+export const saveTask = (params) => post("/task/saveTask",params)
 //更新课程
-export const editApeTask = (params) => post("/task/editApeTask",params)
-//删除ApeTask
-export const removeApeTask = (params) => get("/task/removeApeTask",params)
+export const editTask = (params) => post("/task/editTask",params)
+//删除Task
+export const removeTask = (params) => get("/task/removeTask",params)
 
 //-------------------------------分类---------------------------------------
 //查询分类
-export const getApeClassificationPage = (params) => post("/classification/getApeClassificationPage",params)
+export const getClassificationPage = (params) => post("/classification/getClassificationPage",params)
 //获取分类列表
-export const getApeClassificationList = () => get("/classification/getApeClassificationList")
+export const getClassificationList = () => get("/classification/getClassificationList")
 //根据id查询分类
-export const getApeClassificationById = (params) => get("/classification/getApeClassificationById",params)
+export const getClassificationById = (params) => get("/classification/getClassificationById",params)
 //保存分类
-export const saveApeClassification = (params) => post("/classification/saveApeClassification",params)
+export const saveClassification = (params) => post("/classification/saveClassification",params)
 //更新分类
-export const editApeClassification = (params) => post("/classification/editApeClassification",params)
-//删除ApeClassification
-export const removeApeClassification = (params) => get("/classification/removeApeClassification",params)
+export const editClassification = (params) => post("/classification/editClassification",params)
+//删除Classification
+export const removeClassification = (params) => get("/classification/removeClassification",params)
 
 //-------------------------------章节---------------------------------------
 //查询章节
-export const getApeChapterPage = (params) => post("/chapter/getApeChapterPage",params)
+export const getChapterPage = (params) => post("/chapter/getChapterPage",params)
 //根据id查询章节
-export const getApeChapterById = (params) => get("/chapter/getApeChapterById",params)
+export const getChapterById = (params) => get("/chapter/getChapterById",params)
 //保存章节
-export const saveApeChapter = (params) => post("/chapter/saveApeChapter",params)
+export const saveChapter = (params) => post("/chapter/saveChapter",params)
 //更新章节
-export const editApeChapter = (params) => post("/chapter/editApeChapter",params)
-//删除ApeChapter
-export const removeApeChapter = (params) => get("/chapter/removeApeChapter",params)
+export const editChapter = (params) => post("/chapter/editChapter",params)
+//删除Chapter
+export const removeChapter = (params) => get("/chapter/removeChapter",params)
 
 //-------------------------------作业---------------------------------------
 //查询作业
-export const getApeHomeworkPage = (params) => post("/homework/getApeHomeworkPage",params)
+export const getHomeworkPage = (params) => post("/homework/getHomeworkPage",params)
 //根据id查询作业
-export const getApeHomeworkById = (params) => get("/homework/getApeHomeworkById",params)
+export const getHomeworkById = (params) => get("/homework/getHomeworkById",params)
 //保存作业
-export const saveApeHomework = (params) => post("/homework/saveApeHomework",params)
+export const saveHomework = (params) => post("/homework/saveHomework",params)
 //更新作业
-export const editApeHomework = (params) => post("/homework/editApeHomework",params)
-//删除ApeHomework
-export const removeApeHomework = (params) => get("/homework/removeApeHomework",params)
+export const editHomework = (params) => post("/homework/editHomework",params)
+//删除Homework
+export const removeHomework = (params) => get("/homework/removeHomework",params)
 
 //-------------------------------笔记---------------------------------------
 //查询笔记
-export const getApeArticlePage = (params) => post("/article/getApeArticlePage",params)
+export const getArticlePage = (params) => post("/article/getArticlePage",params)
 //根据id查询笔记
-export const getApeArticleById = (params) => get("/article/getApeArticleById",params)
+export const getArticleById = (params) => get("/article/getArticleById",params)
 //保存笔记
-export const saveApeArticle = (params) => post("/article/saveApeArticle",params)
+export const saveArticle = (params) => post("/article/saveArticle",params)
 //更新笔记
-export const editApeArticle = (params) => post("/article/editApeArticle",params)
-//删除ApeArticle
-export const removeApeArticle = (params) => get("/article/removeApeArticle",params)
+export const editArticle = (params) => post("/article/editArticle",params)
+//删除Article
+export const removeArticle = (params) => get("/article/removeArticle",params)
 
 //-------------------------------考试---------------------------------------
 //查询考试
-export const getApeTestPage = (params) => post("/test/getApeTestPage",params)
+export const getTestPage = (params) => post("/test/getTestPage",params)
 //根据id查询考试
-export const getApeTestById = (params) => get("/test/getApeTestById",params)
+export const getTestById = (params) => get("/test/getTestById",params)
 //保存考试
-export const saveApeTest = (params) => post("/test/saveApeTest",params)
+export const saveTest = (params) => post("/test/saveTest",params)
 //更新考试
-export const editApeTest = (params) => post("/test/editApeTest",params)
-//删除ApeTest
-export const removeApeTest = (params) => get("/test/removeApeTest",params)
+export const editTest = (params) => post("/test/editTest",params)
+//删除Test
+export const removeTest = (params) => get("/test/removeTest",params)
 
 //-------------------------------考试题目---------------------------------------
 //查询考试题目
-export const getApeTestItemPage = (params) => post("/item/getApeTestItemPage",params)
+export const getTestItemPage = (params) => post("/item/getTestItemPage",params)
 //根据id查询考试题目
-export const getApeTestItemById = (params) => get("/item/getApeTestItemById",params)
+export const getTestItemById = (params) => get("/item/getTestItemById",params)
 //保存考试题目
-export const saveApeTestItem = (params) => post("/item/saveApeTestItem",params)
+export const saveTestItem = (params) => post("/item/saveTestItem",params)
 //更新考试题目
-export const editApeTestItem = (params) => post("/item/editApeTestItem",params)
-//删除ApeTestItem
-export const removeApeTestItem = (params) => get("/item/removeApeTestItem",params)
+export const editTestItem = (params) => post("/item/editTestItem",params)
+//删除TestItem
+export const removeTestItem = (params) => get("/item/removeTestItem",params)
 
 //-------------------------------课程报名---------------------------------------
 //查询课程报名
-export const getApeTaskStudentPage = (params) => post("/student/getApeTaskStudentPage",params)
+export const getApeTaskStudentPage = (params) => post("/student/getTaskStudentPage",params)
 //根据id查询课程报名
-export const getApeTaskStudentById = (params) => get("/student/getApeTaskStudentById",params)
+export const getTaskStudentById = (params) => get("/student/getTaskStudentById",params)
 //保存课程报名
-export const saveApeTaskStudent = (params) => post("/student/saveApeTaskStudent",params)
+export const saveTaskStudent = (params) => post("/student/saveTaskStudent",params)
 //更新课程报名
-export const editApeTaskStudent = (params) => post("/student/editApeTaskStudent",params)
-//删除ApeTaskStudent
-export const removeApeTaskStudent = (params) => get("/student/removeApeTaskStudent",params)
+export const editTaskStudent = (params) => post("/student/editTaskStudent",params)
+//删除TaskStudent
+export const removeTaskStudent = (params) => get("/student/removeTaskStudent",params)
 
 //-------------------------------课程评论---------------------------------------
 //查询课程评论
-export const getApeTaskCommentPage = (params) => post("/comment/getApeTaskCommentPage",params)
+export const getTaskCommentPage = (params) => post("/comment/getTaskCommentPage",params)
 //根据id查询课程评论
-export const getApeTaskCommentById = (params) => get("/comment/getApeTaskCommentById",params)
+export const getTaskCommentById = (params) => get("/comment/getTaskCommentById",params)
 //保存课程评论
-export const saveApeTaskComment = (params) => post("/comment/saveApeTaskComment",params)
+export const saveTaskComment = (params) => post("/comment/saveTaskComment",params)
 //更新课程评论
-export const editApeTaskComment = (params) => post("/comment/editApeTaskComment",params)
-//删除ApeTaskComment
-export const removeApeTaskComment = (params) => get("/comment/removeApeTaskComment",params)
+export const editTaskComment = (params) => post("/comment/editTaskComment",params)
+//删除TaskComment
+export const removeTaskComment = (params) => get("/comment/removeTaskComment",params)
 
 //-------------------------------笔记评论---------------------------------------
 //查询笔记评论
-export const getApeArticleCommentPage = (params) => post("/articleComment/getApeArticleCommentPage",params)
+export const getArticleCommentPage = (params) => post("/articleComment/getArticleCommentPage",params)
 //根据id查询笔记评论
-export const getApeArticleCommentById = (params) => get("/articleComment/getApeArticleCommentById",params)
+export const getArticleCommentById = (params) => get("/articleComment/getArticleCommentById",params)
 //保存笔记评论
-export const saveApeArticleComment = (params) => post("/articleComment/saveApeArticleComment",params)
+export const saveArticleComment = (params) => post("/articleComment/saveArticleComment",params)
 //更新笔记评论
-export const editApeArticleComment = (params) => post("/articleComment/editApeArticleComment",params)
-//删除ApeArticleComment
-export const removeApeArticleComment = (params) => get("/articleComment/removeApeArticleComment",params)
+export const editArticleComment = (params) => post("/articleComment/editArticleComment",params)
+//删除ArticleComment
+export const removeArticleComment = (params) => get("/articleComment/removeArticleComment",params)
 //获取作业完成标志
 export const getHomeworkStudentFlag = (params) => get("/student/getHomeworkStudentFlag",params)
 //获取学生
@@ -347,7 +347,7 @@ export const getTestStudent = (params) => post("/test/getTestStudent",params)
 //获取阅卷题目
 export const getTestStudentItem = (params) => get("/student/getTestStudentItem",params)
 //修改阅卷内容
-export const editApeTestStudent = (params) => post("/student/editApeTestStudent",params)
+export const editTestStudent = (params) => post("/student/editTestStudent",params)
 //获取学生学习情况
 export const getAdoptTaskStudent = (params) => post("/student/getAdoptTaskStudent",params)
 export const getIndexData = (params) => get("/index/getIndexData",params)
@@ -355,23 +355,23 @@ export const getIndexSexData = (params) => get("/index/getIndexSexData",params)
 export const getTaskChart = (params) => get("/index/getTaskChart",params)
 export const getTaskIndexList = (params) => get("/index/getTaskIndexList",params)
 //获取教师课程列表
-export const getApeTaskByTeacherId = (params) => get("/task/getApeTaskByTeacherId",params)
+export const getTaskByTeacherId = (params) => get("/task/getTaskByTeacherId",params)
 
 //-------------------------------论坛---------------------------------------
 //查询论坛
-export const getApeForumPage = (params) => post("/forum/getApeForumPage",params)
+export const getForumPage = (params) => post("/forum/getForumPage",params)
 //根据id查询论坛
-export const getApeForumById = (params) => get("/forum/getApeForumById",params)
+export const getForumById = (params) => get("/forum/getForumById",params)
 //保存论坛
-export const saveApeForum = (params) => post("/forum/saveApeForum",params)
+export const saveForum = (params) => post("/forum/saveForum",params)
 //更新论坛
-export const editApeForum = (params) => post("/forum/editApeForum",params)
-//删除ApeForum
-export const removeApeForum = (params) => get("/forum/removeApeForum",params)
+export const editForum = (params) => post("/forum/editForum",params)
+//删除Forum
+export const removeForum = (params) => get("/forum/removeForum",params)
 
 //-------------------------------论坛讨论---------------------------------------
 //查询论坛讨论
-export const getApeForumItemPage = (params) => post("/item/getApeForumItemPage",params)
+export const getForumItemPage = (params) => post("/item/getForumItemPage",params)
 //根据id查询论坛讨论
 export const getApeForumItemById = (params) => get("/item/getApeForumItemById",params)
 //保存论坛讨论

@@ -74,7 +74,7 @@
 </template>
 
 <script>
-import {editApeMessage,getApeMessageById} from '../../../api/api'
+import {editMessage,getApeMessageById} from '../../../api/api'
 export default {
   data() {
     return{

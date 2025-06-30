@@ -108,7 +108,7 @@
 </template>
 
 <script>
-  import {saveApeHomework} from '../../../api/api'
+  import {saveHomework} from '../../../api/api'
   export default {
     data() {
       return{
@@ -186,7 +186,7 @@
             } else {
               this.form.content = ""
             }
-            saveApeHomework(this.form).then(res => {
+            saveHomework(this.form).then(res => {
               if(res.code == 1000) {
                 this.$notify.success({
                   title: '成功',

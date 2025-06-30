@@ -101,7 +101,7 @@
 </template>
 
 <script>
-import {getApeSchoolPage,removeApeSchool} from '../../../api/api' 
+import {getSchoolPage,removeSchool} from '../../../api/api'
 import add from '../../../components/system/school/addSchool'
 import update from '../../../components/system/school/updateSchool'
 export default {
@@ -132,7 +132,7 @@ export default {
       this.query()
     },
     query() {
-      getApeSchoolPage(this.search).then(res => {
+      getSchoolPage(this.search).then(res => {
         if(res.code == 1000) {
           this.tableData = res.data.records
           this.total = res.data.total
@@ -198,7 +198,7 @@ export default {
       });
     },
     deleteDate(ids) {
-      removeApeSchool({ids:ids}).then(res => {
+      removeSchool({ids:ids}).then(res => {
           if(res.code == 1000) {
             this.$message({
               type: 'success',

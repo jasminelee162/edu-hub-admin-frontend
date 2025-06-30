@@ -199,7 +199,7 @@
         </el-col>
         <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
             <span class="search-title">
-                <el-tooltip class="item" effect="dark" content="生成在哪个java包下，例如 com.ape.apeadmin" placement="top-start">
+                <el-tooltip class="item" effect="dark" content="生成在哪个java包下，例如 com..admin" placement="top-start">
                     <i class="el-icon-question"></i>
                 </el-tooltip>
                 生成包路径:
@@ -335,7 +335,7 @@
             });
             return;
         }
-        editGen({apeGenTable: this.form,columns: this.column}).then(res => {
+        editGen({GenTable: this.form,columns: this.column}).then(res => {
           if(res.code == 1000) {
             this.$notify.success({
               title: '成功',

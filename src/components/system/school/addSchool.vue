@@ -24,7 +24,7 @@
 </template>
 
 <script>
-  import {saveApeSchool} from '../../../api/api'
+  import {saveSchool} from '../../../api/api'
   export default {
     data() {
       return{
@@ -44,7 +44,7 @@
       submit() {
         this.$refs["ruleForm"].validate((valid) => {
           if (valid) {
-            saveApeSchool(this.form).then(res => {
+            saveSchool(this.form).then(res => {
               if(res.code == 1000) {
                 this.$notify.success({
                   title: '成功',

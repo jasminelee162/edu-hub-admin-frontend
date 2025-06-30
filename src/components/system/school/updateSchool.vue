@@ -24,7 +24,7 @@
 </template>
 
 <script>
-  import {editApeSchool,getApeSchoolById} from '../../../api/api'
+  import {editSchool,getSchoolById} from '../../../api/api'
   export default {
     data() {
       return{
@@ -44,7 +44,7 @@
       submit() {
         this.$refs["ruleForm"].validate((valid) => {
           if (valid) {
-            editApeSchool(this.form).then(res => {
+            editSchool(this.form).then(res => {
               if(res.code == 1000) {
                 this.$notify.success({
                   title: '成功',
@@ -77,7 +77,7 @@
     watch: {
       updateId(newVal) {
         if(newVal) {
-          getApeSchoolById({id:newVal}).then(res => {
+          getSchoolById({id:newVal}).then(res => {
             if(res.code == 1000) {
               console.log(res)
               this.form = res.data

@@ -133,7 +133,7 @@
 </template>
 
 <script>
-  import {saveApeTestItem} from '../../../api/api'
+  import {saveTestItem} from '../../../api/api'
   export default {
     data() {
       return{
@@ -250,7 +250,7 @@
               this.form.keyword = ""
             }
             this.form.testId = this.testId
-            saveApeTestItem(this.form).then(res => {
+            saveTestItem(this.form).then(res => {
               if(res.code == 1000) {
                 this.$notify.success({
                   title: '成功',

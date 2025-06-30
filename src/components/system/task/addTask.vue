@@ -127,7 +127,7 @@
 
 <script>
   import {mixin} from "../../../minix";
-  import {saveApeTask,getUserListByType,getApeMajorList,getApeClassificationList} from '../../../api/api'
+  import {saveTask,getUserListByType,getMajorList,getClassificationList} from '../../../api/api'
   export default {
     mixins: [mixin],
     data() {
@@ -219,8 +219,8 @@
           }
         })
       },
-      getApeMajorList() {
-        getApeMajorList().then(res => {
+      getMajorList() {
+        getMajorList().then(res => {
           if(res.code == 1000) {
             this.major = res.data
           } else {
@@ -231,8 +231,8 @@
           }
         })
       },
-      getApeClassificationList() {
-        getApeClassificationList().then(res => {
+      getClassificationList() {
+        getClassificationList().then(res => {
           if(res.code == 1000) {
             this.classification = res.data
           } else {
@@ -249,7 +249,7 @@
             if(this.flag == 2) {
               this.form.type = 1
             }
-            saveApeTask(this.form).then(res => {
+            saveTask(this.form).then(res => {
               if(res.code == 1000) {
                 this.$notify.success({
                   title: '成功',
@@ -292,8 +292,8 @@
     },
     mounted() {
       this.getUserListByType()
-      this.getApeMajorList()
-      this.getApeClassificationList()
+      this.getMajorList()
+      this.getClassificationList()
       if (this.flag == 1) {
         this.form.type = 0
       } else {

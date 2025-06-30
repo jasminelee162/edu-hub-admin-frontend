@@ -99,7 +99,7 @@
 </template>
 
 <script>
-  import {getApeForumItemPage,removeApeForumItem} from '../../../api/api' 
+  import {getForumItemPage,removeForumItem} from '../../../api/api'
   export default {
     data() {
       return{
@@ -127,7 +127,7 @@
             this.query()
         },
       query() {
-        getApeForumItemPage(this.search).then(res => {
+        getForumItemPage(this.search).then(res => {
           if(res.code == 1000) {
             this.tableData = res.data.records
             this.total = res.data.total
@@ -194,7 +194,7 @@
         });
       },
       deleteDate(ids) {
-        removeApeForumItem({ids:ids}).then(res => {
+        removeForumItem({ids:ids}).then(res => {
             if(res.code == 1000) {
               this.$message({
                 type: 'success',

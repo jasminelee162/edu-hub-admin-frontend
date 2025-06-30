@@ -91,7 +91,7 @@
 
 <script>
   import {mixin} from "../../../minix";
-  import {saveApeChapter,getApeTaskList,getApeTaskByTeacherId} from '../../../api/api'
+  import {saveChapter,getTaskList,getTaskByTeacherId} from '../../../api/api'
   export default {
     mixins: [mixin],
     data() {
@@ -167,8 +167,8 @@
         this.form.courseware = ""
         this.fileList1 = []
       },
-      getApeTaskList() {
-          getApeTaskList().then(res => {
+      getTaskList() {
+          getTaskList().then(res => {
               if(res.code == 1000) {
                 this.task = res.data;
               } else {
@@ -179,8 +179,8 @@
               }
           })
       },
-      getApeTaskByTeacherId() {
-        getApeTaskByTeacherId().then(res => {
+      getTaskByTeacherId() {
+        getTaskByTeacherId().then(res => {
               if(res.code == 1000) {
                 this.task = res.data;
               } else {

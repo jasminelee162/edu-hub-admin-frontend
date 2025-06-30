@@ -44,7 +44,7 @@
 </template>
 
 <script>
-  import {editApeForum,getApeForumById} from '../../../api/api'
+  import {editForum,getForumById} from '../../../api/api'
   export default {
     data() {
       return{
@@ -69,7 +69,7 @@
       submit() {
         this.$refs["ruleForm"].validate((valid) => {
           if (valid) {
-            editApeForum(this.form).then(res => {
+            editForum(this.form).then(res => {
               if(res.code == 1000) {
                 this.$notify.success({
                   title: '成功',
@@ -102,7 +102,7 @@
     watch: {
       updateId(newVal) {
         if(newVal) {
-          getApeForumById({id:newVal}).then(res => {
+          getForumById({id:newVal}).then(res => {
             if(res.code == 1000) {
               this.form = res.data
             } else {

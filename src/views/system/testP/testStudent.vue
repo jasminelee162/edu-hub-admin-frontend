@@ -117,7 +117,7 @@
 </template>
 
 <script>
-  import {getTestStudent,getTestStudentItem,editApeTestStudent} from '../../../api/api' 
+  import {getTestStudent,getTestStudentItem,editTestStudent} from '../../../api/api'
   export default {
     data() {
       return{
@@ -150,7 +150,7 @@
         var param = {
           list: this.assign
         }
-        editApeTestStudent(param).then(res => {
+        editTestStudent(param).then(res => {
           if (res.code == 1000) {
             this.$notify.success({
               title: '成功',

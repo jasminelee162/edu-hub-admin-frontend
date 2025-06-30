@@ -113,7 +113,7 @@
 </template>
 
 <script>
-  import {getApeForumPage,removeApeForum} from '../../../api/api' 
+  import {getForumPage,removeForum} from '../../../api/api'
   import add from '../../../components/system/forum/addForum'
   import update from '../../../components/system/forum/updateForum'
   export default {
@@ -156,7 +156,7 @@
         this.query()
       },
       query() {
-        getApeForumPage(this.search).then(res => {
+        getForumPage(this.search).then(res => {
           if(res.code == 1000) {
             this.tableData = res.data.records
             this.total = res.data.total
@@ -222,7 +222,7 @@
         });
       },
       deleteDate(ids) {
-        removeApeForum({ids:ids}).then(res => {
+        removeForum({ids:ids}).then(res => {
             if(res.code == 1000) {
               this.$message({
                 type: 'success',

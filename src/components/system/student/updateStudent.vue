@@ -105,7 +105,7 @@
 
 <script>
   import {mixin} from "../../../minix";
-  import {getUserById,editUser,getApeSchoolList,getApeMajorList} from '../../../api/api'
+  import {getUserById,editUser,getSchoolList,getMajorList} from '../../../api/api'
   export default {
     mixins: [mixin],
     data() {
@@ -170,8 +170,8 @@
     },
     props: ['updateUserVisible','updateId'],
     methods: {
-      getApeSchoolList() {
-        getApeSchoolList().then(res=> {
+      getSchoolList() {
+        getSchoolList().then(res=> {
           if(res.code == 1000) {
             this.school = res.data
           } else {
@@ -182,8 +182,8 @@
           }
         })
       },
-      getApeMajorList() {
-        getApeMajorList().then(res => {
+      getMajorList() {
+        getMajorList().then(res => {
           if(res.code == 1000) {
             this.major = res.data
           } else {
@@ -216,8 +216,8 @@
       }
     },
     mounted() {
-      this.getApeMajorList()
-      this.getApeSchoolList()
+      this.getMajorList()
+      this.getSchoolList()
     },
     watch: {
       updateId(newVal) {

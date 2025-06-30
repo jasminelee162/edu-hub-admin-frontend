@@ -44,7 +44,7 @@
 </template>
 
 <script>
-  import {saveApeForum} from '../../../api/api'
+  import {saveForum} from '../../../api/api'
   export default {
     data() {
       return{
@@ -69,7 +69,7 @@
       submit() {
         this.$refs["ruleForm"].validate((valid) => {
           if (valid) {
-            saveApeForum(this.form).then(res => {
+            saveForum(this.form).then(res => {
               if(res.code == 1000) {
                 this.$notify.success({
                   title: '成功',

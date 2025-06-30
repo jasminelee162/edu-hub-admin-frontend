@@ -90,7 +90,7 @@
 </template>
 
 <script>
-  import {getApeTaskStudentPage,getApeChapterById,getHomeworkStudentFlag,getTaskStudentPage} from '../../../api/api' 
+  import {getApeTaskStudentPage,getChapterById,getHomeworkStudentFlag,getTaskStudentPage} from '../../../api/api'
   export default {
     data() {
       return{
@@ -161,7 +161,7 @@
     mounted() {
       this.chapterId = this.$route.query.id
       this.search.chapterId = this.$route.query.id
-      getApeChapterById({id:this.chapterId}).then(res => {
+      getChapterById({id:this.chapterId}).then(res => {
           if(res.code == 1000) {
               this.chapter = res.data
               this.search.taskId = res.data.taskId

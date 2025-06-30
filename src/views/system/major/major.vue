@@ -101,7 +101,7 @@
 </template>
 
 <script>
-import {getApeMajorPage,removeApeMajor} from '../../../api/api' 
+import {getMajorPage,removeMajor} from '../../../api/api'
 import add from '../../../components/system/major/addMajor'
 import update from '../../../components/system/major/updateMajor'
 export default {
@@ -132,7 +132,7 @@ export default {
       this.query()
     },
     query() {
-      getApeMajorPage(this.search).then(res => {
+      getMajorPage(this.search).then(res => {
         if(res.code == 1000) {
           this.tableData = res.data.records
           this.total = res.data.total
@@ -198,7 +198,7 @@ export default {
       });
     },
     deleteDate(ids) {
-      removeApeMajor({ids:ids}).then(res => {
+      removeMajor({ids:ids}).then(res => {
           if(res.code == 1000) {
             this.$message({
               type: 'success',
