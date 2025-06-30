@@ -1,51 +1,63 @@
 <template>
-    <el-aside :width="isCollapse ? '64px' : '240px'">
-        <div class="back-icon" :style="{width: isCollapse ? '63px' : '239px'}">
-            <span class="logo-text" :class="isCollapse? 'xiaoshi':''">
-                <span style="background:#FFFFFF;color:#000000">&nbsp;在线学习教育平台&nbsp;</span>
-                <span> ADMIN</span>
-            </span>
-        </div>
-        <el-menu
-            @select="handleSelect"
-            :collapse="isCollapse"
-            :collapse-transition="false"
-            class="el-menu-vertical"
-            :unique-opened="true"
-            background-color="#222B40"
-            :text-color="textColor"
-            :default-active="this.$route.path + '@' + this.$route.name"
-            active-text-color="#ffffff">
-            <span v-for="(item,index) in displayMenus" :key="index">
-                <el-menu-item v-if="item.menuType == 1" :index="item.routeUrl + '@' + item.menuName">
-                    <i :class="item.icon"></i>
-                    <span slot="title">{{item.menuName}}</span>
-                </el-menu-item>
-                <el-submenu v-if="item.menuType == 0" :index="index+''">
-                    <template slot="title">
-                        <i :class="item.icon"></i>
-                        <span v-if="!isCollapse">{{item.menuName}}</span>
-                    </template>
-                    <span v-for="(element,subscript) in item.child" :key="subscript">
-                        <el-submenu v-if="element.menuType == 0" :index="index+'-'+subscript">
-                            <template slot="title">
-                                <i :class="element.icon"></i>
-                                <span>{{element.menuName}}</span>
-                            </template>
-                            <el-menu-item v-for="(one,sub) in element.child" v-if="one.menuType == 1" :index="one.routeUrl + '@' + one.menuName">
-                                <i :class="one.icon"></i>
-                                <span slot="title">{{one.menuName}}</span>
-                            </el-menu-item>
-                        </el-submenu>
-                        <el-menu-item v-if="element.menuType == 1" :index="element.routeUrl + '@' + element.menuName">
-                            <i :class="element.icon"></i>
-                            <span slot="title">{{element.menuName}}</span>
-                        </el-menu-item>
-                    </span>
-                </el-submenu>
-            </span>
-        </el-menu>
-    </el-aside>
+  <el-aside :width="isCollapse ? '72px' : '240px'" style="background-color: #0F1220; border-right: 1px solid #252A3A">
+    <div class="back-icon" :style="{
+      width: isCollapse ? '71px' : '239px',
+      background: 'linear-gradient(90deg, #0F1220 0%, #1A1C3A 100%)',
+      borderBottom: '1px solid rgba(124, 77, 255, 0.1)'
+    }">
+      <div class="logo-plain">
+        <img 
+          src="@/assets/image/systemlogo.png" 
+          :style="{
+            width: isCollapse ? '36px' : '180px',
+            height: 'auto',
+            transition: 'all 0.3s ease',
+            maxHeight: '50px'
+          }" 
+          alt="系统Logo"
+        />
+      </div>
+    </div>
+    <el-menu
+      @select="handleSelect"
+      :collapse="isCollapse"
+      :collapse-transition="false"
+      class="el-menu-vertical"
+      :unique-opened="true"
+      background-color="#0F1220"
+      :text-color="textColor"
+      :default-active="this.$route.path + '@' + this.$route.name"
+      active-text-color="#ffffff">
+      <span v-for="(item,index) in displayMenus" :key="index">
+        <el-menu-item v-if="item.menuType == 1" :index="item.routeUrl + '@' + item.menuName">
+          <i :class="item.icon" style="color: #5C6BC0;"></i>
+          <span slot="title">{{item.menuName}}</span>
+        </el-menu-item>
+        <el-submenu v-if="item.menuType == 0" :index="index+''">
+          <template slot="title">
+            <i :class="item.icon" style="color: #5C6BC0;"></i>
+            <span v-if="!isCollapse">{{item.menuName}}</span>
+          </template>
+          <span v-for="(element,subscript) in item.child" :key="subscript">
+            <el-submenu v-if="element.menuType == 0" :index="index+'-'+subscript">
+              <template slot="title">
+                <i :class="element.icon" style="color: #7986CB;"></i>
+                <span>{{element.menuName}}</span>
+              </template>
+              <el-menu-item v-for="(one,sub) in element.child" v-if="one.menuType == 1" :index="one.routeUrl + '@' + one.menuName">
+                <i :class="one.icon" style="color: #9FA8DA;"></i>
+                <span slot="title">{{one.menuName}}</span>
+              </el-menu-item>
+            </el-submenu>
+            <el-menu-item v-if="element.menuType == 1" :index="element.routeUrl + '@' + element.menuName">
+              <i :class="element.icon" style="color: #9FA8DA;"></i>
+              <span slot="title">{{element.menuName}}</span>
+            </el-menu-item>
+          </span>
+        </el-submenu>
+      </span>
+    </el-menu>
+  </el-aside>
 </template>
 
 <script>
@@ -87,7 +99,6 @@
 
     },
     mounted() {
-        // 监听collapse
         this.$bus.$on('collapse', res=>{
             this.isCollapse = res
         })
@@ -107,63 +118,144 @@
 </script>
 
 <style scoped lang="scss">
-    .el-aside {
-        background-color: #222B40;
-    }
+    .logo-plain {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 16px;
+  
+  img {
+    object-fit: contain;
+    display: block;
+  }
+}
+    
     .back-icon {
         display: flex;
-        height: 100px;
-        background-color: #222B40;
+        height: 80px;
         justify-content: center;
         align-items: center;
+        transition: all 0.3s;
+        border-bottom: 1px solid rgba(124, 77, 255, 0.1);
+        
+        .logo-text {
+            transition: all 0.3s;
+            span {
+                transition: all 0.3s;
+                &:hover {
+                    background: rgba(124, 77, 255, 0.3) !important;
+                }
+            }
+        }
     }
-    .logo {
-        widows: 50px;
-        height: 50px;
-    }
-    .logo-text {
-        padding-left: 6px;
-        /* Bold/19px */
-        color: #fff;
-        font-family: Mulish;
-        font-size: 15px;
-        font-weight: 700;
-        line-height: 24;
-        letter-spacing: 0.4000000059604645px;
-    }
+    
     .el-menu {
-        height: calc(100vh - 100px);
-        overflow-x: hidden;
-        font-family: "黑体"!important;
-        font-weight: 550 !important;
-    }
-    .el-menu::-webkit-scrollbar,.el-aside::-webkit-scrollbar {
-        width: 0px;
-        height: 0px;
-    }
-    .el-submenu>>>.el-submenu__title:hover {
-        color:#EAB040!important;
-        background-color: #3E3F49!important;
-    }
-    .el-menu-vertical:deep(.el-menu-item:hover){
-        color:#0863F2!important;
-        background-color: #001528!important;
-    }
-    .el-menu-vertical:deep(.el-menu-item.is-active) {
-        background-color: #001528!important;
-        box-shadow:inset 5px 0 #DDE2FF;
-    }
-    .el-menu-item, .el-submenu__title {
-        height: 47px !important;
-        line-height: 47px !important;
-    }
-    .el-aside .el-menu {
+        background: transparent !important;
         border-right: none !important;
+        
+        &:not(.el-menu--collapse) {
+            width: 240px;
+        }
+        
+        /* 菜单项基础样式 */
+        &:deep(.el-menu-item),
+        &:deep(.el-submenu__title) {
+            color: #C5CAE9;
+            height: 48px !important;
+            line-height: 48px !important;
+            margin: 4px 12px;
+            border-radius: 6px;
+            font-size: 14px;
+            transition: all 0.2s;
+            
+            i {
+                font-size: 18px;
+                margin-right: 10px;
+            }
+            
+            /* 悬停效果 */
+            &:hover {
+                background: rgba(94, 53, 177, 0.2) !important;
+                color: #E1E1FF;
+                
+                i {
+                    color: #B388FF;
+                }
+            }
+        }
+        
+        /* 激活状态 - 保留原来的白色高亮条 */
+        &:deep(.el-menu-item.is-active) {
+             background: linear-gradient(90deg, rgba(124, 77, 255, 0.15), transparent) !important;
+            color: #FFFFFF !important;
+            font-weight: 500;
+            position: relative;
+            
+            i {
+                color: #7C4DFF !important;
+            }
+            
+            &::after {
+                    content: '';
+                    position: absolute;
+                    left: 0;
+                    top: 0;
+                    height: 100%;
+                    width: 3px;
+                    background: linear-gradient(to bottom, #7E57C2, #5C6BC0);
+            } 
+                           
+            &::before {
+                content: '';
+                position: absolute;
+                left: 0;
+                top: 0;
+                height: 100%;
+                width: 3px;
+                background: #ffffff;
+                border-radius: 0 3px 3px 0;
+            }
+        }
+        
+        /* 子菜单样式 */
+        &:deep(.el-submenu) {
+            .el-submenu__title {
+                color: #C5CAE9;
+            }
+            
+            .el-menu {
+                background: rgba(15, 18, 32, 0.8) !important;
+                
+                .el-menu-item {
+                    padding-left: 54px !important;
+                    color: #A4B7CC;
+                    
+                    i {
+                        color: #7986CB;
+                    }
+                }
+            }
+        }
     }
-    .el-submenu .el-menu-item {
-        background-color: #1B2233!important;
+    
+    /* 折叠状态下的微调 */
+    .el-menu--collapse {
+        .el-submenu {
+            & > .el-submenu__title {
+                padding-left: 20px !important;
+                
+                .el-submenu__icon-arrow {
+                    display: none;
+                }
+            }
+        }
     }
-    .el-submenu .el-submenu:deep(.el-submenu__title) {
-        background-color: #1B2233!important;
+    
+    .xiaoshi {
+        opacity: 0;
+        width: 0;
+        height: 0;
+        overflow: hidden;
     }
 </style>

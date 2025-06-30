@@ -30,8 +30,9 @@
                                 <div style="color:#000000;font-size:30px;font-weight:bold">{{top.studentNum}}人</div>
                             </div>
                         </div>
-                        <div class="item-01-under" @click="toStudent()">
-                            <div style="color:black;font-size:14px;font-weight:bold">查看全部</div>
+                        <div class="item-01-under" @click="toStudent()" 
+                             style="cursor: pointer; transition: all 0.3s;">
+                            <div style="color:black;font-size:14px;font-weight:bold;text-decoration: underline; text-underline-offset: 3px; ">查看全部</div>
                             <i class="el-icon-right" style="color:black;font-size:14px;font-weight:bold"></i>
                         </div>
                     </el-card>
@@ -47,8 +48,9 @@
                                 <div style="color:#ffffff;font-size:30px;font-weight:bold">{{top.teacherNum}}人</div>
                             </div>
                         </div>
-                        <div class="item-01-under" @click="toTeacher()">
-                            <div style="color:black;font-size:14px;font-weight:bold">查看全部</div>
+                        <div class="item-01-under" @click="toTeacher()" 
+                             style="cursor: pointer; transition: all 0.3s;">
+                            <div style="color:black;font-size:14px;font-weight:bold;text-decoration: underline;text-underline-offset: 3px; /* 控制下划线距离 */">查看全部</div>
                             <i class="el-icon-right" style="color:black;font-size:14px;font-weight:bold"></i>
                         </div>
                     </el-card>
@@ -61,10 +63,10 @@
                             <img src="../../../assets/image/index-05.png" style="width:110px">
                             <div class="item-01-top-center">
                                 <div style="color:#000000;font-size:12px;font-weight:bold;display:flex;align-item:center">
-                                    <img src="../../../assets/image/index-06.png" style="width:20px">：15623610675
+                                    <img src="../../../assets/image/index-06.png" style="width:20px">：puppy03110
                                 </div>
                                 <div style="color:#000000;font-size:12px;font-weight:bold;display:flex;align-item:center">
-                                    <img src="../../../assets/image/index-07.png" style="width:20px">：550080747
+                                    <img src="../../../assets/image/index-07.png" style="width:20px">：3204986849
                                 </div>
                             </div>
                         </div>
@@ -124,27 +126,52 @@
                                 </div>
                             </template>
                         </el-table-column>
-                        <el-table-column
-                            prop="major"
-                            label="专业">
-                            <template slot-scope="scope">
-                                <el-button size="mini" type="primary">{{scope.row.major}}</el-button>
-                            </template>
-                        </el-table-column>
-                        <el-table-column
-                            prop="classification"
-                            label="课程分类">
-                            <template slot-scope="scope">
-                                <el-button size="mini" type="primary">{{scope.row.classification}}</el-button>
-                            </template>
+                                <el-table-column
+                                    prop="major"
+                                    label="专业"
+                                    align="center">
+                                    <template slot-scope="scope">
+                                        <el-button 
+                                            size="mini"
+                                            style="
+                                                background-color: #409EFF; 
+                                                color: white;
+                                                border-color: #409EFF;
+                                                font-weight: bold;
+                                                width: 50%;
+                                                padding: 4px 0;
+                                            ">
+                                            {{scope.row.major}}
+                                        </el-button>
+                                    </template>
+                                </el-table-column>
+                                <el-table-column
+                                    prop="classification"
+                                    label="课程分类"
+                                    align="center">
+                                    <template slot-scope="scope">
+                                        <el-button 
+                                            size="mini" 
+                                            style="
+                                                background-color: #8470D1;
+                                                color: white;
+                                                width: 50%;
+                                                border-color: #8470D1;
+                                                font-weight: bold;
+                                            ">
+                                            {{scope.row.classification}}
+                                        </el-button>
+                                    </template>
                         </el-table-column>
                         <el-table-column
                             prop="num"
-                            label="学生数量">
+                            label="学生数量"
+                            align="center">
                         </el-table-column>
                         <el-table-column
                             prop="createTime"
-                            label="创建时间">
+                            label="创建时间"
+                            align="center">
                         </el-table-column>
                     </el-table>
                 </el-card>
@@ -239,32 +266,52 @@ export default {
         })
         getIndexSexData({type:0}).then(res => {
             if (res.code == 1000) {
-                this.sex  =res.data
-                this.pieChart = echarts.init(document.getElementById("pie-chart"))
+                this.sex = res.data;
+                this.pieChart = echarts.init(document.getElementById("pie-chart"));
                 var optionPie = {
-                    tooltip: {
-                        trigger: 'item'
+                    tooltip: { trigger: 'item' },
+                    legend: { 
+                        center: 'center',
+                        textStyle: { color: '#666' } // 添加图例文字颜色
                     },
-                    legend: {
-                        center: 'center'
-                    },
-                    series: [
-                        {
-                            name: '学生性别分析',
-                            type: 'pie',
-                            radius: '50%',
-                            data: this.sex,
-                            emphasis: {
-                                itemStyle: {
-                                    shadowBlur: 10,
-                                    shadowOffsetX: 0,
-                                    shadowColor: 'rgba(0, 0, 0, 0.5)'
+                    series: [{
+                        name: '学生性别分析',
+                        type: 'pie',
+                        radius: '50%',
+                        data: [
+                            {
+                                value: this.sex[0].value,
+                                name: this.sex[0].name,
+                                itemStyle: { 
+                                    color: '#8470D1', // 浅紫色（男）
+                                    borderWidth: 2,
+                                    borderColor: '#fff'
+                                }
+                            },
+                            {
+                                value: this.sex[1].value,
+                                name: this.sex[1].name,
+                                itemStyle: { 
+                                    color: '#6A5ACD', // 深紫色（女）
+                                    borderWidth: 2,
+                                    borderColor: '#fff'
                                 }
                             }
+                        ],
+                        label: { // 添加标签样式
+                            color: '#333',
+                            fontSize: 14
+                        },
+                        emphasis: {
+                            itemStyle: {
+                                shadowBlur: 10,
+                                shadowOffsetX: 0,
+                                shadowColor: 'rgba(0, 0, 0, 0.3)'
+                            }
                         }
-                    ]
+                    }]
                 };
-                this.pieChart.setOption(optionPie)
+                this.pieChart.setOption(optionPie);
             }
         })
         getTaskChart({type:0}).then(res => {
@@ -380,81 +427,107 @@ export default {
 </script>
 
 <style scoped>
+
+/* 防止鼠标变成文本输入符号 */
+.item-01-top, 
+.item-01-top-center{
+  cursor: default !important;
+}
+
+/* 图标悬停放大 */
+.item-01-under i:hover {
+  transform: scale(1.2);
+  color: var(--primary-purple); /* 悬停变色 */
+}
+
+/* 全局颜色变量 */
+:root {
+  --primary-purple: #6A5ACD;
+  --light-purple: #8470D1;
+  --dark-purple: #4B0082;
+  --white: #ffffff;
+  --light-bg: #F8F8FF;
+}
+
+/* 基础布局调整 */
 .index-top {
     height: 210px;
+    margin-bottom: 20px;
 }
+
+/* 卡片统一样式 */
+.el-card {
+    border-radius: 12px;
+    border: none;
+    box-shadow: 0 4px 12px rgba(106, 90, 205, 0.1);
+}
+
+/* 顶部卡片 */
 .item-01 {
-    border-radius: 8px;
     height: 170px;
-    background-color: #452B90;
+    background: linear-gradient(135deg, #483D8B, #7B68EE);
+    color: var(--white);
 }
-.item-02 {
-    border-radius: 8px;
-    margin-top: 20px;
-    height: 90px;
-    background-color: #ffffff;
-}
-.item-03 {
-    border-radius: 8px;
+
+.item-03, .item-06 {
     height: 170px;
-    background-color: #ffffff;
+    background: var(--white);
+    border: 1px solid rgba(106, 90, 205, 0.1);
 }
-.item-04 {
-    border-radius: 8px;
-    margin-top: 20px;
-    height: 90px;
-    background-color: #ffffff;
-}
+
 .item-05 {
-    border-radius: 8px;
     height: 170px;
-    background-color: #F8B940;
-    background-size: 100% 100%;
-    color: #ffffff;
+    background: linear-gradient(135deg, #5F4B8B, #8A2BE2);
+    color: var(--white);
 }
-.item-06 {
-    border-radius: 8px;
-    height: 170px;
-    background-color: #ffffff;
-}
+
+/* 中间图表区域 */
 .index-center {
-    margin-top: 20px;
+    margin: 20px 0;
     height: 400px;
+    border: 1px solid red !important;
 }
-.item-07 {
-    border-radius: 8px;
+
+.item-07, .item-08 {
     height: 400px;
-    background-color: #ffffff;
+    background: var(--white);
+    border: 1px solid rgba(106, 90, 205, 0.1);
 }
-.item-08 {
-    border-radius: 8px;
-    height: 400px;
-    background-color: #ffffff;
-}
+
+/* 表格区域 */
 .index-center-01 {
-    margin-top: 20px;
+    margin: 20px 0;
     height: 300px;
+    border: 1px solid red !important;
 }
+
 .item-09 {
-    border-radius: 8px;
     height: 300px;
-    background-color: #ffffff;
+    background: var(--white);
+    border: 1px solid rgba(106, 90, 205, 0.1);
     overflow: scroll;
 }
+
+/* 底部区域 */
 .index-under {
     margin-top: 20px;
     height: 400px;
+    border: 1px solid red !important;
 }
+
 .item-10 {
-    border-radius: 8px;
     height: 350px;
-    background-color: #ffffff;
+    background: var(--white);
+    border: 1px solid rgba(106, 90, 205, 0.1);
 }
+
 .item-11 {
     border-radius: 8px;
-    height: 450px;
+    height: 390px;
     background-color: #ffffff;
 }
+
+/* 卡片内部布局 */
 .item-01-top {
     height: 90px;
     display: flex;
@@ -462,47 +535,27 @@ export default {
     align-items: center;
     justify-content: space-around;
 }
+
 .item-01-top-center {
     height: 100%;
     display: flex;
     flex-direction: column;
     justify-content: space-around;
 }
+
 .item-01-under {
     height: 60px;
     display: flex;
     flex-direction: row;
     align-items: center;
     justify-content: space-between;
+    padding: 0 20px;
+    cursor: pointer !important; /* 确保父容器是小手 */
 }
-.item-06-top {
-    display: flex;
-    justify-content: center;
-}
-.item-06-under {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
-.item-05-top {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
-#chart,#pie-chart {
-    width: 100%;
-    height: 380px;
-}
-.item-09::-webkit-scrollbar {
-    width: 0px;
-    height: 0px;
-}
-.el-row {
-    width: 100%;
-    height: 100%;
-}
+
+/* 课程卡片 */
 .item-10-item {
-    border: 1px solid #E5E5E5;
+    border: 1px solid rgba(106, 90, 205, 0.2);
     border-radius: 20px;
     height: 100%;
     margin: 0 10px;
@@ -510,9 +563,70 @@ export default {
     flex-direction: column;
     align-items: center;
     justify-content: space-around;
+    transition: all 0.3s;
 }
+
+.item-10-item:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 5px 15px rgba(106, 90, 205, 0.2);
+}
+
+/* 按钮样式 */
+.el-button--primary {
+    background-color: var(--primary-purple);
+    border-color: var(--primary-purple);
+}
+
+.el-button--primary:hover {
+    background-color: var(--light-purple);
+    border-color: var(--light-purple);
+}
+
+.el-button--danger {
+    background-color: #FF6B6B;
+    border-color: #FF6B6B;
+}
+
+/* 表格样式 */
+.el-table {
+    --el-table-header-bg-color: #F0EFFF;
+    --el-table-header-text-color: var(--dark-purple);
+    --el-table-border-color: rgba(106, 90, 205, 0.1);
+}
+
+/* 滚动条隐藏 */
+.item-09::-webkit-scrollbar {
+    width: 0px;
+    height: 0px;
+}
+
+/* 图表容器 */
+#chart, #pie-chart {
+    width: 100%;
+    height: 380px;
+}
+
+/* 卡片悬停放大效果 */
+.grid-content .el-card {
+    transition: all 0.3s ease;
+    transform-origin: center;
+    cursor: pointer;
+}
+
+.grid-content .el-card:hover {
+    transform: scale(1.05);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2) !important;
+}
+
+/* 确保卡片内容不会因为放大而溢出 */
+.grid-content {
+    overflow: hidden;
+    border-radius: 12px;
+}
+
 /deep/ .el-calendar-day {
-    height: 45px !important;
+    height: 40px !important;
     border: none;
 }
+
 </style>

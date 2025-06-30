@@ -33,12 +33,22 @@ const mutations = {
 
 const actions = {
   logout({ commit }) {
-    return new Promise(resolve => {
-      commit('setToken', '')
-      commit('setUser', '')
-      window.localStorage.removeItem("token")
-      logout()
-      resolve()
+    return new Promise((resolve, reject) => {
+      // 调用后端登出接口
+      logout().then(() => {
+        commit('setToken', '')
+        commit('setUser', '')
+        window.localStorage.removeItem("token")
+        window.localStorage.removeItem("user")
+        resolve()
+      }).catch(error => {
+        // 即使登出API失败也清除本地状态
+        commit('setToken', '')
+        commit('setUser', '')
+        window.localStorage.removeItem("token")
+        window.localStorage.removeItem("user")
+        resolve() // 仍然resolve以确保流程继续
+      })
     })
   }
 }
