@@ -129,20 +129,18 @@
         <el-table-column label="操作" width="400">
           <template #default="{row}">
             <div class="action-buttons">
-            <el-button 
-                    size="mini" 
-                    v-if="row.state == 0" 
-                    @click="offShelf(row.id)"
-                    class="action-btn reject-btn"
-                    style="width: 100px;">
-                    <i class="el-icon-close"></i> 审核未通过
+              <el-button 
+                size="mini" 
+                v-if="row.state == 0" 
+                @click="offShelf(row.id)"
+                class="action-btn reject-btn">
+                <i class="el-icon-close"></i> 审核未通过
               </el-button>
               <el-button 
                 size="mini" 
                 v-if="row.state == 2 || row.state == 1" 
                 @click="listing(row.id)"
-                class="action-btn approve-btn"
-                style="width: 100px;">
+                class="action-btn approve-btn">
                 <i class="el-icon-check"></i> 审核通过
               </el-button>
               <el-button 
@@ -445,7 +443,9 @@
 }
 
 .action-bar {
+  padding: 10px 0 15px 10px;
   margin-bottom: 15px;
+  border-bottom: 1px solid #F0EEF7;
 }
 
 .course-name {
@@ -461,6 +461,7 @@
 .status-tag {
   font-weight: 500;
 }
+
 .action-buttons {
   display: flex;
   flex-wrap: wrap;
@@ -475,6 +476,9 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  transition: all 0.3s ease;
+  border: none;
+  color: white;
 }
 
 .action-btn i {
@@ -509,38 +513,54 @@
   border: 1px solid #D8D8E5;
 }
 
-.add-btn {
+/* 批量操作按钮样式 */
+.action-bar .add-btn {
   background: linear-gradient(135deg, #7B68EE, #9370DB);
   color: white;
   border: none;
 }
 
-.edit-btn {
-  color: #7B68EE;
-  border-color: #7B68EE;
-}
-
-.delete-btn {
-  color: #FF6B6B;
-  border-color: #FF6B6B;
-}
-
-.approve-btn {
+.action-bar .edit-btn {
   background: linear-gradient(135deg, #67C23A, #5DA934);
   color: white;
   border: none;
 }
 
-.reject-btn {
-  background: linear-gradient(135deg, #E6A23C, #D5912D);
+.action-bar .delete-btn {
+  background: linear-gradient(135deg, #FF6B6B, #FF8E8E);
   color: white;
   border: none;
 }
 
-.comment-btn {
+.action-bar .el-button[disabled] {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* 表格内操作按钮样式 */
+.action-buttons .approve-btn {
+  background: linear-gradient(135deg, #67C23A, #5DA934);
+}
+
+.action-buttons .reject-btn {
+  background: linear-gradient(135deg, #E6A23C, #D5912D);
+}
+
+.action-buttons .comment-btn {
   background: linear-gradient(135deg, #409EFF, #3A8BDF);
-  color: white;
-  border: none;
+}
+
+.action-buttons .edit-btn {
+  background: linear-gradient(135deg, #7B68EE, #9370DB);
+}
+
+.action-buttons .delete-btn {
+  background: linear-gradient(135deg, #FF6B6B, #FF8E8E);
+}
+
+.action-buttons .el-button[disabled] {
+  opacity: 0.5;
+  cursor: not-allowed;
 }
 
 .tech-table {
@@ -556,5 +576,15 @@
   background-color: #7B68EE;
   color: white;
   border-radius: 50%;
+}
+
+/* 按钮悬停效果 */
+.action-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.action-btn:active {
+  transform: translateY(0);
 }
 </style>
