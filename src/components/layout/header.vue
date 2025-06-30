@@ -49,14 +49,19 @@
           </div>
           
           <el-dropdown-menu slot="dropdown" class="dropdown-menu">
-            <el-dropdown-item command="password">
-              <i class="el-icon-ship"></i>修改密码
+            <el-dropdown-item command="password" class="menu-item">
+              <i class="el-icon-key"></i>
+              <span class="menu-text">修改密码</span>
+              <div class="hover-effect"></div>
             </el-dropdown-item>
-            <el-dropdown-item command="lock">
-              <i class="el-icon-lock"></i>锁屏
+            <el-dropdown-item command="lock" class="menu-item">
+              <i class="el-icon-lock"></i>
+              <span class="menu-text">锁屏</span>
+              <div class="hover-effect"></div>
             </el-dropdown-item>
-            <el-dropdown-item divided command="logout" class="logout-item">
-              <i class="el-icon-switch-button"></i>退出登录
+            <el-dropdown-item divided command="logout" class="menu-item logout-item">
+              <i class="el-icon-switch-button"></i> <!-- 直接使用ElementUI的开关机图标 -->
+              <span class="menu-text">退出登录</span>
             </el-dropdown-item>
           </el-dropdown-menu>
         </el-dropdown>
@@ -309,34 +314,165 @@ export default {
 }
 
 .dropdown-menu {
-  background: #1A1C3A;
-  border: 1px solid rgba(124, 77, 255, 0.2);
+  background: rgba(26, 28, 58, 0.98); // 半透明深蓝紫背景
+  border: 1px solid rgba(124, 77, 255, 0.3);
+  border-radius: 8px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+  padding: 8px 0;
+  min-width: 200px;
+  backdrop-filter: blur(10px); // 毛玻璃效果
+  -webkit-backdrop-filter: blur(10px);
   
-  ::v-deep .el-dropdown-menu__item {
-    color: #C5CAE9;
-    font-size: 13px;
-    
-    &:hover {
-      background: rgba(124, 77, 255, 0.1);
-      color: #E1E1FF;
-    }
+  // 小三角指示器
+  &::before {
+    content: '';
+    position: absolute;
+    top: -6px;
+    right: 20px;
+    width: 12px;
+    height: 12px;
+    background: rgba(26, 28, 58, 0.98);
+    border-top: 1px solid rgba(124, 77, 255, 0.3);
+    border-left: 1px solid rgba(124, 77, 255, 0.3);
+    transform: rotate(45deg);
+    z-index: -1;
+  }
+
+  .menu-item {
+    display: flex;
+    align-items: center;
+    padding: 12px 20px;
+    margin: 0 8px;
+    border-radius: 6px;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+    z-index: 1;
     
     i {
-      margin-right: 8px;
-      color: #7986CB;
+      font-size: 18px;
+      margin-right: 12px;
+      color: #7C4DFF;
+      transition: all 0.3s;
+    }
+
+    .menu-text {
+      font-size: 14px;
+      color: #E1E1FF;
+      letter-spacing: 0.5px;
+      transition: all 0.3s;
+    }
+
+    .hover-effect {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, rgba(124, 77, 255, 0.2), transparent);
+      opacity: 0;
+      transition: opacity 0.3s;
+      z-index: -1;
+    }
+
+    &:hover {
+      transform: translateX(4px);
+      
+      .hover-effect {
+        opacity: 1;
+      }
+      
+      i {
+        color: #B388FF;
+        transform: scale(1.1);
+      }
+      
+      .menu-text {
+        color: #FFFFFF;
+        text-shadow: 0 0 8px rgba(179, 136, 255, 0.4);
+      }
     }
   }
-  
+
   .logout-item {
-    color: #FF5252 !important;
-    
-    &:hover {
-      background: rgba(255, 82, 82, 0.1) !important;
-    }
+    border-top: 1px solid rgba(124, 77, 255, 0.2) !important;
+    margin-top: 8px;
+    padding-top: 12px;
     
     i {
-      color: #FF5252 !important;
+      color: #FF5252;
     }
+
+    .menu-text {
+      color: #FF5252;
+    }
+
+    &:hover {
+      .hover-effect {
+        background: linear-gradient(90deg, rgba(255, 82, 82, 0.2), transparent);
+      }
+      
+      i {
+        color: #FF6B6B;
+      }
+      
+      .menu-text {
+        color: #FF6B6B;
+        text-shadow: 0 0 8px rgba(255, 107, 107, 0.4);
+      }
+    }
+  }
+
+  ::v-deep .el-dropdown-menu__item--divided {
+    &:before {
+      background: rgba(124, 77, 255, 0.2);
+    }
+  }
+}
+
+//退出登录按钮
+.logout-item {
+  position: relative;
+  
+  .logout-logo {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    margin-right: 12px;
+    background: rgba(255, 82, 82, 0.15);
+    border-radius: 50%;
+    transition: all 0.3s ease;
+    
+    svg {
+      color: #FF5252;
+      transition: all 0.3s ease;
+    }
+  }
+
+  &:hover {
+    .logout-logo {
+      background: rgba(255, 82, 82, 0.3);
+      animation: pulse 1.5s infinite;
+      
+      svg {
+        transform: scale(1.1);
+        filter: drop-shadow(0 0 4px rgba(255, 82, 82, 0.5));
+      }
+    }
+  }
+}
+
+@keyframes pulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(255, 82, 82, 0.4);
+  }
+  70% {
+    box-shadow: 0 0 0 6px rgba(255, 82, 82, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(255, 82, 82, 0);
   }
 }
 </style>

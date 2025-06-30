@@ -90,55 +90,93 @@ export default {
   mounted() {
     this.initParticles()
   },
-      created() {
-
+  created() {
+    // 检查是否是密码修改后的跳转
+  if (this.$route.query.passwordChanged) {
+    this.$notify.success({
+      title: '提示',
+      message: '密码修改成功，请使用新密码登录',
+      duration: 5000
+    });
+    
+    // 清除query参数避免刷新后重复显示
+    const query = {...this.$route.query};
+    delete query.passwordChanged;
+    this.$router.replace({...this.$route, query});
+  }
     },
   methods: {
-        login() {
-            if(!this.username) {
-                this.$message({
-                    message: '请输入用户名',
-                    type: 'warning'
-                });
-                return;
+              login() {
+        if(!this.username) {
+          this.$message({
+            message: '请输入用户名',
+            type: 'warning'
+          });
+          return;
+        }
+        if(!this.password) {
+          this.$message({
+            message: '请输入密码',
+            type: 'warning'
+          });
+          return;
+        }
+        
+        var params = {
+          username: this.username,
+          password: this.password
+        }
+        
+        this.$loading({
+          lock: true,
+          text: '正在登录...',
+          spinner: 'el-icon-loading',
+          background: 'rgba(0, 0, 0, 0.7)'
+        });
+        
+        login(params).then(res => {
+          this.$loading().close();
+          
+          if(res.code == 1000) {
+            this.$message({
+              message: '登录成功',
+              type: 'success'
+            });
+            
+            var token = res.data.token;
+            this.$store.commit('user/setToken', token);
+            
+            this.getUserInfo().then(() => {
+              setLock(false);
+              
+              // 获取redirect参数，默认跳转到首页
+              const redirect = this.$route.query.redirect || '/index';
+              this.$router.push(redirect);
+            });
+            
+          } else {
+            this.$message.error(res.message);
+          }
+        }).catch(error => {
+          this.$loading().close();
+          this.$message.error('登录失败，请稍后重试');
+        });
+      },
+
+      getUserInfo() {
+        return new Promise((resolve, reject) => {
+          getUser().then(res => {
+            if(res.code == 1000) {
+              this.$store.commit('user/setUser', JSON.stringify(res.data));
+              resolve();
+            } else {
+              reject(res.message);
             }
-            if(!this.password) {
-                this.$message({
-                    message: '请输入密码',
-                    type: 'warning'
-                });
-                return;
-            }
-            var params = {
-                username: this.username,
-                password: this.password
-            }
-            login(params).then(res => {
-                if(res.code == 1000) {
-                    this.$message({
-                        message: '登陆成功',
-                        type: 'success'
-                    });
-                    var that = this
-                    var token = res.data.token
-                    this.$store.commit('user/setToken', token)
-                    this.getUserInfo()
-                    setLock(false)
-                    setTimeout(function() {
-                        that.$router.push("/index")
-                    },500)
-                } else {
-                    this.$message.error(res.message);
-                }
-            })
-        },
-        getUserInfo() {
-            getUser().then(res => {
-                if(res.code == 1000) {
-                    this.$store.commit('user/setUser', JSON.stringify(res.data))
-                }
-            })
-        },
+          }).catch(error => {
+            reject(error);
+          });
+        });
+      },
 
     initParticles() {
       const canvas = document.getElementById('particle-canvas')
