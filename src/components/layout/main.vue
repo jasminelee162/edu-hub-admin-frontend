@@ -14,9 +14,9 @@
           <el-button size="mini" type="primary" @click="passwordSubmit">确 定</el-button>
         </span>
       </el-dialog>
-      <div class="setting">
+      <!--<div class="setting">
         <img style="width:40px;height:40px" src="../../assets/image/setting.gif">
-      </div>
+      </div>-->
       <keep-alive max=10>
       <router-view :key="fullPath"></router-view>
       </keep-alive>
