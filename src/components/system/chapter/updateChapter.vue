@@ -91,7 +91,7 @@
 
 <script>
   import {mixin} from "../../../minix";
-  import {editChapter,getApeChapterById,getApeTaskList,getApeTaskByTeacherId} from '../../../api/api'
+  import {editChapter,getChapterById,getTaskList,getTaskByTeacherId} from '../../../api/api'
   export default {
     mixins: [mixin],
     data() {
@@ -166,8 +166,8 @@
         this.form.courseware = ""
         this.fileList1 = []
       },
-      getApeTaskList() {
-          getApeTaskList().then(res => {
+      getTaskList() {
+          getTaskList().then(res => {
               if(res.code == 1000) {
                 this.task = res.data;
               } else {
@@ -178,8 +178,8 @@
               }
           })
       },
-      getApeTaskByTeacherId() {
-        getApeTaskByTeacherId().then(res => {
+      getTaskByTeacherId() {
+        getTaskByTeacherId().then(res => {
               if(res.code == 1000) {
                 this.task = res.data;
               } else {
@@ -193,7 +193,7 @@
       submit() {
         this.$refs["ruleForm"].validate((valid) => {
           if (valid) {
-            editApeChapter(this.form).then(res => {
+            editChapter(this.form).then(res => {
               if(res.code == 1000) {
                 this.$notify.success({
                   title: '成功',
@@ -224,15 +224,15 @@
     },
     mounted() {
       if(this.flag == 2) {
-        this.getApeTaskByTeacherId()
+        this.getTaskByTeacherId()
       } else {
-        this.getApeTaskList()
+        this.getTaskList()
       }
     },
     watch: {
       updateId(newVal) {
         if(newVal) {
-          getApeChapterById({id:newVal}).then(res => {
+          getChapterById({id:newVal}).then(res => {
             if(res.code == 1000) {
               this.form = res.data
               this.fileList.push({name:this.form.videoName,url:this.$store.state.configure.HOST + this.form.video})

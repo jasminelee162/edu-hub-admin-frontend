@@ -260,7 +260,7 @@
         this.dialogVisible = true;
       },
       getSchoolList() {
-        getApeSchoolList().then(res=> {
+        getSchoolList().then(res=> {
           if(res.code == 1000) {
             this.school = res.data
           } else {
@@ -271,8 +271,8 @@
           }
         })
       },
-      getApeMajorList() {
-        getApeMajorList().then(res => {
+      getMajorList() {
+        getMajorList().then(res => {
           if(res.code == 1000) {
             this.major = res.data
           } else {
@@ -335,8 +335,8 @@
      
     },
     mounted() {
-      this.getApeMajorList()
-      this.getApeSchoolList()
+      this.getMajorList()
+      this.getSchoolList()
     }
  }
 </script>

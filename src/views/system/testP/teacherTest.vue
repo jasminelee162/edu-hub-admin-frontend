@@ -276,7 +276,7 @@
 </template>
 
 <script>
-  import {getApeTestPage,removeApeTest,editApeTest} from '../../../api/api' 
+  import {getTestPage,removeTest,editTest} from '../../../api/api'
   import add from '../../../components/system/testP/addTest'
   import update from '../../../components/system/testP/updateTest'
   export default {
@@ -344,7 +344,7 @@
           id: id,
           state: 0
         }
-        editApeTest(param).then(res => {
+        editTest(param).then(res => {
           if(res.code == 1000) {
             this.$notify.success({
               title: '成功',
@@ -359,12 +359,12 @@
           }
         })
       },
-      editApeTest(id) {
+      editTest(id) {
         var param = {
           id: id,
           state: 1
         }
-        editApeTest(param).then(res => {
+        editTest(param).then(res => {
           if(res.code == 1000) {
             this.$notify.success({
               title: '成功',
@@ -384,7 +384,7 @@
         this.query()
       },
       query() {
-        getApeTestPage(this.search).then(res => {
+        getTestPage(this.search).then(res => {
           if(res.code == 1000) {
             this.tableData = res.data.records
             this.total = res.data.total
@@ -451,7 +451,7 @@
         }).catch(() => {});
       },
       deleteDate(ids) {
-        removeApeTest({ids:ids}).then(res => {
+        removeTest({ids:ids}).then(res => {
             if(res.code == 1000) {
               this.$message({
                 type: 'success',

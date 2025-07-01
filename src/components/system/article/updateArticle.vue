@@ -237,7 +237,7 @@
     watch: {
       updateId(newVal) {
         if(newVal) {
-          getApeArticleById({id:newVal}).then(res => {
+          getArticleById({id:newVal}).then(res => {
             if(res.code == 1000) {
               this.form = res.data
               this.form.state = res.data.state + ""

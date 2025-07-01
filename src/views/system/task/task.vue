@@ -356,7 +356,7 @@
 </template>
 
 <script>
-import {getApeTaskPage,removeApeTask,getApeClassificationList,getApeMajorList,editApeTask} from '../../../api/api' 
+import {getTaskPage,removeTask,getClassificationList,getMajorList,editTask} from '../../../api/api'
 import add from '../../../components/system/task/addTask'
 import update from '../../../components/system/task/updateTask'
 export default {
@@ -455,7 +455,7 @@ export default {
         id: id,
         state: 0
       }
-      editApeTask(param).then(res => {
+      editTask(param).then(res => {
         if(res.code == 1000) {
           this.$notify.success({
             title: '成功',
@@ -475,7 +475,7 @@ export default {
         id: id,
         state: 1
       }
-      editApeTask(param).then(res => {
+      editTask(param).then(res => {
         if(res.code == 1000) {
           this.$notify.success({
             title: '成功',
@@ -490,8 +490,8 @@ export default {
         }
       })
     },
-    getApeMajorList() {
-      getApeMajorList().then(res => {
+    getMajorList() {
+      getMajorList().then(res => {
         if(res.code == 1000) {
           this.major = res.data
         } else {
@@ -502,8 +502,8 @@ export default {
         }
       })
     },
-    getApeClassificationList() {
-      getApeClassificationList().then(res => {
+    getClassificationList() {
+      getClassificationList().then(res => {
         if(res.code == 1000) {
           this.classification = res.data
         } else {
@@ -519,7 +519,7 @@ export default {
       this.query()
     },
     query() {
-      getApeTaskPage(this.search).then(res => {
+      getTaskPage(this.search).then(res => {
         if(res.code == 1000) {
           this.tableData = res.data.records
           this.total = res.data.total
@@ -588,7 +588,7 @@ export default {
       }).catch(() => {});
     },
     deleteDate(ids) {
-      removeApeTask({ids:ids}).then(res => {
+      removeTask({ids:ids}).then(res => {
           if(res.code == 1000) {
             this.$message({
               type: 'success',
@@ -607,8 +607,8 @@ export default {
     },
   },
   mounted() {
-    this.getApeMajorList()
-    this.getApeClassificationList()
+    this.getMajorList()
+    this.getClassificationList()
     this.query()
   }
 }

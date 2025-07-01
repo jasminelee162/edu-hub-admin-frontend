@@ -197,7 +197,7 @@
     watch: {
       updateId(newVal) {
         if(newVal) {
-          getApeTestById({id:newVal}).then(res => {
+          getTestById({id:newVal}).then(res => {
             if(res.code == 1000) {
               this.form = res.data
               this.form.state = res.data.state + ""

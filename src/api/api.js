@@ -305,7 +305,7 @@ export const removeTestItem = (params) => get("/item/removeTestItem",params)
 
 //-------------------------------课程报名---------------------------------------
 //查询课程报名
-export const getApeTaskStudentPage = (params) => post("/student/getTaskStudentPage",params)
+export const getApeTaskStudentPage = (params) => post("/student/getApeTaskStudentPage",params)
 //根据id查询课程报名
 export const getTaskStudentById = (params) => get("/student/getTaskStudentById",params)
 //保存课程报名
@@ -373,22 +373,22 @@ export const removeForum = (params) => get("/forum/removeForum",params)
 //查询论坛讨论
 export const getForumItemPage = (params) => post("/item/getForumItemPage",params)
 //根据id查询论坛讨论
-export const getApeForumItemById = (params) => get("/item/getApeForumItemById",params)
+export const getForumItemById = (params) => get("/item/getForumItemById",params)
 //保存论坛讨论
-export const saveApeForumItem = (params) => post("/item/saveApeForumItem",params)
+export const saveForumItem = (params) => post("/item/saveForumItem",params)
 //更新论坛讨论
-export const editApeForumItem = (params) => post("/item/editApeForumItem",params)
-//删除ApeForumItem
-export const removeApeForumItem = (params) => get("/item/removeApeForumItem",params)
+export const editForumItem = (params) => post("/item/editForumItem",params)
+//删除ForumItem
+export const removeForumItem = (params) => get("/item/removeForumItem",params)
 
 //-------------------------------答疑---------------------------------------
 //查询答疑
-export const getApeQuestionPage = (params) => post("/question/getApeQuestionPage",params)
+export const getQuestionPage = (params) => post("/question/getQuestionPage",params)
 //根据id查询答疑
-export const getApeQuestionById = (params) => get("/question/getApeQuestionById",params)
+export const getQuestionById = (params) => get("/question/getQuestionById",params)
 //保存答疑
-export const saveApeQuestion = (params) => post("/question/saveApeQuestion",params)
+export const saveQuestion = (params) => post("/question/saveQuestion",params)
 //更新答疑
-export const editApeQuestion = (params) => post("/question/editApeQuestion",params)
-//删除ApeQuestion
-export const removeApeQuestion = (params) => get("/question/removeApeQuestion",params)
+export const editQuestion = (params) => post("/question/editQuestion",params)
+//删除Question
+export const removeQuestion = (params) => get("/question/removeQuestion",params)

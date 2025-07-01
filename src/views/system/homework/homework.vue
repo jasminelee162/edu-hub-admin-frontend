@@ -245,7 +245,7 @@
 </template>
 
 <script>
-import {getApeHomeworkPage, removeApeHomework} from '../../../api/api' 
+import {getHomeworkPage, removeHomework} from '../../../api/api'
 import add from '../../../components/system/homework/addHomework'
 import update from '../../../components/system/homework/updateHomework'
 
@@ -295,7 +295,7 @@ export default {
     },
     query() {
       this.loading = true;
-      getApeHomeworkPage(this.search).then(res => {
+      getHomeworkPage(this.search).then(res => {
         if(res.code == 1000) {
           this.tableData = res.data.records;
           this.total = res.data.total;
@@ -366,7 +366,7 @@ export default {
       }
     },
     deleteDate(ids) {
-      removeApeHomework({ids: ids}).then(res => {
+      removeHomework({ids: ids}).then(res => {
         if(res.code == 1000) {
           this.$message({
             type: 'success',

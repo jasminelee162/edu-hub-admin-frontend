@@ -306,7 +306,7 @@
 </template>
 
 <script>
-import {getUserPage,removeUser,resetPassword,getApeSchoolList,getApeMajorList} from '../../../api/api' 
+import {getUserPage,removeUser,resetPassword,getSchoolList,getMajorList} from '../../../api/api'
 import addUser from "../../../components/system/teacher/addTeacher"
 import updateUser from "../../../components/system/teacher/updateTeacher"
 
@@ -360,8 +360,8 @@ export default {
         'border-bottom': '1px solid #F0EEF7'
       }
     },
-    getApeSchoolList() {
-      getApeSchoolList().then(res=> {
+    getSchoolList() {
+      getSchoolList().then(res=> {
         if(res.code == 1000) {
           this.school = res.data
         } else {
@@ -372,8 +372,8 @@ export default {
         }
       })
     },
-    getApeMajorList() {
-      getApeMajorList().then(res => {
+    getMajorList() {
+      getMajorList().then(res => {
         if(res.code == 1000) {
           this.major = res.data
         } else {
@@ -539,8 +539,8 @@ export default {
     }
   },
   mounted() {
-    this.getApeSchoolList()
-    this.getApeMajorList()
+    this.getSchoolList()
+    this.getMajorList()
     this.query()
   }
 }

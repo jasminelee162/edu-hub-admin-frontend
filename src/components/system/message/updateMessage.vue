@@ -74,7 +74,7 @@
 </template>
 
 <script>
-import {editMessage,getApeMessageById} from '../../../api/api'
+import {editMessage,getMessageById} from '../../../api/api'
 export default {
   data() {
     return{
@@ -96,7 +96,7 @@ export default {
     submit() {
       this.$refs["ruleForm"].validate((valid) => {
         if (valid) {
-          editApeMessage(this.form).then(res => {
+          editMessage(this.form).then(res => {
             if(res.code == 1000) {
               this.$notify.success({
                 title: '成功',
@@ -122,7 +122,7 @@ export default {
   watch: {
     updateId(newVal) {
       if(newVal) {
-        getApeMessageById({id:newVal}).then(res => {
+        getMessageById({id:newVal}).then(res => {
           if(res.code == 1000) {
             this.form = res.data
           } else {

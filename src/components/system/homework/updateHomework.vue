@@ -108,7 +108,7 @@
 </template>
 
 <script>
-  import {editHomework,getApeHomeworkById} from '../../../api/api'
+  import {editHomework,getHomeworkById} from '../../../api/api'
   export default {
     data() {
       return{
@@ -186,7 +186,7 @@
             } else {
               this.form.content = ""
             }
-            editApeHomework(this.form).then(res => {
+            editHomework(this.form).then(res => {
               if(res.code == 1000) {
                 this.$notify.success({
                   title: '成功',
@@ -225,7 +225,7 @@
     watch: {
       updateId(newVal) {
         if(newVal) {
-          getApeHomeworkById({id:newVal}).then(res => {
+          getHomeworkById({id:newVal}).then(res => {
             if(res.code == 1000) {
               this.form = res.data
               this.form.type = res.data.type + ""

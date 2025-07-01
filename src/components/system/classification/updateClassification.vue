@@ -24,7 +24,7 @@
 </template>
 
 <script>
-  import {editClassification,getApeClassificationById} from '../../../api/api'
+  import {editClassification,getClassificationById} from '../../../api/api'
   export default {
     data() {
       return{
@@ -44,7 +44,7 @@
       submit() {
         this.$refs["ruleForm"].validate((valid) => {
           if (valid) {
-            editApeClassification(this.form).then(res => {
+            editClassification(this.form).then(res => {
               if(res.code == 1000) {
                 this.$notify.success({
                   title: '成功',
@@ -77,7 +77,7 @@
     watch: {
       updateId(newVal) {
         if(newVal) {
-          getApeClassificationById({id:newVal}).then(res => {
+          getClassificationById({id:newVal}).then(res => {
             if(res.code == 1000) {
               this.form = res.data
             } else {

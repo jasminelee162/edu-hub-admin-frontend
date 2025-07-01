@@ -203,7 +203,7 @@
 </template>
 
 <script>
-import {getApeChapterPage,removeApeChapter} from '../../../api/api' 
+import {getChapterPage,removeChapter} from '../../../api/api'
 import add from '../../../components/system/chapter/addChapter'
 import update from '../../../components/system/chapter/updateChapter'
 export default {
@@ -273,7 +273,7 @@ export default {
         this.query()
     },
     query() {
-      getApeChapterPage(this.search).then(res => {
+      getChapterPage(this.search).then(res => {
         if(res.code == 1000) {
           this.tableData = res.data.records
           this.total = res.data.total
@@ -338,7 +338,7 @@ export default {
       }).catch(() => {});
     },
     deleteDate(ids) {
-      removeApeChapter({ids:ids}).then(res => {
+      removeChapter({ids:ids}).then(res => {
           if(res.code == 1000) {
             this.$message({
               type: 'success',

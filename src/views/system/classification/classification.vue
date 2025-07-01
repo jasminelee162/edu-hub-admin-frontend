@@ -142,7 +142,7 @@
 </template>
 
 <script>
-import {getApeClassificationPage,removeApeClassification} from '../../../api/api' 
+import {getClassificationPage,removeClassification} from '../../../api/api'
 import add from '../../../components/system/classification/addClassification'
 import update from '../../../components/system/classification/updateClassification'
 export default {
@@ -188,7 +188,7 @@ export default {
       this.query()
     },
     query() {
-      getApeClassificationPage(this.search).then(res => {
+      getClassificationPage(this.search).then(res => {
         if(res.code == 1000) {
           this.tableData = res.data.records
           this.total = res.data.total
@@ -252,7 +252,7 @@ export default {
       }).catch(() => {});
     },
     deleteDate(ids) {
-      removeApeClassification({ids:ids}).then(res => {
+      removeClassification({ids:ids}).then(res => {
           if(res.code == 1000) {
             this.$message({
               type: 'success',

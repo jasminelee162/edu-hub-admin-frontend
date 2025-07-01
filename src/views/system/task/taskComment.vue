@@ -161,7 +161,7 @@
 </template>
 
 <script>
-import {getApeTaskCommentPage,removeApeTaskComment} from '../../../api/api' 
+import {getTaskCommentPage,removeTaskComment} from '../../../api/api'
 export default {
   data() {
     return{
@@ -215,7 +215,7 @@ export default {
       this.query()
     },
     query() {
-      getApeTaskCommentPage(this.search).then(res => {
+      getTaskCommentPage(this.search).then(res => {
         if(res.code == 1000) {
           this.tableData = res.data.records
           this.total = res.data.total
@@ -262,7 +262,7 @@ export default {
       }).catch(() => {});
     },
     deleteDate(ids) {
-      removeApeTaskComment({ids:ids}).then(res => {
+      removeTaskComment({ids:ids}).then(res => {
           if(res.code == 1000) {
             this.$message({
               type: 'success',

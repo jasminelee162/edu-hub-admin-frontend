@@ -44,7 +44,7 @@
 </template>
 
 <script>
-  import {editQuestion,getApeQuestionById} from '../../../api/api'
+  import {editQuestion,getQuestionById} from '../../../api/api'
   export default {
     data() {
       return{
@@ -70,7 +70,7 @@
       submit() {
         this.$refs["ruleForm"].validate((valid) => {
           if (valid) {
-            editApeQuestion(this.form).then(res => {
+            editQuestion(this.form).then(res => {
               if(res.code == 1000) {
                 this.$notify.success({
                   title: '成功',
@@ -103,7 +103,7 @@
     watch: {
       updateId(newVal) {
         if(newVal) {
-          getApeQuestionById({id:newVal}).then(res => {
+          getQuestionById({id:newVal}).then(res => {
             if(res.code == 1000) {
               this.form = res.data
             } else {

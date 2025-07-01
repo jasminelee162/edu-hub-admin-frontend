@@ -194,7 +194,7 @@
       submit() {
         this.$refs["ruleForm"].validate((valid) => {
           if (valid) {
-            saveApeChapter(this.form).then(res => {
+            saveChapter(this.form).then(res => {
               if(res.code == 1000) {
                 this.$notify.success({
                   title: '成功',
@@ -235,9 +235,9 @@
     },
     mounted() {
       if(this.flag == 2) {
-        this.getApeTaskByTeacherId()
+        this.getTaskByTeacherId()
       } else {
-        this.getApeTaskList()
+        this.getTaskList()
       }
     },
     watch: {
