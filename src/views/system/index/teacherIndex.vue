@@ -57,10 +57,10 @@
                             <img src="../../../assets/image/index-05.png" style="width:110px">
                             <div class="item-01-top-center">
                                 <div style="color:#000000;font-size:12px;font-weight:bold;display:flex;align-item:center">
-                                    <img src="../../../assets/image/index-06.png" style="width:20px">：15623610675
+                                    <img src="../../../assets/image/index-06.png" style="width:20px">：puppy03110
                                 </div>
                                 <div style="color:#000000;font-size:12px;font-weight:bold;display:flex;align-item:center">
-                                    <img src="../../../assets/image/index-07.png" style="width:20px">：550080747
+                                    <img src="../../../assets/image/index-07.png" style="width:20px">：3204986849
                                 </div>
                             </div>
                         </div>
