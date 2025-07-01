@@ -11,7 +11,7 @@
               size="small"
               placeholder="请输入学生名称"
               v-model="search.userName"
-              class="tech-input">
+              class="student-input">
               <i slot="prefix" class="el-icon-user-solid"></i>
             </el-input>
           </div>
@@ -26,7 +26,7 @@
               size="small" 
               v-model="search.school" 
               placeholder="请选择"
-              class="tech-select">
+              class="student-select">
               <el-option 
                 v-for="(item,index) in school" 
                 :key="index"
@@ -46,7 +46,7 @@
               size="small" 
               v-model="search.major" 
               placeholder="请选择"
-              class="tech-select">
+              class="student-select">
               <el-option 
                 v-for="(item,index) in major" 
                 :key="index"
@@ -98,7 +98,7 @@
           修改
         </el-button>
         <el-popconfirm
-          title="确定删除选中学生吗？"
+          title="确定删除选中的学生吗？"
           @confirm="deleteDateBtn"
           confirm-button-text="确认"
           cancel-button-text="取消"
@@ -123,22 +123,32 @@
         :row-style="tableRowStyle"
         @selection-change="handleSelectionChange"
         stripe
-        class="tech-table">
+        class="student-table">
         <el-table-column 
           type="selection" 
           width="55"
           align="center">
         </el-table-column>
         <el-table-column 
-          label="学生信息"
+          label="学生名称"
           width="180">
           <template #default="{row}">
             <div class="student-cell">
               <el-avatar :size="35" :src="$store.state.configure.HOST + row.avatar"></el-avatar>
               <div class="student-info">
                 <span class="student-name">{{row.userName}}</span>
-                <span class="student-account">{{row.loginAccount}}</span>
               </div>
+            </div>
+          </template>
+        </el-table-column>
+        <el-table-column 
+          prop="loginAccount" 
+          label="登陆账号"
+          width="150">
+          <template #default="{row}">
+            <div class="account-cell">
+              <i class="el-icon-s-custom"></i>
+              <span>{{row.loginAccount}}</span>
             </div>
           </template>
         </el-table-column>
@@ -185,7 +195,7 @@
                 <el-button size="mini" class="action-btn more-btn">
                   操作<i class="el-icon-arrow-down el-icon--right"></i>
                 </el-button>
-                <el-dropdown-menu slot="dropdown" class="tech-dropdown">
+                <el-dropdown-menu slot="dropdown" class="student-dropdown">
                   <el-dropdown-item 
                     icon="el-icon-edit" 
                     :command="row.id + '#edit'"
@@ -222,7 +232,7 @@
         @size-change="handleSizeChange"
         @current-change="handleCurrentChange"
         :total="total"
-        class="tech-pagination">
+        class="student-pagination">
       </el-pagination>
     </div>
 
@@ -234,7 +244,7 @@
       :visible.sync="passwordDialogVisible"
       width="30%"
       :before-close="handlePasswordClose"
-      class="tech-dialog">
+      class="student-dialog">
       <div class="dialog-content">
         <div class="password-info">
           <i class="el-icon-key" style="color:#7B68EE;font-size:20px"></i>
@@ -246,7 +256,7 @@
           v-model="newPassword" 
           size="small" 
           placeholder="请输入新密码"
-          class="tech-input">
+          class="student-input">
           <i slot="prefix" class="el-icon-lock"></i>
         </el-input>
       </div>
@@ -420,7 +430,7 @@ export default {
           cancelButtonText: '取消',
           type: 'warning',
           iconClass: 'el-icon-warning',
-          customClass: 'tech-confirm'
+          customClass: 'student-confirm'
         }).then(() => {
           this.deleteDate(id)
         }).catch(() => {});
@@ -432,7 +442,7 @@ export default {
         cancelButtonText: '取消',
         type: 'warning',
         iconClass: 'el-icon-warning',
-        customClass: 'tech-confirm'
+        customClass: 'student-confirm'
       }).then(() => {
         this.deleteDate(this.remove.join(","))
       }).catch(() => {});
@@ -443,7 +453,7 @@ export default {
           this.$message({
             type: 'success',
             message: '删除成功!',
-            customClass: 'tech-message'
+            customClass: 'student-message'
           });
           this.search.pageNumber = 1
           this.query()
@@ -470,7 +480,7 @@ export default {
         this.$message({
           message: '请输入新密码',
           type: 'warning',
-          customClass: 'tech-message'
+          customClass: 'student-message'
         });
         return;
       }
@@ -479,13 +489,13 @@ export default {
           this.$message({
             type: 'success',
             message: '重置成功',
-            customClass: 'tech-message'
+            customClass: 'student-message'
           });
           this.handlePasswordClose()
         } else {
           this.$message.error({
             message: res.message,
-            customClass: 'tech-message'
+            customClass: 'student-message'
           });
         }
       })
@@ -566,12 +576,7 @@ export default {
   color: #4A2B90;
 }
 
-.student-account {
-  font-size: 12px;
-  color: #A5A4BF;
-  margin-top: 2px;
-}
-
+.account-cell, 
 .country-cell, 
 .school-cell, 
 .major-cell {
@@ -579,6 +584,7 @@ export default {
   align-items: center;
 }
 
+.account-cell i,
 .country-cell i,
 .school-cell i,
 .major-cell i {
@@ -613,7 +619,8 @@ export default {
 </style>
 
 <style>
-.tech-input .el-input__inner {
+/* 全局样式 */
+.student-input .el-input__inner {
   border-radius: 20px;
   border: 1px solid #D8D8E5;
   color: #5F4B8B;
@@ -621,12 +628,12 @@ export default {
   padding-left: 30px;
 }
 
-.tech-input .el-input__prefix {
+.student-input .el-input__prefix {
   left: 5px;
   color: #7B68EE;
 }
 
-.tech-select .el-input__inner {
+.student-select .el-input__inner {
   border-radius: 20px;
 }
 
@@ -674,22 +681,22 @@ export default {
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
-.tech-table {
+.student-table {
   border-radius: 8px;
   border: 1px solid #ECE9F4;
 }
 
-.tech-table .el-table__body tr:hover>td {
+.student-table .el-table__body tr:hover>td {
   background-color: #F5F2FF !important;
 }
 
-.tech-pagination .el-pagination.is-background .el-pager li:not(.disabled).active {
+.student-pagination .el-pagination.is-background .el-pager li:not(.disabled).active {
   background-color: #7B68EE;
   color: white;
   border-radius: 50%;
 }
 
-.tech-dropdown {
+.student-dropdown {
   border-radius: 8px;
   box-shadow: 0 2px 12px rgba(123, 104, 238, 0.1);
   border: 1px solid #ECE9F4;
@@ -709,12 +716,12 @@ export default {
   color: #FF6B6B;
 }
 
-.tech-dialog .el-dialog__header {
+.student-dialog .el-dialog__header {
   border-bottom: 1px solid #F0EEF7;
   padding: 15px 20px;
 }
 
-.tech-dialog .el-dialog__title {
+.student-dialog .el-dialog__title {
   color: #4A2B90;
   font-weight: bold;
 }
@@ -734,20 +741,20 @@ export default {
   padding: 7px 15px;
 }
 
-.tech-confirm .el-message-box__header {
+.student-confirm .el-message-box__header {
   background-color: #ECE9F4;
   padding: 15px 20px;
 }
 
-.tech-confirm .el-message-box__title {
+.student-confirm .el-message-box__title {
   color: #4A2B90;
 }
 
-.tech-confirm .el-message-box__content {
+.student-confirm .el-message-box__content {
   color: #5F4B8B;
 }
 
-.tech-message {
+.student-message {
   border-radius: 20px;
 }
 </style>
