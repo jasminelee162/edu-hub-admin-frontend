@@ -207,7 +207,7 @@
 </template>
 
 <script>
-import {getTaskStudentPage,removeTaskStudent,editTaskStudent} from '../../../api/api'
+import {getApeTaskStudentPage,removeTaskStudent,editTaskStudent} from '../../../api/api'
 export default {
   data() {
     return{
@@ -247,7 +247,7 @@ export default {
       this.query()
     },
     query() {
-      getTaskStudentPage(this.search).then(res => {
+      getApeTaskStudentPage(this.search).then(res => {
         if(res.code == 1000) {
           this.tableData = res.data.records
           this.total = res.data.total
