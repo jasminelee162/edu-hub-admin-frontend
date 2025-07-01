@@ -112,12 +112,10 @@
           </span>
         </el-dialog>
     </div>
-    
-
 </template>
 
 <script>
-  import {getTestStudent,getTestStudentItem,editTestStudent} from '../../../api/api'
+  import {getTestStudent,getTestStudentItem,editApeTestStudent} from '../../../api/api' 
   export default {
     data() {
       return{
@@ -150,7 +148,7 @@
         var param = {
           list: this.assign
         }
-        editTestStudent(param).then(res => {
+        editApeTestStudent(param).then(res => {
           if (res.code == 1000) {
             this.$notify.success({
               title: '成功',
@@ -177,11 +175,8 @@
       },
       yuejuan(userId) {
         console.log("hahah")
-
         getTestStudentItem({testId: this.search.testId,userId: userId}).then(res => {
           if(res.code == 1000) {
-            console.log("res.data"+res.data)
-
             this.assign = res.data
             for(let i = 0;i<this.assign.length;i++) {
                 var item = this.assign[i]
