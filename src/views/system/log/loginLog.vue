@@ -36,7 +36,7 @@
         <el-col :xs="24" :sm="12" :md="8" :lg="8" :xl="8">
           <div class="search-item">
             <span class="search-title">
-              <i class="el-icon-date"></i> 登陆时间:
+              <i class="el-icon-date"></i> 登录时间:
             </span>
             <el-date-picker 
               size="small"

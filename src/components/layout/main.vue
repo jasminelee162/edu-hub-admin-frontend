@@ -111,9 +111,6 @@
       </div>
     </el-dialog>
     
-    <div class="setting">
-      <img style="width:40px;height:40px" src="../../assets/image/setting.gif">
-    </div>
     <keep-alive max=10>
       <router-view :key="fullPath"></router-view>
     </keep-alive>
