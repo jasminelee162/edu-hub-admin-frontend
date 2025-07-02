@@ -81,7 +81,7 @@
         <el-row :gutter="20" class="index-center">
             <el-col :span="16">
                 <el-card shadow="always" class="item-07">
-                    <div id="chart">
+                    <div id="chart" style="height: 350px;">
 
                     </div>
                 </el-card>
@@ -315,11 +315,20 @@ export default {
             }
         })
         getTaskChart({type:0}).then(res => {
+          console.log("📊 Chart Data:", res);
+
             if (res.code == 1000) {
                 this.tasks = res.data.tasks
                 this.nums = res.data.nums
                 this.myChart = echarts.init(document.getElementById("chart"))
                 var option = {
+                    grid: {
+                      left: '10%',
+                      right: '5%',
+                      top: '15%',
+                      bottom: 5 , // ⬅ 调大这个值
+                        //containLabel: true    // ← 关键设置
+                    },
                     tooltip: {
                         trigger: 'axis'
                     },
@@ -327,34 +336,43 @@ export default {
                         data: ['学生数量', '学生数量']
                     },
                     backgroundColor: '#fff',
-                    xAxis: [{
-                        type: 'category',
-                        color: '#59588D',
-                        data: this.tasks,
-                        axisLine: {
-                            lineStyle: {
-                                color: 'rgba(107,107,107,0.37)',
-                            }
-                        },
-                        axisTick: {
-                            show: true
-                        },
-                    }],
-                    yAxis: [{
-                        axisLine: {
-                            lineStyle: {
-                                color: 'rgba(107,107,107,0.37)',
-                            }
-                        },
-                        axisTick: {
-                            show: true
-                        },
-                        splitLine: {
-                            lineStyle: {
-                                color: 'rgba(131,101,101,0.2)',
-                                type: 'dashed',
-                            }
-                        }
+                      xAxis: [{
+                    type: 'category',
+                    data: this.tasks,
+                    axisLabel: {
+                      show: false , // 👈 隐藏横轴文字
+                      interval: 0,
+                      rotate: 90,     // ⬅ 垂直显示（文字竖着）
+                      fontSize: 10,
+                      formatter: function (value) {
+                        return value; // 不做截断或换行，保持英文单词完整一行
+                      }
+                    },
+                    axisLine: {
+                      lineStyle: {
+                        color: 'rgba(107,107,107,0.37)'
+                      }
+                    },
+                    axisTick: {
+                      show: true
+                    }
+                  }]
+                  ,
+                      yAxis: [{
+                          axisLine: {
+                              lineStyle: {
+                                  color: 'rgba(107,107,107,0.37)',
+                              }
+                          },
+                          axisTick: {
+                              show: true
+                          },
+                          splitLine: {
+                              lineStyle: {
+                                  color: 'rgba(131,101,101,0.2)',
+                                  type: 'dashed',
+                              }
+                          }
                     }],
                     series: [{
                         data: this.nums,
