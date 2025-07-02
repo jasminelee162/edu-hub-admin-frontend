@@ -177,35 +177,41 @@
                 </el-card>
             </el-col>
         </el-row>
-        <el-row :gutter="20" class="index-under">
-            <el-col :span="16">
-                <el-card shadow="always" class="item-10">
-                    <div style="width:100%;height:50px;display:flex;justify-content: space-between">
-                        <span>课程 列表</span>
-                        <el-button style="height:35px;background:#8470D1" size="mini" type="primary" @click="toTask()">查看全部</el-button>
+      <el-row :gutter="20" class="index-under">
+        <el-col :span="16">
+          <el-card shadow="always" class="item-10">
+            <div style="width:100%;height:50px;display:flex;justify-content: space-between">
+              <span>课程 列表</span>
+              <el-button style="height:35px;background:#8470D1" size="mini" type="primary" @click="toTask()">查看全部</el-button>
+            </div>
+            <div style="width:100%;height:260px">
+              <el-row>
+                <el-col class="item-10-item" :span="7" v-for="(item,index) in taskCard" :key="index">
+                  <div style="width:100%;height:120px;overflow:hidden;border-radius:20px;margin-bottom:8px">
+                    <img
+                        :src="$store.state.configure.HOST + item.image"
+                        style="width:100%;height:100%;object-fit:cover"
+                    >
+                  </div>
+                  <div>{{item.name}}</div>
+                  <div style="width:90%;display:flex;justify-content: space-around;">
+                    <div style="height:35px;font-size:13px;display:flex;align-items:center">
+                      <span>{{item.createTime}}</span>
                     </div>
-                    <div style="width:100%;height:260px">
-                        <el-row>
-                            <el-col class="item-10-item" :span="7" v-for="(item,index) in taskCard" :key="index">
-                                <img :src="$store.state.configure.HOST + item.image" style="border-radius: 20px;width:90%">
-                                <div>{{item.name}}</div>
-                                <div style="width:90%;display:flex;justify-content: space-around;">
-                                    <div style="height:35px;font-size:13px;display:flex;align-items:center"><span>{{item.createTime}}</span>
-                                    </div>
-                                    <el-button size="mini" style="height:30px" type="danger">{{item.teacherName}}</el-button>
-                                </div>
-                            </el-col>
-                        </el-row>
-                    </div>
-                </el-card>
-            </el-col>
-            <el-col :span="8">
-                <el-card shadow="always" class="item-11">
-                    <el-calendar v-model="today">
-                    </el-calendar>
-                </el-card>
-            </el-col>
-        </el-row>
+                    <el-button size="mini" style="height:30px" type="danger">{{item.teacherName}}</el-button>
+                  </div>
+                </el-col>
+              </el-row>
+            </div>
+          </el-card>
+        </el-col>
+        <el-col :span="8">
+          <el-card shadow="always" class="item-11">
+            <el-calendar v-model="today">
+            </el-calendar>
+          </el-card>
+        </el-col>
+      </el-row>
     </div>
 </template>
 
