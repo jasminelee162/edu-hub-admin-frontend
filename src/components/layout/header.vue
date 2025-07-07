@@ -13,13 +13,13 @@
     
     <div class="header-right">
       <div class="search-bar">
-        <el-input
-          v-model="search"
-          size="small"
-          placeholder="搜索..."
-          prefix-icon="el-icon-search"
-          class="search-input"
-        ></el-input>
+<!--        <el-input-->
+<!--          v-model="search"-->
+<!--          size="small"-->
+<!--          placeholder="搜索..."-->
+<!--          prefix-icon="el-icon-search"-->
+<!--          class="search-input"-->
+<!--        ></el-input>-->
       </div>
       
       <div class="action-items">
@@ -29,13 +29,13 @@
           </div>
         </el-tooltip>
         
-        <el-tooltip content="消息通知" placement="bottom">
-          <div class="action-item">
-            <el-badge :value="3" class="badge">
-              <i class="icon el-icon-bell"></i>
-            </el-badge>
-          </div>
-        </el-tooltip>
+<!--        <el-tooltip content="消息通知" placement="bottom">-->
+<!--          <div class="action-item">-->
+<!--            <el-badge :value="3" class="badge">-->
+<!--              <i class="icon el-icon-bell"></i>-->
+<!--            </el-badge>-->
+<!--          </div>-->
+<!--        </el-tooltip>-->
         
         <el-dropdown trigger="click" @command="handleCommand">
           <div class="user-profile">

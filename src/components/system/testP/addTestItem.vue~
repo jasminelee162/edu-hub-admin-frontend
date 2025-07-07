@@ -1,8 +1,9 @@
 <template>
   <div>
-    <el-dialog title="编辑考试题目" width="40%" :destroy-on-close="true" :visible.sync="updateVisible" :before-close="handleClose">
+    <el-dialog title="新增考试题目" width="40%" :destroy-on-close="true" :visible.sync="addVisible" :before-close="handleClose">
       <el-form :model="form" :rules="rules" ref="ruleForm">
         <el-row :gutter="10">
+
           <!-- 题目 -->
           <el-col :xs="24">
             <span class="search-title">题目:</span>
@@ -61,31 +62,17 @@
           <el-col :xs="24">
             <span class="search-title">答案:</span>
             <el-form-item prop="answer" style="margin-bottom:0">
-              <!-- 单选 -->
               <el-radio-group v-if="form.type == '0'" v-model="form.answer" size="mini">
                 <el-radio v-for="(item, index) in content" :key="'radio-' + index" :label="item.value">{{ item.value }}</el-radio>
               </el-radio-group>
-
-              <!-- 多选 -->
               <el-checkbox-group v-else-if="form.type == '1'" v-model="multipleAnswers" size="mini">
                 <el-checkbox v-for="(item, index) in content" :key="'check-' + index" :label="item.value">{{ item.value }}</el-checkbox>
               </el-checkbox-group>
-
-              <!-- 判断 -->
               <el-radio-group v-else-if="form.type == '3'" v-model="form.answer" size="mini">
-                <el-radio label="正确">正确</el-radio>
-                <el-radio label="错误">错误</el-radio>
+                <el-radio label="对">对</el-radio>
+                <el-radio label="错">错</el-radio>
               </el-radio-group>
-
-              <!-- 其他 -->
-              <el-input
-                v-else
-                type="textarea"
-                v-model="form.answer"
-                size="mini"
-                placeholder="请输入答案"
-                autocomplete="off"
-              />
+              <el-input v-else type="textarea" v-model="form.answer" size="mini" placeholder="请输入答案" autocomplete="off" />
             </el-form-item>
           </el-col>
 
@@ -113,7 +100,6 @@
           </el-col>
         </el-row>
       </el-form>
-
       <div slot="footer" class="dialog-footer">
         <el-button size="mini" type="primary" @click="submit">确 定</el-button>
         <el-button size="mini" @click="handleClose">取 消</el-button>
@@ -123,29 +109,24 @@
 </template>
 
 <script>
-import { editTestItem, getTestItemById } from '../../../api/api'
-
+import { saveTestItem } from '../../../api/api'
 export default {
-  props: ['updateVisible', 'updateId', 'testId'],
+  props: ['addVisible', 'testId'],
   data() {
     return {
       form: {
-        testId: "",
-        title: "",
-        sort: "",
-        type: "",
-        score: "",
-        keyword: "",
-        answer: "",
-        content: "",
-        remark: "",
+        testId: '',
+        title: '',
+        sort: '',
+        type: '0',
+        score: '',
+        keyword: '',
+        answer: '',
+        content: '',
+        remark: '',
       },
-      content: [
-        { value: "A", option: "" }
-      ],
-      keyword: [
-        { value: "", option: "" }
-      ],
+      content: [{ value: 'A', option: '' }],
+      keyword: [{ value: '', option: '' }],
       multipleAnswers: [],
       rules: {
         title: [{ required: true, message: '请输入题目', trigger: 'blur' }],
@@ -153,133 +134,110 @@ export default {
         score: [{ required: true, message: '请输入分数', trigger: 'blur' }],
         answer: [{ required: true, message: '请输入答案', trigger: 'blur' }],
         type: [{ required: true, message: '请选择类型', trigger: 'blur' }],
-      }
+      },
     }
   },
   methods: {
     addContent() {
-      const nextChar = String.fromCharCode(65 + this.content.length); // A-Z
-      this.content.push({ value: nextChar, option: '' });
+      const nextChar = String.fromCharCode(65 + this.content.length)
+      this.content.push({ value: nextChar, option: '' })
     },
     minusContent(index) {
-      this.content.splice(index, 1);
+      this.content.splice(index, 1)
       this.content.forEach((item, i) => {
-        item.value = String.fromCharCode(65 + i);
-      });
+        item.value = String.fromCharCode(65 + i)
+      })
     },
     addKeyword() {
-      this.keyword.push({ value: "", option: "" });
+      this.keyword.push({ value: '', option: '' })
     },
     minusKeyword(index) {
-      this.keyword.splice(index, 1);
+      this.keyword.splice(index, 1)
     },
     submit() {
       this.$refs["ruleForm"].validate((valid) => {
-        if (!valid) return;
+        if (!valid) return
 
         if (this.form.type === '0' || this.form.type === '1') {
           for (const item of this.content) {
             if (!item.option) {
-              this.$message.warning('请完善选项内容');
-              return;
+              this.$message.warning('请完善选项内容')
+              return
             }
           }
-          this.form.content = JSON.stringify(this.content);
+          this.form.content = JSON.stringify(this.content)
 
           if (this.form.type === '0') {
             if (!this.form.answer) {
-              this.$message.warning('请选择一个正确答案');
-              return;
+              this.$message.warning('请选择一个正确答案')
+              return
             }
           } else {
             if (!this.multipleAnswers.length) {
-              this.$message.warning('请选择一个或多个正确答案');
-              return;
+              this.$message.warning('请选择一个或多个正确答案')
+              return
             }
-            this.form.answer = this.multipleAnswers.join(',');
+            this.form.answer = this.multipleAnswers.join(',')
           }
         } else if (this.form.type === '3') {
           if (!this.form.answer) {
-            this.$message.warning('请选择判断题答案');
-            return;
+            this.$message.warning('请选择判断题答案')
+            return
           }
-          this.form.content = '';
+          this.form.content = ''
         } else {
-          this.form.content = '';
+          this.form.content = ''
         }
 
         if (this.form.type === '4') {
           for (const item of this.keyword) {
             if (!item.value || !item.option) {
-              this.$message.warning('请完善得分点');
-              return;
+              this.$message.warning('请完善得分点')
+              return
             }
           }
-          this.form.keyword = JSON.stringify(this.keyword);
+          this.form.keyword = JSON.stringify(this.keyword)
         } else {
-          this.form.keyword = '';
+          this.form.keyword = ''
         }
 
-        this.form.testId = this.testId;
-
-        editTestItem(this.form).then(res => {
+        this.form.testId = this.testId
+        saveTestItem(this.form).then(res => {
           if (res.code === 1000) {
-            this.$notify.success({ title: '成功', message: "保存成功" });
-            this.handleClose();
+            this.$notify.success({ title: '成功', message: '保存成功' })
+            this.handleClose()
           } else {
-            this.$notify.error({ title: '错误', message: res.message });
+            this.$notify.error({ title: '错误', message: res.message })
           }
-        });
-      });
+        })
+      })
     },
     handleClose() {
+      this.content = [{ value: 'A', option: '' }]
+      this.keyword = [{ value: '', option: '' }]
+      this.multipleAnswers = []
       this.form = {
-        testId: this.testId,
-        title: "",
-        sort: "",
-        type: "",
-        score: "",
-        keyword: "",
-        answer: "",
-        content: "",
-        remark: "",
-      };
-      this.content = [{ value: "A", option: "" }];
-      this.keyword = [{ value: "", option: "" }];
-      this.multipleAnswers = [];
-      this.$emit("updateFalse");
-    }
-  },
-  watch: {
-    updateId(newVal) {
-      if (newVal) {
-        getTestItemById({ id: newVal }).then(res => {
-          if (res.code === 1000) {
-            this.form = res.data;
-            this.form.type = String(res.data.type);
-            if (this.form.content) {
-              this.content = JSON.parse(this.form.content);
-            }
-            if (this.form.keyword) {
-              this.keyword = JSON.parse(this.form.keyword);
-            }
-            if (this.form.type === '1') {
-              this.multipleAnswers = this.form.answer ? this.form.answer.split(',') : [];
-            }
-          } else {
-            this.$notify.error({ title: '错误', message: res.message });
-          }
-        });
+        testId: '',
+        title: '',
+        sort: '',
+        type: '0',
+        score: '',
+        keyword: '',
+        answer: '',
+        content: '',
+        remark: '',
       }
-    }
-  }
+      this.$emit("addFalse")
+    },
+  },
 }
 </script>
 
+
 <style   scoped>
   .content-item {
-      display: flex;
-      align-items: center;
+    display: flex;
+    align-items: center;
   }
   .el-col {
       display: flex;

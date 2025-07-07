@@ -67,8 +67,8 @@
 
               <!-- 判断题 -->
               <el-radio-group v-else-if="form.type == 3" v-model="form.answer" size="mini">
-                <el-radio label="正确">正确</el-radio>
-                <el-radio label="错误">错误</el-radio>
+                <el-radio label="对">对</el-radio>
+                <el-radio label="错">错</el-radio>
               </el-radio-group>
 
               <!-- 填空等其他 -->
@@ -134,100 +134,69 @@ export default {
         title: [{ required: true, message: '请输入题目', trigger: 'blur' }],
         sort: [{ required: true, message: '请输入序号', trigger: 'blur' }],
         score: [{ required: true, message: '请输入分数', trigger: 'blur' }],
+        answer: [{ required: true, message: '请输入答案', trigger: 'blur' }],
         type: [{ required: true, message: '请选择类型', trigger: 'blur' }],
-        answer: [
-          {
-            required: true,
-            validator: (rule, value, callback) => {
-              const type = this.form.type
-              if (type === '1') {
-                if (!this.multipleAnswers.length) {
-                  return callback(new Error('请选择一个或多个正确答案'))
-                }
-              } else if (type === '0' || type === '3') {
-                if (!value) {
-                  return callback(new Error('请选择答案'))
-                }
-              } else {
-                if (!value) {
-                  return callback(new Error('请输入答案'))
-                }
-              }
-              callback()
-            },
-            trigger: 'blur'
-          }
-        ]
       }
     }
   },
-  mounted() {
-    this.form.chapterId = this.$route.query.id || this.chapterId
-  },
   methods: {
     addContent() {
-      const nextChar = String.fromCharCode(65 + this.content.length)
-      this.content.push({ value: nextChar, option: '' })
+      const nextChar = String.fromCharCode(65 + this.content.length); // A-Z
+      this.content.push({ value: nextChar, option: '' });
     },
     minusContent(index) {
-      this.content.splice(index, 1)
+      this.content.splice(index, 1);
+      // 重新编号 A/B/C...
       this.content.forEach((item, i) => {
-        item.value = String.fromCharCode(65 + i)
-      })
+        item.value = String.fromCharCode(65 + i);
+      });
     },
     submit() {
       this.$refs.ruleForm.validate((valid) => {
-        if (!valid) return
+        if (!valid) return;
 
-        const type = this.form.type
-
-        if (type === '0' || type === '1') {
+        if (this.form.type === '0' || this.form.type === '1') {
           for (const item of this.content) {
             if (!item.value || !item.option) {
-              this.$message.warning('请完善选项及内容')
-              return
+              this.$message.warning('请完善选项及内容');
+              return;
             }
           }
-          this.form.content = JSON.stringify(this.content)
+          this.form.content = JSON.stringify(this.content);
 
-          if (type === '0') {
+          if (this.form.type === '0') {
             if (!this.form.answer) {
-              this.$message.warning('请选择一个正确答案')
-              return
+              this.$message.warning('请选择一个正确答案');
+              return;
             }
           } else {
             if (!this.multipleAnswers.length) {
-              this.$message.warning('请选择一个或多个正确答案')
-              return
+              this.$message.warning('请选择一个或多个正确答案');
+              return;
             }
-            this.form.answer = this.multipleAnswers.join(',')
+            this.form.answer = this.multipleAnswers.join(',');
           }
-        } else if (type === '3') {
+        } else if (this.form.type === '3') {
           if (!this.form.answer) {
-            this.$message.warning('请选择判断答案')
-            return
+            this.$message.warning('请选择判断答案');
+            return;
           }
-          this.form.content = ''
+          this.form.content = '';
         } else {
-          this.form.content = ''
+          this.form.content = '';
         }
 
-        // 保存请求
         saveHomework(this.form).then(res => {
           if (res.code === 1000) {
-            this.$notify.success({ title: '成功', message: '保存成功' })
-            this.handleClose()
+            this.$notify.success({ title: '成功', message: '保存成功' });
+            this.handleClose();
           } else {
-            this.$notify.error({ title: '错误', message: res.message })
+            this.$notify.error({ title: '错误', message: res.message });
           }
-        })
-      })
+        });
+      });
     },
     handleClose() {
-      this.resetForm()
-      this.$emit('addFalse')
-    },
-    resetForm() {
       this.form = {
         chapterId: this.form.chapterId,
         chapterName: '',
@@ -235,17 +204,20 @@ export default {
         sort: '',
         answer: '',
         type: '0',
-        content: '',
         score: '',
+        content: '',
         remark: '',
-      }
-      this.content = [{ value: 'A', option: '' }]
-      this.multipleAnswers = []
+      };
+      this.content = [{ value: 'A', option: '' }];
+      this.multipleAnswers = [];
+      this.$emit('addFalse');
     }
+  },
+  mounted() {
+    this.form.chapterId = this.$route.query.id;
   }
 }
 </script>
-
 
 
 
