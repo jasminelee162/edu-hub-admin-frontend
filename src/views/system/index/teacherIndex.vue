@@ -1,75 +1,111 @@
 <template>
     <div>
         <el-row :gutter="20" class="index-top">
-            <!-- 第一行 -->
+            <!-- 第一张卡片 - 跳转到/teacherTask -->
             <el-col :span="6">
                 <div class="grid-content bg-purple">
-                    <el-card shadow="always" class="item-01">
-                        <!-- 用户数量 -->
-                        <div class="item-01-top">
-                            <img src="../../../assets/image/index-01.png" style="width:110px">
-                            <div class="item-01-top-center">
-                                <div style="color:#ffffff;font-size:20px;font-weight:bold">用户数量</div>
-                                <div style="color:#ffffff;font-size:30px;font-weight:bold">{{top.userNum}}人</div>
-                            </div>
-                        </div>
-                        <div class="item-01-under">
-                            <!-- <div style="color:#B1B7EA;font-size:14px;font-weight:bold">查看用户列表</div> -->
-                            <!-- <i class="el-icon-right" style="color:#B1B7EA;font-size:14px;font-weight:bold"></i> -->
-                        </div>
-                    </el-card>
-                </div>
-            </el-col>
-            <el-col :span="6">
-                <div class="grid-content bg-purple">
-                    <el-card shadow="always" class="item-03">
-                        <div class="item-01-top">
-                            <img src="../../../assets/image/index-02.png" style="width:110px">
-                            <div class="item-01-top-center">
-                                <div style="color:#000000;font-size:20px;font-weight:bold">学生数量</div>
-                                <div style="color:#000000;font-size:30px;font-weight:bold">{{top.studentNum}}人</div>
-                            </div>
-                        </div>
-                        <div class="item-01-under" @click="toStudent()">
-                        </div>
-                    </el-card>
-                </div>
-            </el-col>
-            <el-col :span="6">
-                <div class="grid-content bg-purple">
-                    <el-card shadow="always" class="item-05">
-                        <div class="item-01-top">
-                            <img src="../../../assets/image/avator.png" style="width:110px">
-                            <div class="item-01-top-center">
-                                <div style="color:#ffffff;font-size:20px;font-weight:bold">教师数量</div>
-                                <div style="color:#ffffff;font-size:30px;font-weight:bold">{{top.teacherNum}}人</div>
-                            </div>
-                        </div>
-                        <div class="item-01-under" @click="toTeacher()">
-                        </div>
-                    </el-card>
-                </div>
-            </el-col>
-            <el-col :span="6">
-                <div class="grid-content bg-purple">
-                    <el-card shadow="always" class="item-06">
-                        <div class="item-01-top">
-                            <img src="../../../assets/image/index-05.png" style="width:110px">
-                            <div class="item-01-top-center">
-                                <div style="color:#000000;font-size:12px;font-weight:bold;display:flex;align-item:center">
-                                    <img src="../../../assets/image/index-06.png" style="width:20px">：puppy03110
-                                </div>
-                                <div style="color:#000000;font-size:12px;font-weight:bold;display:flex;align-item:center">
-                                    <img src="../../../assets/image/index-07.png" style="width:20px">：3204986849
+                    <el-card 
+                        shadow="always" 
+                        class="dashboard-card card-1"
+                        @click.native="toTeacherTask()"
+                        :body-style="{ padding: '0', cursor: 'pointer', overflow: 'hidden' }">
+                        <div class="card-folder-edge"></div>
+                        <div class="card-content">
+                            <div class="item-01-top">
+                                <img src="../../../assets/image/index-01.png" class="card-icon">
+                                <div class="item-01-top-center">
+                                    <div class="card-title">课程管理</div>
+                                    <div class="card-value">{{top.userNum}}门</div>
                                 </div>
                             </div>
+                            <div class="card-footer">
+                                <span>查看详情</span>
+                                <i class="el-icon-arrow-right"></i>
+                            </div>
                         </div>
-                        <div class="item-01-under">
+                    </el-card>
+                </div>
+            </el-col>
+            
+            <!-- 第二张卡片 - 跳转到/teacherChapter -->
+            <el-col :span="6">
+                <div class="grid-content bg-purple">
+                    <el-card 
+                        shadow="always" 
+                        class="dashboard-card card-2"
+                        @click.native="toTeacherChapter()"
+                        :body-style="{ padding: '0', cursor: 'pointer', overflow: 'hidden' }">
+                        <div class="card-folder-edge"></div>
+                        <div class="card-content">
+                            <div class="item-01-top">
+                                <img src="../../../assets/image/index-02.png" class="card-icon">
+                                <div class="item-01-top-center">
+                                    <div class="card-title">章节管理</div>
+                                    <div class="card-value">{{top.studentNum}}章</div>
+                                </div>
+                            </div>
+                            <div class="card-footer">
+                                <span>查看详情</span>
+                                <i class="el-icon-arrow-right"></i>
+                            </div>
+                        </div>
+                    </el-card>
+                </div>
+            </el-col>
+            
+            <!-- 第三张卡片 - 跳转到/teacherTest -->
+            <el-col :span="6">
+                <div class="grid-content bg-purple">
+                    <el-card 
+                        shadow="always" 
+                        class="dashboard-card card-3"
+                        @click.native="toTeacherTest()"
+                        :body-style="{ padding: '0', cursor: 'pointer', overflow: 'hidden' }">
+                        <div class="card-folder-edge"></div>
+                        <div class="card-content">
+                            <div class="item-01-top">
+                                <img src="../../../assets/image/avator.png" class="card-icon">
+                                <div class="item-01-top-center">
+                                    <div class="card-title">测试管理</div>
+                                    <div class="card-value">{{top.teacherNum}}个</div>
+                                </div>
+                            </div>
+                            <div class="card-footer">
+                                <span>查看详情</span>
+                                <i class="el-icon-arrow-right"></i>
+                            </div>
+                        </div>
+                    </el-card>
+                </div>
+            </el-col>
+            
+            <!-- 第四张卡片 - 跳转到/question -->
+            <el-col :span="6">
+                <div class="grid-content bg-purple">
+                    <el-card 
+                        shadow="always" 
+                        class="dashboard-card card-4"
+                        @click.native="toQuestion()"
+                        :body-style="{ padding: '0', cursor: 'pointer', overflow: 'hidden' }">
+                        <div class="card-folder-edge"></div>
+                        <div class="card-content">
+                            <div class="item-01-top">
+                                <img src="../../../assets/image/index-05.png" class="card-icon">
+                                <div class="item-01-top-center">
+                                    <div class="card-title">答疑管理</div>
+                                    <div class="card-value">疑问</div>
+                                </div>
+                            </div>
+                            <div class="card-footer">
+                                <span>查看详情</span>
+                                <i class="el-icon-arrow-right"></i>
+                            </div>
                         </div>
                     </el-card>
                 </div>
             </el-col>
         </el-row>
+        
         <el-row :gutter="20" class="index-center">
             <el-col :span="16">
                 <el-card shadow="always" class="item-07">
@@ -194,6 +230,33 @@ export default {
         }
     },
     methods: {
+                // 新增的四个跳转方法
+        toTeacherTask() {
+            this.$router.push("/teacherTask");
+            this.setActiveMenu("/teacherTask", "课程管理");
+        },
+        toTeacherChapter() {
+            this.$router.push("/teacherChapter");
+            this.setActiveMenu("/teacherChapter", "章节管理");
+        },
+        toTeacherTest() {
+            this.$router.push("/teacherTest");
+            this.setActiveMenu("/teacherTest", "测试管理");
+        },
+        toQuestion() {
+            this.$router.push("/question");
+            this.setActiveMenu("/question", "题库管理");
+        },
+        
+        // 公共方法设置激活菜单
+        setActiveMenu(path, name) {
+            const param = {
+                "name": name,
+                "url": path
+            }
+            this.$store.commit('menu/addActiveMenu', param);
+            this.$store.commit('menu/setActiveMenu', path);
+        },
         toTask() {
             var param = {
                 "name": "教师课程管理",
@@ -371,9 +434,14 @@ export default {
 
 <style scoped>
 .index-top {
+    margin-bottom: 20px;
     height: 210px;
 }
 .item-01 {
+    
+    display: flex;
+    align-items: center;
+    padding: 10px 0;
     border-radius: 8px;
     height: 170px;
     background-color: #452B90;
@@ -453,12 +521,17 @@ export default {
     justify-content: space-around;
 }
 .item-01-top-center {
+    margin-left: 15px;
     height: 100%;
     display: flex;
     flex-direction: column;
     justify-content: space-around;
 }
 .item-01-under {
+    margin-top: 10px;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
     height: 60px;
     display: flex;
     flex-direction: row;
@@ -504,5 +577,184 @@ export default {
 /deep/ .el-calendar-day {
     height: 45px !important;
     border: none;
+}
+/* 鼠标悬停颜色加深 */
+/* 新增卡片样式 */
+.dashboard-card {
+    transition: all 0.3s ease;
+    border-radius: 10px;
+    border: none;
+    position: relative;
+    overflow: hidden;
+}
+
+.card-content {
+    padding: 20px;
+    position: relative;
+    z-index: 2;
+}
+
+.card-folder-edge {
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 8px;
+    z-index: 1;
+    transition: all 0.3s ease;
+}
+
+.card-icon {
+    width: 70px;
+    height: 70px;
+    transition: all 0.3s ease;
+}
+
+.card-title {
+    color: #4A2B90;
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.card-value {
+    color: #4A2B90;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.card-footer {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    margin-top: 15px;
+    color: #4A2B90;
+    font-size: 14px;
+    transition: all 0.3s ease;
+}
+
+.card-footer i {
+    margin-left: 5px;
+    transition: all 0.3s ease;
+}
+
+/* 卡片1 - 淡紫色 */
+.card-1 {
+    background-color: #F0EBFA;
+}
+.card-1 .card-folder-edge {
+    background-color: #8A6AE4;
+}
+.card-1:hover {
+    background-color: #D8C7F5;
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(138, 106, 228, 0.2) !important;
+}
+.card-1:hover .card-folder-edge {
+    width: 12px;
+    background-color: #6A3DC8;
+}
+.card-1:hover .card-icon {
+    transform: scale(1.1);
+}
+.card-1:hover .card-footer {
+    color: #6A3DC8;
+}
+.card-1:hover .card-footer i {
+    transform: translateX(5px);
+}
+
+/* 卡片2 - 淡蓝色 */
+.card-2 {
+    background-color: #E8F4FE;
+}
+.card-2 .card-folder-edge {
+    background-color: #4A90E2;
+}
+.card-2:hover {
+    background-color: #C3E3FD;
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(74, 144, 226, 0.2) !important;
+}
+.card-2:hover .card-folder-edge {
+    width: 12px;
+    background-color: #2A7BD6;
+}
+.card-2:hover .card-icon {
+    transform: scale(1.1);
+}
+.card-2:hover .card-footer {
+    color: #2A7BD6;
+}
+.card-2:hover .card-footer i {
+    transform: translateX(5px);
+}
+
+/* 卡片3 - 淡绿色 */
+.card-3 {
+    background-color: #E8F8F0;
+}
+.card-3 .card-folder-edge {
+    background-color: #4CAF50;
+}
+.card-3:hover {
+    background-color: #C3EBD6;
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(76, 175, 80, 0.2) !important;
+}
+.card-3:hover .card-folder-edge {
+    width: 12px;
+    background-color: #3D8B40;
+}
+.card-3:hover .card-icon {
+    transform: scale(1.1);
+}
+.card-3:hover .card-footer {
+    color: #3D8B40;
+}
+.card-3:hover .card-footer i {
+    transform: translateX(5px);
+}
+
+/* 卡片4 - 淡橙色 */
+.card-4 {
+    background-color: #FEF0E8;
+}
+.card-4 .card-folder-edge {
+    background-color: #FF7043;
+}
+.card-4:hover {
+    background-color: #FDD8C3;
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(255, 112, 67, 0.2) !important;
+}
+.card-4:hover .card-folder-edge {
+    width: 12px;
+    background-color: #F4511E;
+}
+.card-4:hover .card-icon {
+    transform: scale(1.1);
+}
+.card-4:hover .card-footer {
+    color: #F4511E;
+}
+.card-4:hover .card-footer i {
+    transform: translateX(5px);
+}
+
+.item-01-top {
+    height: auto;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.item-01-top-center {
+    margin-left: 15px;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
 }
 </style>

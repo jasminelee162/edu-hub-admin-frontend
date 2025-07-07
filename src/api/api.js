@@ -392,3 +392,50 @@ export const saveQuestion = (params) => post("/question/saveQuestion",params)
 export const editQuestion = (params) => post("/question/editQuestion",params)
 //删除Question
 export const removeQuestion = (params) => get("/question/removeQuestion",params)
+
+
+//-------------------------------资料上传---------------------------------------
+export const upload = uploadTemplate;
+
+// 上传模板
+export function uploadTemplate(data) {
+  return request({
+    url: '/template/update',
+    method: 'post',
+    data: data,
+    headers: {
+      'Content-Type': 'multipart/form-data' 
+    }
+  });
+}
+
+// 获取模板列表
+export function getTemplates(params) {
+  return request({
+    url: '/template/show',
+    method: 'get',
+    params: params
+  })
+}
+
+// 删除模板
+export function deleteTemplate(ids) {
+  return request({
+    url: '/template/delete',
+    method: 'post',
+    data: ids,
+    // 可以在这里覆盖全局 headers（如果有特殊需求）
+    headers: { 
+      'Content-Type': 'application/json' 
+    }
+  })
+}
+
+// 获取模板内容
+export function getTemplateContent(params) {
+  return request({
+    url: '/template/content',
+    method: 'get',
+    params: params
+  })
+}

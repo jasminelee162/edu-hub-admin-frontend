@@ -1,8 +1,7 @@
 import { getMenuByUser } from '@/api/api'
+
 const state = {
-  activeMenuArrary: [
-   
-  ],
+  activeMenuArrary: [],
   activeMenu: "/index",
   flag: false,
   menus: [],
@@ -11,7 +10,7 @@ const state = {
   btnMenus: []
 }
 
-const getters ={
+const getters = {
   getMenu(state) {
     return state.menus
   },
@@ -30,67 +29,74 @@ const getters ={
 }
 
 const mutations = {
-  setActiveMenu(state,menu) {
-      state.activeMenu = menu
+  setActiveMenu(state, menu) {
+    state.activeMenu = menu
   },
-  addActiveMenu(state,menu) {
-      state.activeMenuArrary.push(menu)
+  addActiveMenu(state, menu) {
+    state.activeMenuArrary.push(menu)
   },
-  setActiveMenuArrary(state,menu) {
-      state.activeMenuArrary = menu
+  setActiveMenuArrary(state, menu) {
+    state.activeMenuArrary = menu
   },
-  reduceActiveMenu(state,i) {
-      state.activeMenuArrary.splice(i,1)
+  reduceActiveMenu(state, i) {
+    state.activeMenuArrary.splice(i, 1)
   },
-  setMenus(state,menus) {
-      state.menus = menus
+  setMenus(state, menus) {
+    state.menus = menus
   },
-  setFlag(state,flag) {
+  setFlag(state, flag) {
     state.flag = flag
   },
-  setRoutes(state,routes) {
+  setRoutes(state, routes) {
     state.routes = routes
   },
-  setDisplayMenus(state,menus) {
+  setDisplayMenus(state, menus) {
     state.displayMenus = menus
   },
-  setBtnMenus(state,btn) {
+  setBtnMenus(state, btn) {
     state.btnMenus = btn
   }
 }
- 
+
 const actions = {
   generateRoutes({ commit }) {
     return new Promise(resolve => {
-      //根据用户获取菜单权限
       getMenuByUser().then(res => {
-        if(res.code == 1000) {
+        if (res.code == 1000) {
           var data = res.data
-          commit("setMenus",data)
-          commit("setFlag",true)
-          //开始组装路由信息
+          console.log("接口菜单原始数据:", data)  // 调试接口返回数据
+
+          commit("setMenus", data)
+          commit("setFlag", true)
+
           var routes = filterRoutes(data)
-          commit("setRoutes",routes)
-          //遍历获取首页左侧菜单
+          commit("setRoutes", routes)
+
           var display = filterMenus(data)
-          for(let i = 0;i < display.length;i++) {
-            var item = display[i]
-            if(item.menuType == 1) {
-              commit("setActiveMenu",item.routeUrl)
-              commit("addActiveMenu",{name:item.menuName,url:item.routeUrl})
-              break;
-            } else {
-              if(item.child.length > 0) {
-                commit("setActiveMenu",item.child[0].routeUrl)
-                commit("addActiveMenu",{name:item.child[0].menuName,url:item.child[0].routeUrl})
-                break;
+          console.log("过滤后显示菜单:", display)  // 调试过滤后菜单
+
+          if (display.length > 0) {
+            for (let i = 0; i < display.length; i++) {
+              var item = display[i]
+              if (item.menuType == 1) {
+                commit("setActiveMenu", item.routeUrl)
+                commit("addActiveMenu", { name: item.menuName, url: item.routeUrl })
+                break
+              } else {
+                if (item.child && item.child.length > 0) {
+                  commit("setActiveMenu", item.child[0].routeUrl)
+                  commit("addActiveMenu", { name: item.child[0].menuName, url: item.child[0].routeUrl })
+                  break
+                }
               }
             }
           }
-          commit("setDisplayMenus",display)
-          //遍历获取按钮权限
+
+          commit("setDisplayMenus", display)
+
           var btnMenus = filterBtnMenus(data)
-          commit("setBtnMenus",btnMenus)
+          commit("setBtnMenus", btnMenus)
+
           resolve(routes)
         }
       })
@@ -98,25 +104,26 @@ const actions = {
   }
 }
 
+// 过滤按钮权限菜单（menuType==2）
 function filterBtnMenus(menus) {
   var menu = []
   menus.forEach(item => {
-    if(item.menuType == 2) {
+    if (item.menuType == 2) {
       menu.push(item)
     }
   })
   return menu
 }
 
+// 过滤一级菜单和目录，显示可见菜单
 function filterMenus(menus) {
   var menu = []
   menus.forEach(item => {
-    //遍历一级菜单或目录
-    if(item.menuType != 2 && item.visible == 0 && item.parentId == "0") {
-      //一级菜单去找自己的下级
+    // 注意这里兼容 parentId 既有数字0也有字符串"0"
+    if (item.menuType != 2 && item.visible == 0 && (item.parentId === "0" || item.parentId === 0)) {
       item.child = []
-      if(item.menuType == 0) {
-        filterChildMenus(item,menus)
+      if (item.menuType == 0) {
+        filterChildMenus(item, menus)
       }
       menu.push(item)
     }
@@ -124,25 +131,27 @@ function filterMenus(menus) {
   return menu
 }
 
-function filterChildMenus(menu,menus) {
+// 递归过滤子菜单，包含目录和菜单，且visible=0
+function filterChildMenus(menu, menus) {
   menu.child = []
   menus.forEach(item => {
-    if(menu.id == item.parentId) {
-      if(item.menuType == 0 && item.visible == 0) {
-        filterChildMenus(item,menus)
+    if (menu.id == item.parentId) {
+      if (item.menuType == 0 && item.visible == 0) {
+        filterChildMenus(item, menus)
         menu.child.push(item)
-      } else if(item.menuType == 1 && item.visible == 0) {
+      } else if (item.menuType == 1 && item.visible == 0) {
         menu.child.push(item)
       }
     }
   })
 }
 
+// 生成路由，只生成menuType=1，且target=1放children，target=0放顶层路由
 function filterRoutes(menus) {
   var routes = []
-  if(menus.length <= 0) {
-    routes.push({ path: '/:pathMatch(.*)', redirect: '/403'})
-    return routes;
+  if (menus.length <= 0) {
+    routes.push({ path: '/:pathMatch(.*)', redirect: '/403' })
+    return routes
   }
   var root = {
     path: "",
@@ -152,38 +161,34 @@ function filterRoutes(menus) {
     children: []
   }
   var children = []
-  var index = 0;
-  //遍历出路由
   menus.forEach(item => {
-    //把菜单先遍历出来
-    if(item.menuType == 1) {
+    if (item.menuType == 1) {
       var param = {
         path: item.routeUrl,
         name: item.menuName,
         component: loadView(item.componentUrl),
       }
-      if(item.param) {
-        param.props = JSON.stringify(item.param)
+      if (item.param) {
+        param.props = JSON.parse(item.param)
       }
-      if(item.target == 1) {
+      if (item.target == 1) {
         children.push(param)
       }
-      if(item.target == 0) {
+      if (item.target == 0) {
         routes.push(param)
       }
     }
   });
   root.children = children
   routes.push(root)
-  routes.push({ path: '/:pathMatch(.*)', redirect: '/404'})
-  return routes;
+  routes.push({ path: '/:pathMatch(.*)', redirect: '/404' })
+  return routes
 }
 
-function loadView(view){
+function loadView(view) {
   if (process.env.NODE_ENV === 'development') {
     return (resolve) => require([`@/views${view}`], resolve)
   } else {
-    // 使用 import 实现生产环境的路由懒加载
     return () => import(`@/views${view}`)
   }
 }

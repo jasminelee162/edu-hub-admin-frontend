@@ -22,7 +22,7 @@ const routes = [
     path: '/404',
     name: '404',
     component: error404,
-  }
+  },
 ]
 
 // 防止连续点击多次路由报错

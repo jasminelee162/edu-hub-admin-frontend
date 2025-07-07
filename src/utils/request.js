@@ -13,9 +13,12 @@ const instance = axios.create({
 instance.interceptors.request.use(
     function (config) {
         if (config.method === 'post') {
-            config.data = {
-              ...config.data,
-              _t: Date.parse(new Date()) / 1000 // 时间戳
+            // 如果是数组，不添加时间戳
+            if (!Array.isArray(config.data) && !(config.data instanceof FormData)) {
+                config.data = {
+                    ...config.data,
+                    _t: Date.parse(new Date()) / 1000
+                }
             }
         } else if (config.method === 'get') {
             config.params = {
@@ -27,7 +30,7 @@ instance.interceptors.request.use(
         return config
     },
     function (err) {
-        return Promise.request(err)
+        return Promise.reject(err)
     }
 )
  

@@ -1,602 +1,624 @@
 <template>
-  <div class="user-management">
-    <div class="layout-container">
-      <!-- 左侧部门树 -->
-      <div class="dept-tree">
-        <div class="tree-header">
-          <i class="el-icon-office-building"></i>
-          <span>部门组织</span>
-        </div>
-        <el-input
-          class="tree-search"
-          prefix-icon="el-icon-search"
-          size="small"
-          placeholder="输入部门名称进行过滤"
-          v-model="filterText">
-        </el-input>
-        <el-tree
-          class="tree-content"
-          node-key="id"
-          :data="data"
-          :props="defaultProps"
-          :filter-node-method="filterNode"
-          :expand-on-click-node="false"
-          default-expand-all
-          @node-click="handleNodeClick">
-          <span class="custom-tree-node" slot-scope="{ node, data }">
-            <i :class="data.children ? 'el-icon-folder-opened' : 'el-icon-folder'" style="color:#7B68EE"></i>
-            <span>{{ node.label }}</span>
-          </span>
-        </el-tree>
-      </div>
-
-      <!-- 右侧内容区 -->
-      <div class="content-area">
-        <!-- 搜索区域 -->
-        <div class="search-panel">
-          <el-row :gutter="15">
-            <el-col :xs="24" :sm="12" :md="8" :lg="6" :xl="6">
-              <div class="search-item">
-                <span class="search-label">
-                  <i class="el-icon-user-solid" style="color:#7B68EE"></i> 用户名称:
-                </span>
-                <el-input
-                  size="small"
-                  v-model="search.userName"
-                  placeholder="请输入用户名称"
-                  clearable>
-                </el-input>
-              </div>
-            </el-col>
-            <el-col :xs="24" :sm="12" :md="8" :lg="6" :xl="6">
-              <div class="search-item">
-                <span class="search-label">
-                  <i class="el-icon-mobile-phone" style="color:#7B68EE"></i> 手机号码:
-                </span>
-                <el-input
-                  size="small"
-                  v-model="search.tel"
-                  placeholder="请输入手机号码"
-                  clearable>
-                </el-input>
-              </div>
-            </el-col>
-            <el-col :xs="24" :sm="12" :md="8" :lg="6" :xl="6">
-              <div class="search-item">
-                <span class="search-label">
-                  <i class="el-icon-circle-check" style="color:#7B68EE"></i> 状态:
-                </span>
-                <el-select
-                  size="small"
-                  v-model="search.status"
-                  placeholder="请选择状态"
-                  clearable>
-                  <el-option label="正常" value="0"></el-option>
-                  <el-option label="停用" value="1"></el-option>
-                </el-select>
-              </div>
-            </el-col>
-            <el-col :xs="24" :sm="12" :md="8" :lg="6" :xl="6">
-              <div class="search-actions">
-                <el-button
-                  size="small"
-                  type="primary"
-                  icon="el-icon-search"
-                  @click="searchPage"
-                  class="search-btn">
-                  查询
-                </el-button>
-                <el-button
-                  size="small"
-                  icon="el-icon-refresh"
-                  @click="refresh"
-                  class="reset-btn">
-                  重置
-                </el-button>
-              </div>
-            </el-col>
-          </el-row>
-        </div>
-
-        <!-- 表格区域 -->
-        <div class="table-panel">
-          <div class="table-actions">
-            <el-button
-              type="primary"
+  <div class="template-management">
+    <!-- 搜索区域 -->
+    <div class="search-panel">
+      <el-row :gutter="15">
+        <!-- 资料名称搜索 -->
+        <el-col :xs="24" :sm="12" :md="8" :lg="8" :xl="8">
+          <div class="search-item">
+            <span class="search-title">
+              <i class="el-icon-document"></i> 资料名称:
+            </span>
+            <el-input
               size="small"
-              icon="el-icon-plus"
-              @click="addUser"
-              class="action-btn add-btn">
-              新增用户
-            </el-button>
-            <el-button
-              type="success"
-              size="small"
-              icon="el-icon-edit"
-              :disabled="update.length !== 1"
-              @click="updateUserBtn"
-              class="action-btn edit-btn">
-              修改
-            </el-button>
-            <el-popconfirm
-              title="确定删除选中的用户吗？"
-              @confirm="deleteDateBtn"
-              confirm-button-text="确认"
-              cancel-button-text="取消"
-              icon="el-icon-warning"
-              icon-color="#FF6B6B">
-              <el-button
-                slot="reference"
-                type="danger"
-                size="small"
-                icon="el-icon-delete"
-                :disabled="update.length <= 0"
-                class="action-btn delete-btn">
-                删除
-              </el-button>
-            </el-popconfirm>
+              placeholder="请输入资料名称"
+              v-model="search.name"
+              class="tech-input">
+              <i slot="prefix" class="el-icon-edit-outline"></i>
+            </el-input>
           </div>
-
-          <el-table
-            v-loading="loading"
-            :data="tableData"
-            @selection-change="handleSelectionChange"
-            :header-cell-style="tableHeaderStyle"
-            :row-style="tableRowStyle"
-            stripe
-            style="width: 100%"
-            class="user-table">
-            <el-table-column type="selection" width="55" align="center"></el-table-column>
-            <el-table-column label="用户名称" width="180">
-              <template #default="{row}">
-                <div class="user-cell">
-                  <el-avatar :size="35" :src="row.avatar || require('../../../assets/image/avator.png')" class="user-avatar"></el-avatar>
-                  <div class="user-info">
-                    <span class="user-name">{{row.userName}}</span>
-                    <span class="user-account">{{row.loginAccount}}</span>
-                  </div>
-                </div>
-              </template>
-            </el-table-column>
-            <el-table-column prop="deptName" label="部门" width="150">
-              <template #default="{row}">
-                <div class="dept-cell">
-                  <i class="el-icon-office-building"></i>
-                  <span>{{row.deptName}}</span>
-                </div>
-              </template>
-            </el-table-column>
-            <el-table-column prop="tel" label="手机号" width="150">
-              <template #default="{row}">
-                <div class="tel-cell">
-                  <i class="el-icon-mobile-phone"></i>
-                  <span>{{row.tel}}</span>
-                </div>
-              </template>
-            </el-table-column>
-            <el-table-column label="状态" width="100">
-              <template #default="{row}">
-                <el-tag v-if="row.status == 0" type="success" size="small" class="status-tag">
-                  <i class="el-icon-success"></i> 正常
-                </el-tag>
-                <el-tag v-if="row.status == 1" type="danger" size="small" class="status-tag">
-                  <i class="el-icon-error"></i> 停用
-                </el-tag>
-              </template>
-            </el-table-column>
-            <el-table-column prop="createTime" label="创建时间" width="180">
-              <template #default="{row}">
-                <div class="time-cell">
-                  <i class="el-icon-time"></i>
-                  <span>{{row.createTime}}</span>
-                </div>
-              </template>
-            </el-table-column>
-            <el-table-column label="操作" width="180" fixed="right">
-              <template #default="{row}">
-                <div class="action-buttons">
-                  <el-button
-                    size="mini"
-                    type="primary"
-                    icon="el-icon-edit"
-                    @click="updateUser(row.id)"
-                    class="action-btn edit-btn">
-                    修改
-                  </el-button>
-                  <el-popconfirm
-                    title="确定删除该用户吗？"
-                    @confirm="deleteDate(row.id)"
-                    confirm-button-text="确认"
-                    cancel-button-text="取消"
-                    icon="el-icon-warning"
-                    icon-color="#FF6B6B">
-                    <el-button
-                      slot="reference"
-                      size="mini"
-                      type="danger"
-                      icon="el-icon-delete"
-                      class="action-btn delete-btn">
-                      删除
-                    </el-button>
-                  </el-popconfirm>
-                </div>
-              </template>
-            </el-table-column>
-          </el-table>
-
-          <el-pagination
-            background
-            layout="total, sizes, prev, pager, next, jumper"
-            :page-sizes="[10, 20, 50, 100]"
-            :page-size="search.pageSize"
-            :current-page="search.pageNumber"
-            @size-change="handleSizeChange"
-            @current-change="handleCurrentChange"
-            :total="total"
-            class="table-pagination">
-          </el-pagination>
-        </div>
-      </div>
+        </el-col>
+        
+        <!-- 创建时间搜索 -->
+        <el-col :xs="24" :sm="12" :md="8" :lg="8" :xl="8">
+          <div class="search-item">
+            <span class="search-title">
+              <i class="el-icon-date"></i> 创建时间:
+            </span>
+            <el-date-picker
+              size="small"
+              v-model="search.dateRange"
+              type="daterange"
+              range-separator="至"
+              start-placeholder="开始日期"
+              end-placeholder="结束日期"
+              value-format="yyyy-MM-dd"
+              class="tech-date-picker">
+            </el-date-picker>
+          </div>
+        </el-col>
+        
+        <!-- 操作按钮 -->
+        <el-col :xs="24" :sm="12" :md="8" :lg="8" :xl="8">
+          <div class="search-actions">
+            <el-button 
+              size="small" 
+              icon="el-icon-search" 
+              type="primary" 
+              @click="searchPage"
+              class="search-btn">
+              查询
+            </el-button>
+            <el-button 
+              size="small" 
+              icon="el-icon-refresh" 
+              @click="refresh"
+              class="reset-btn">
+              重置
+            </el-button>
+          </div>
+        </el-col>
+      </el-row>
     </div>
-
-    <!-- 对话框组件保持不变 -->
-    <add-user @addUserFalse="addUserFalse" :data="data" :post="post" :role="role" :addUserVisible="addUserVisible"></add-user>
-    <update-user @updateUserFalse="updateUserFalse" :updateId="updateId" :data="data" :post="post" :role="role" :updateUserVisible="updateUserVisible"></update-user>
     
-    <el-dialog
-      title="重置密码"
-      :visible.sync="passwordDialogVisible"
-      width="30%"
-      :before-close="handlePasswordClose"
-      class="password-dialog">
-      <div class="dialog-content">
-        <div class="password-info">
-          <i class="el-icon-key"></i>
-          <span>请输入 <span class="highlight">{{userName}}</span> 的新密码：</span>
-        </div>
-        <el-input
-          show-password
-          v-model="newPassword"
-          size="small"
-          placeholder="请输入新密码">
-        </el-input>
+    <!-- 数据面板 -->
+    <div class="data-panel">
+      <!-- 操作栏 -->
+      <div class="action-bar">
+        <el-upload
+          class="upload-btn"
+          action=""
+          :show-file-list="false"
+          :before-upload="beforeUpload"
+          :http-request="uploadFile">
+          <el-button 
+            type="primary" 
+            size="small" 
+            icon="el-icon-upload"
+            class="action-btn upload-btn">
+            上传资料
+          </el-button>
+        </el-upload>
+        <el-button 
+          type="danger" 
+          size="small" 
+          icon="el-icon-delete" 
+          :disabled="selected.length <= 0"
+          @click="deleteDataBtn"
+          class="action-btn delete-btn">
+          批量删除
+        </el-button>
       </div>
-      <div slot="footer" class="dialog-footer">
-        <el-button size="small" @click="handlePasswordClose" class="reset-btn">取 消</el-button>
-        <el-button size="small" type="primary" @click="passwordSubmit" class="search-btn">确 定</el-button>
-      </div>
-    </el-dialog>
+      
+      <!-- 数据表格 -->
+      <el-table
+        v-loading="loading"
+        :data="tableData"
+        :header-cell-style="tableHeaderStyle"
+        :row-style="tableRowStyle"
+        @selection-change="handleSelectionChange"
+        stripe
+        class="tech-table">
+        <!-- 选择列 -->
+        <el-table-column
+          type="selection"
+          width="55"
+          align="center">
+        </el-table-column>
+        
+        <!-- 资料名称列 -->
+        <el-table-column
+          prop="name"
+          label="资料名称"
+          min-width="200">
+          <template #default="{row}">
+            <div class="name-cell">
+              <i class="el-icon-document"></i>
+              <span>{{ row.name }}</span>
+            </div>
+          </template>
+        </el-table-column>
+        
+        <!-- 创建时间列 -->
+        <el-table-column
+          prop="createdAt"
+          label="创建时间"
+          width="180">
+          <template #default="{row}">
+            <div class="time-cell">
+              <i class="el-icon-time"></i>
+              <span>{{ row.createdAt }}</span>
+            </div>
+          </template>
+        </el-table-column>
+        
+        <!-- 操作列 -->
+        <el-table-column
+          label="操作"
+          width="300"
+          fixed="right">
+          <template #default="{row}">
+            <div class="action-buttons">
+              <el-button 
+                size="mini" 
+                type="primary" 
+                @click="viewContent(row.id)"
+                class="action-btn view-btn">
+                <i class="el-icon-view"></i> 查看
+              </el-button>
+              
+              <el-button 
+                size="mini" 
+                type="success" 
+                @click="downloadFile(row.id)"
+                class="action-btn download-btn">
+                <i class="el-icon-download"></i> 下载
+              </el-button>
+              
+              <el-popconfirm
+                title="确认删除此资料？"
+                @confirm="deleteData(row.id)"
+                confirm-button-text="确认"
+                cancel-button-text="取消"
+                icon="el-icon-warning"
+                icon-color="#409EFF">
+                <el-button 
+                  size="mini"
+                  type="danger"
+                  slot="reference"
+                  class="action-btn delete-btn">
+                  <i class="el-icon-delete"></i> 删除
+                </el-button>
+              </el-popconfirm>
+            </div>
+          </template>
+        </el-table-column>
+      </el-table>
+      
+      <!-- 分页 -->
+      <el-pagination
+        background
+        layout="total, sizes, prev, pager, next, jumper"
+        :page-sizes="[10, 20, 50, 100]"
+        :page-size="search.pageSize"
+        :current-page="search.pageNumber"
+        @size-change="handleSizeChange"
+        @current-change="handleCurrentChange"
+        :total="total"
+        class="tech-pagination">
+      </el-pagination>
+    </div>
   </div>
 </template>
 
 <script>
-  import {getDeptList,getUserPage,removeUser,getPostList,getRoleList,resetPassword} from '../../../api/api' 
-  import addUser from "../../../components/system/user/addUser"
-  import updateUser from "../../../components/system/user/updateUser"
-  export default {
-    data() {
-      return{
-        loading: true,
-        update: [],
-        remove: [],
-        updateId: "",
-        addUserVisible: false,
-        updateUserVisible: false,
-        passwordDialogVisible: false,
-        filterText: "",
-        defaultProps: {
-          children: 'children',
-          label: 'deptName'
-        },
-        search: {
-            userName: "",
-            tel: "",
-            status: "",
-            deptId: "",
-            userType: 0,
-            pageNumber: 1,
-            pageSize:10
-        },
-        userName: "",
-        userId: "",
-        newPassword: "",
-        total: 0,
-        tableData: [],
-        data: [],
-        post: [],
-        role: [],
+import { uploadTemplate, getTemplates, deleteTemplate, getTemplateContent } from '../../../api/api'
+import { renderAsync } from 'docx-preview'
+
+export default {
+  data() {
+    return {
+      loading: true,
+      selected: [],
+      search: {
+        name: "",
+        dateRange: [],
+        pageNumber: 1,
+        pageSize: 10
+      },
+      total: 0,
+      tableData: [],
+    }
+  },
+  methods: {
+    // 表格头部样式
+    tableHeaderStyle() {
+      return {
+        'color': '#1E2B45',
+        'background-color': '#F0F4F8',
+        'font-weight': '600',
+        'border-bottom': '1px solid #D1E0FF'
       }
     },
-    components: {
-      addUser,
-      updateUser
+    
+    // 表格行样式
+    tableRowStyle() {
+      return {
+        'color': '#2C3E50',
+        'font-size': '14px',
+        'border-bottom': '1px solid #F0F4F8'
+      }
     },
-    methods: {
-      tableHeaderStyle() {
-        return {
-          'color': '#4A2B90',
-          'background-color': '#ECE9F4',
-          'font-weight': 'bold',
-          'border-bottom': '1px solid #7B68EE'
+    
+    // 上传前校验
+    beforeUpload(file) {
+      const isLt10M = file.size / 1024 / 1024 < 10
+      if (!isLt10M) {
+        this.$message.error('上传文件大小不能超过10MB!')
+        return false
+      }
+      
+      // 检查文件类型
+      const allowedTypes = [
+        'application/pdf',
+        'application/msword',
+        'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+        'application/vnd.ms-excel',
+        'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+        'application/vnd.ms-powerpoint',
+        'application/vnd.openxmlformats-officedocument.presentationml.presentation',
+        'image/jpeg',
+        'image/png'
+      ]
+      
+      if (!allowedTypes.includes(file.type)) {
+        this.$message.error('只支持上传PDF、Word、Excel、PPT、JPG和PNG文件!')
+        return false
+      }
+      
+      return true
+    },
+    
+    // 文件上传方法（完整实现）
+    uploadFile({ file, onProgress, onSuccess, onError }) {
+      const formData = new FormData();
+      formData.append('file', file); // ✅ 关键点：必须是 file
+
+      uploadTemplate(formData, {
+        // headers: { 'Content-Type': 'multipart/form-data' },
+        onUploadProgress: (progressEvent) => {
+          const percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total);
+          onProgress({ percent: percentCompleted }); // 支持进度条
         }
-      },
-      tableRowStyle() {
-        return {
-          'color': '#5F4B8B',
-          'font-size': '14px',
-          'border-bottom': '1px solid #F0EEF7'
-        }
-      },
-      searchPage() {
-        this.search.pageNumber = 1
-        this.query()
-      },
-      getDept() {
-        this.search.pageNumber = 1
-        getDeptList().then(res => {
-          if(res.code == 1000) {
-            this.data = res.data
-          } else {
-            this.$notify.error({
-              title: '错误',
-              message: res.message
-            });
-          }
-        })
-      },
-      getPost() {
-        getPostList().then(res => {
-          if(res.code == 1000) {
-            this.post = res.data
-          } else {
-            this.$notify.error({
-              title: '错误',
-              message: res.message
-            });
-          }
-        })
-      },
-      getRole() {
-        getRoleList().then(res => {
-          if(res.code == 1000) {
-            this.role = res.data
-          } else {
-            this.$notify.error({
-              title: '错误',
-              message: res.message
-            });
-          }
-        })
-      },
-      filterNode(value, data) {
-        if (!value) return true;
-        return data.deptName.indexOf(value) !== -1;
-      },
-      query() {
-        getUserPage(this.search).then(res => {
-          if(res.code == 1000) {
-            this.tableData = res.data.records
-            this.total = res.data.total
-            this.loading = false
-          } else {
-            this.$notify.error({
-              title: '错误',
-              message: res.message
-            });
-          }
-        })
-      },
-      refresh() {
-        this.search.userName = ""
-        this.search.tel = ""
-        this.search.status = ""
-        this.search.deptId = ""
-        this.query()
-      },
-      handleNodeClick(data) {
-        this.search.deptId = data.id
-        this.query()
-      },
-      handleCurrentChange(val) {
-        this.search.pageNumber = val
-        this.query()
-      },
-      handleSizeChange(val) {
-        this.search.pageSize = val
-        this.query()
-      },
-      handleSelectionChange(val) {
-        this.update = []
-        this.remove = []
-        for (let i = 0;i < val.length;i++) {
-          var item = val[i]
-          this.update.push(item.id)
-          this.remove.push(item.id)
-        }
-      },
-      addUser() {
-        this.addUserVisible = true
-      },
-      addUserFalse() {
-        this.addUserVisible = false
-        this.query()
-      },
-      updateUser(id) {
-        this.updateId = id
-        this.updateUserVisible = true
-      },
-      updateUserFalse() {
-        this.updateUserVisible = false
-        this.updateId = ""
-        this.query()
-      },
-      updateUserBtn() {
-        this.updateUser(this.update[0])
-      },
-      handleCommand(command) {
-        var data = command.split("#")
-        if(data[1] == 'edit') {
-          this.updateUser(data[0])
-        } else if(data[1] == 'pass') {
-          this.userName = data[2]
-          this.openPassword(data[0])
+      }).then(res => {
+        if (res.code === 1000) {
+          this.$notify.success({ title: '成功', message: '上传成功' });
+          this.query();
+          onSuccess(res); // ✅ 必须回调成功
         } else {
-          this.$confirm('确定删除选中的数据?', '提示', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          type: 'warning'
-        }).then(() => {
-          this.deleteDate(data[0])
-        }).catch(() => {
-                 
-        });
+          this.$notify.error({ title: '错误', message: res.message || '上传失败' });
+          onError(new Error(res.message || '上传失败')); // ✅ 回调失败
         }
-      },
-      deleteDateBtn() {
-        this.$confirm('确定删除选中的'+ this.remove.length +'条数据?', '提示', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          type: 'warning',
-          iconClass: 'el-icon-warning',
-          customClass: 'user-confirm'
-        }).then(() => {
-          this.deleteDate(this.remove.join(","))
-        }).catch(() => {
-                 
+      }).catch(error => {
+        this.$notify.error({ title: '错误', message: error.message || '上传失败' });
+        onError(error); // ✅ 回调失败
+      });
+    },
+    
+    // 查看内容 在线预览docx
+    viewContent(id) {
+      this.loading = true;
+      getTemplateContent({ id }).then(res => {
+        this.loading = false;
+        
+        if (res.code !== 1000) {
+          this.$notify.error({ title: '错误', message: res.message || '获取内容失败' });
+          return;
+        }
+
+        const template = this.tableData.find(item => item.id === id);
+        const data = res.data;
+
+        // 调试日志
+        console.log('当前文件数据:', {
+          templateData: template,
+          responseData: data
         });
-      },
-      deleteDate(ids) {
-        removeUser({ids:ids}).then(res => {
-            if(res.code == 1000) {
-              this.$message({
-                type: 'success',
-                message: '删除成功!',
-                customClass: 'user-message'
-              });
-              this.pageNumber = 1
-              this.query()
-            } else {
-              this.$notify.error({
-                title: '错误',
-                message: res.message
-              });
-            }
-          })
-      },
-      openPassword(id) {
-        this.userId = id
-        this.passwordDialogVisible = true
-      },
-      handlePasswordClose() {
-        this.userName = ""
-        this.userId = ""
-        this.newPassword = ""
-        this.passwordDialogVisible = false
-      },
-      passwordSubmit() {
-        if(!this.newPassword.trim()) {
-          this.$message({
-            message: '请输入新密码',
-            type: 'warning',
-            customClass: 'user-message'
+
+        // 获取文件类型（优先从响应数据获取，其次从表格数据）
+        const fileType = (data.fileType || template?.fileType || '')
+                        .toString()
+                        .toLowerCase()
+                        .replace('.', '')
+                        .trim();
+
+        if (!data.fileContent) {
+          this.$message.error('文件内容为空');
+          return;
+        }
+
+        if (!fileType) {
+          this.$alert('无法识别文件类型，请下载查看', '提示', {
+            confirmButtonText: '下载',
+            callback: () => this.downloadFile(id)
           });
           return;
         }
-        resetPassword({id: this.userId,newPassword: this.newPassword}).then(res => {
-          if(res.code == 1000) {
-            this.$notify.success({
-                  title: '成功',
-                  message: "重置成功"
-                });
-            this.handlePasswordClose()
-          } else {
-            this.$notify.error({
-              title: '错误',
-              message: res.message
+
+        const mimeType = this.getMimeType(fileType);
+        console.log('最终识别类型:', { fileType, mimeType });
+
+        try {
+          const blob = this.base64ToBlob(data.fileContent, mimeType);
+          
+          // 预览处理
+          if (['pdf'].includes(fileType)) {
+            window.open(URL.createObjectURL(blob), '_blank');
+          } 
+          else if (['jpg', 'jpeg', 'png', 'gif'].includes(fileType)) {
+            const imgWindow = window.open('', '_blank');
+            imgWindow.document.write(`<img src="${URL.createObjectURL(blob)}" style="max-width:100%"/>`);
+          }
+          else if (fileType === 'docx') {
+            this.showDocx(data.fileContent);
+          }
+          else {
+            this.$alert(`不支持预览 ${fileType} 格式文件`, '提示', {
+              confirmButtonText: '下载',
+              callback: () => this.downloadFile(id)
             });
           }
-        })
-      }
+        } catch (e) {
+          console.error('预览处理出错:', e);
+          this.$notify.error({
+            title: '错误',
+            message: '文件处理失败: ' + e.message
+          });
+        }
+      }).catch(error => {
+        this.loading = false;
+        console.error('请求出错:', error);
+        this.$notify.error({
+          title: '错误',
+          message: error.message || '获取内容失败'
+        });
+      });
     },
-    mounted() {
-      this.getDept()
-      this.getPost()
-      this.getRole()
+
+
+
+    //文件二进制转化
+    base64ToBlob(base64Data, mimeType = '') {
+        // 移除可能存在的Base64前缀
+      const base64WithoutPrefix = base64Data.replace(/^data:\w+\/\w+;base64,/, '');
+      const byteCharacters = atob(base64WithoutPrefix);
+      const byteArrays = [];
+
+      for (let offset = 0; offset < byteCharacters.length; offset += 512) {
+        const slice = byteCharacters.slice(offset, offset + 512);
+        const byteNumbers = new Array(slice.length);
+        for (let i = 0; i < slice.length; i++) {
+          byteNumbers[i] = slice.charCodeAt(i);
+        }
+        byteArrays.push(new Uint8Array(byteNumbers));
+      }
+
+      return new Blob(byteArrays, { type: mimeType });
+    },
+
+    getMimeType(fileType) {
+      const map = {
+        pdf: 'application/pdf',
+        jpg: 'image/jpeg',
+        jpeg: 'image/jpeg',
+        png: 'image/png',
+        txt: 'text/plain',
+        doc: 'application/msword',
+        docx: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+        ppt: 'application/vnd.ms-powerpoint',
+        pptx: 'application/vnd.openxmlformats-officedocument.presentationml.presentation',
+        xls: 'application/vnd.ms-excel',
+        xlsx: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+        gif: 'image/gif',
+        svg: 'image/svg+xml',
+        mp4: 'video/mp4',
+        webm: 'video/webm'
+      };
+      return map[fileType] || 'application/octet-stream';
+    },
+
+
+    //pptx excel docx预览
+    showDocx(fileContentBase64) {
+      const blob = this.base64ToBlob(
+        fileContentBase64, 
+        'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+      );
+      
+      const container = document.createElement('div');
+      container.style.cssText = `
+        width: 100%;
+        height: 90vh;
+        margin: 0 auto;
+        overflow: auto;
+        padding: 20px;
+        box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      `;
+      
+      // 创建新窗口
+      const win = window.open('', '_blank');
+      win.document.title = '文档预览';
+      win.document.body.style.margin = '0';
+      win.document.body.appendChild(container);
+      
+      // 添加加载状态
+      container.innerHTML = '<div style="text-align:center;padding:50px">正在加载文档...</div>';
+      
+      renderAsync(blob, container, null, {
+        className: "docx-viewer", // 添加自定义class
+        inWrapper: true,         // 启用包裹容器
+        ignoreWidth: false,
+        ignoreHeight: false,
+        ignoreFonts: false
+      }).catch(error => {
+        console.error('DOCX渲染失败:', error);
+        container.innerHTML = '<div style="color:red">文档预览失败，请下载后查看</div>';
+      });
+    },
+
+
+    
+    // 下载文件
+    downloadFile(id) {
+      this.loading = true;
+      getTemplateContent({ id }).then(res => {
+        this.loading = false;
+        if (res.code === 1000) {
+          const template = this.tableData.find(item => item.id === id);
+          const base64 = res.data.fileContent;
+          const mimeType = this.getMimeType(template.fileType);
+          const blob = this.base64ToBlob(base64, mimeType);
+          const url = URL.createObjectURL(blob);
+          
+          const link = document.createElement('a');
+          link.href = url;
+          link.download = template.name || 'download';
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
+          URL.revokeObjectURL(url);
+          
+          this.$notify.success({
+            title: '成功',
+            message: '文件下载已开始',
+            duration: 2000
+          });
+        } else {
+          this.$notify.error({
+            title: '错误',
+            message: res.message || '下载失败'
+          });
+        }
+      }).catch(error => {
+        this.loading = false;
+        this.$notify.error({
+          title: '错误',
+          message: error.message || '下载失败'
+        });
+      });
+    },
+
+    
+    // 搜索
+    searchPage() {
+      this.search.pageNumber = 1
       this.query()
     },
-    watch: {
-      filterText(val) {
-        this.$refs.tree.filter(val);
+    
+    // 查询数据
+    query() {
+      this.loading = true
+      const params = {
+        ...this.search,
+        startDate: this.search.dateRange ? this.search.dateRange[0] : '',
+        endDate: this.search.dateRange ? this.search.dateRange[1] : ''
       }
+      delete params.dateRange
+      
+      getTemplates(params).then(res => {
+        this.loading = false
+        if (res.code === 1000) {
+          this.tableData = res.data.records || []
+          this.total = res.data.total || 0
+        } else {
+          this.$notify.error({
+            title: '错误',
+            message: res.message || '获取数据失败'
+          })
+        }
+      }).catch(error => {
+        this.loading = false
+        this.$notify.error({
+          title: '错误',
+          message: error.message || '获取数据失败'
+        })
+      })
     },
- }
+    
+    // 重置搜索
+    refresh() {
+      this.search.name = ""
+      this.search.dateRange = []
+      this.query()
+    },
+    
+    // 分页变化
+    handleCurrentChange(val) {
+      this.search.pageNumber = val
+      this.query()
+    },
+    
+    // 每页条数变化
+    handleSizeChange(val) {
+      this.search.pageSize = val
+      this.query()
+    },
+    
+    // 选择变化
+    handleSelectionChange(val) {
+      this.selected = val.map(item => item.id)
+    },
+    
+    // 批量删除
+    deleteDataBtn() {
+      if (this.selected.length === 0) {
+        this.$message.warning('请至少选择一条数据')
+        return
+      }
+      
+      this.$confirm(`确定删除选中的 ${this.selected.length} 条数据?`, '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning',
+        customClass: 'tech-message-box',
+        beforeClose: (action, instance, done) => {
+          if (action === 'confirm') {
+            instance.confirmButtonLoading = true
+            this.deleteData(this.selected)  // 直接传递数组
+              .finally(() => {
+                instance.confirmButtonLoading = false
+                done()
+              })
+          } else {
+            done()
+          }
+        }
+      }).catch(() => {
+        this.$message.info('已取消删除')
+      })
+    },
+    
+    // 删除数据
+    deleteData(ids) {
+      // 确保ids是数组格式
+      const idsArray = Array.isArray(ids) ? ids : [ids];
+      
+      return deleteTemplate(idsArray).then(res => {
+        if (res.code === 1000) {
+          this.$message({
+            type: 'success',
+            message: '删除成功!',
+            customClass: 'tech-message',
+            duration: 2000
+          })
+          this.search.pageNumber = 1
+          this.query()
+        } else {
+          this.$notify.error({
+            title: '错误',
+            message: res.message || '删除失败'
+          })
+        }
+      }).catch(error => {
+        this.$notify.error({
+          title: '错误',
+          message: error.message || '删除失败'
+        })
+      })
+    },
+  },
+
+  
+  mounted() {
+    this.query()
+  }
+}
 </script>
 
 <style scoped>
-.user-management {
-  height: 100%;
+.template-management {
   padding: 20px;
-  background-color: #F8F7FC;
-}
-
-.layout-container {
-  display: flex;
-  height: 100%;
-}
-
-.dept-tree {
-  width: 280px;
-  background: #fff;
-  border-radius: 8px;
-  box-shadow: 0 2px 12px rgba(123, 104, 238, 0.1);
-  margin-right: 20px;
-  padding: 10px;
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
-}
-
-.tree-header {
-  padding: 10px 0;
-  margin-bottom: 10px;
-  font-size: 16px;
-  color: #4A2B90;
-  border-bottom: 1px solid #F0EEF7;
-  display: flex;
-  align-items: center;
-}
-
-.tree-header i {
-  margin-right: 8px;
-  color: #7B68EE;
-  font-size: 18px;
-}
-
-.tree-search {
-  margin-bottom: 10px;
-}
-
-.tree-content {
-  flex: 1;
-  overflow: auto;
-}
-
-.custom-tree-node {
-  flex: 1;
-  display: flex;
-  align-items: center;
-  font-size: 14px;
-  color: #5F4B8B;
-}
-
-.custom-tree-node i {
-  margin-right: 8px;
-}
-
-.content-area {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
+  background-color: #fff;
 }
 
 .search-panel {
@@ -604,7 +626,8 @@
   border-radius: 8px;
   padding: 15px;
   margin-bottom: 20px;
-  box-shadow: 0 2px 12px rgba(123, 104, 238, 0.1);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  border: 1px solid #EBEEF5;
 }
 
 .search-item {
@@ -612,16 +635,18 @@
   flex-direction: column;
 }
 
-.search-label {
+.search-title {
   font-size: 14px;
-  color: #4A2B90;
+  color: #1E2B45;
   margin-bottom: 8px;
   display: flex;
   align-items: center;
+  font-weight: 500;
 }
 
-.search-label i {
+.search-title i {
   margin-right: 6px;
+  color: #409EFF;
 }
 
 .search-actions {
@@ -630,217 +655,211 @@
   height: 100%;
 }
 
-.table-panel {
-  flex: 1;
+.data-panel {
   background: #fff;
   border-radius: 8px;
   padding: 15px;
-  box-shadow: 0 2px 12px rgba(123, 104, 238, 0.1);
-  display: flex;
-  flex-direction: column;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  border: 1px solid #EBEEF5;
 }
 
-.table-actions {
+.action-bar {
   padding: 10px 0 15px 0;
   margin-bottom: 15px;
-  border-bottom: 1px solid #F0EEF7;
+  display: flex;
+  gap: 10px;
 }
 
-.user-cell {
+.name-cell, .time-cell {
   display: flex;
   align-items: center;
 }
 
-.user-avatar {
-  border: 2px solid #ECE9F4;
-}
-
-.user-info {
-  margin-left: 10px;
-  display: flex;
-  flex-direction: column;
-}
-
-.user-name {
-  font-weight: 500;
-  color: #4A2B90;
-}
-
-.user-account {
-  font-size: 12px;
-  color: #999;
-}
-
-.dept-cell,
-.tel-cell,
-.time-cell {
-  display: flex;
-  align-items: center;
-}
-
-.dept-cell i,
-.tel-cell i,
-.time-cell i {
-  color: #7B68EE;
+.name-cell i {
+  color: #409EFF;
   margin-right: 8px;
   font-size: 16px;
 }
 
-.status-tag {
-  display: flex;
-  align-items: center;
-}
-
-.status-tag i {
-  margin-right: 5px;
+.time-cell i {
+  color: #909399;
+  margin-right: 8px;
 }
 
 .action-buttons {
   display: flex;
-  justify-content: center;
+  gap: 6px;
 }
 
-.table-pagination {
-  margin-top: 15px;
-  text-align: right;
-}
-
-.dialog-content {
-  padding: 10px;
-}
-
-.password-info {
-  display: flex;
+.action-btn {
+  border-radius: 4px;
+  padding: 6px 10px;
+  font-size: 12px;
+  min-width: 60px;
+  display: inline-flex;
   align-items: center;
-  margin-bottom: 15px;
+  justify-content: center;
+  transition: all 0.3s ease;
+  border: none;
 }
 
-.password-info i {
-  color: #7B68EE;
-  margin-right: 8px;
-  font-size: 18px;
+.action-btn i {
+  margin-right: 4px;
+  font-size: 14px;
 }
 
-.highlight {
-  color: #7B68EE;
-  font-weight: 500;
+.upload-btn {
+  margin-right: 0;
 }
 </style>
 
 <style>
 /* 全局样式 */
-.user-management .el-input__inner {
-  border-radius: 20px;
-  border: 1px solid #D8D8E5;
-  color: #5F4B8B;
-  background-color: #F9F8FD;
+.tech-input .el-input__inner {
+  border-radius: 4px;
+  border: 1px solid #DCDFE6;
+  color: #1E2B45;
+  background-color: #fff;
+  padding-left: 30px;
+  transition: all 0.3s;
 }
 
-.user-management .el-input__prefix {
+.tech-input .el-input__inner:focus {
+  border-color: #409EFF;
+  box-shadow: 0 0 0 2px rgba(64, 158, 255, 0.1);
+}
+
+.tech-input .el-input__prefix {
   left: 5px;
-  color: #7B68EE;
+  color: #409EFF;
 }
 
-.user-management .el-select .el-input__inner {
-  border-radius: 20px;
+.tech-date-picker .el-input__inner {
+  border-radius: 4px;
+  border: 1px solid #DCDFE6;
+  color: #1E2B45;
+  background-color: #fff;
+}
+
+.tech-date-picker .el-range-separator {
+  color: #606266;
 }
 
 .search-btn {
-  background: linear-gradient(135deg, #7B68EE, #9370DB);
+  background: linear-gradient(135deg, #409EFF, #3375B9);
   border: none;
-  border-radius: 20px;
+  border-radius: 4px;
   color: white;
   padding: 7px 15px;
+  box-shadow: 0 2px 6px rgba(64, 158, 255, 0.3);
 }
 
 .reset-btn {
-  border-radius: 20px;
-  color: #7B68EE;
-  border: 1px solid #D8D8E5;
+  border-radius: 4px;
+  color: #409EFF;
+  border: 1px solid #DCDFE6;
   padding: 7px 15px;
+  background: #fff;
 }
 
-.action-btn.add-btn {
-  background: linear-gradient(135deg, #7B68EE, #9370DB);
+.action-btn.upload-btn {
+  background: linear-gradient(135deg, #409EFF, #3375B9);
   color: white;
-  border: none;
+  box-shadow: 0 2px 6px rgba(64, 158, 255, 0.3);
 }
 
-.action-btn.edit-btn {
-  background: linear-gradient(135deg, #67C23A, #5DA934);
+.action-btn.view-btn {
+  background: linear-gradient(135deg, #409EFF, #3375B9);
   color: white;
-  border: none;
+  box-shadow: 0 2px 6px rgba(64, 158, 255, 0.3);
+}
+
+.action-btn.download-btn {
+  background: linear-gradient(135deg, #67C23A, #529B2E);
+  color: white;
+  box-shadow: 0 2px 6px rgba(103, 194, 58, 0.3);
 }
 
 .action-btn.delete-btn {
-  background: linear-gradient(135deg, #FF6B6B, #FF8E8E);
+  background: linear-gradient(135deg, #F56C6C, #D95454);
   color: white;
-  border: none;
+  box-shadow: 0 2px 6px rgba(245, 108, 108, 0.3);
 }
 
 .action-btn:hover {
   transform: translateY(-1px);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  opacity: 0.9;
 }
 
-.user-table {
+.tech-table {
   border-radius: 8px;
-  border: 1px solid #ECE9F4;
+  border: 1px solid #EBEEF5;
 }
 
-.user-table .el-table__body tr:hover>td {
-  background-color: #F5F2FF !important;
+.tech-table .el-table__body tr:hover>td {
+  background-color: #F5F9FF !important;
 }
 
-.table-pagination .el-pagination.is-background .el-pager li:not(.disabled).active {
-  background-color: #7B68EE;
+.tech-pagination .el-pagination.is-background .el-pager li:not(.disabled).active {
+  background-color: #409EFF;
   color: white;
-  border-radius: 50%;
 }
 
-.password-dialog .el-dialog__header {
-  background-color: #ECE9F4;
-  padding: 15px 20px;
-  border-radius: 8px 8px 0 0;
+.tech-pagination .el-pagination.is-background .el-pager li:hover {
+  color: #409EFF;
 }
 
-.password-dialog .el-dialog__title {
-  color: #4A2B90;
-  font-weight: bold;
+.tech-message-box {
+  border-radius: 8px;
+  border: 1px solid #409EFF;
 }
 
-.password-dialog .el-dialog__body {
-  color: #5F4B8B;
+.tech-message-box .el-message-box__title {
+  color: #1E2B45;
+  font-weight: 600;
 }
 
-.user-confirm .el-message-box__header {
-  background-color: #ECE9F4;
-  padding: 15px 20px;
+.tech-message {
+  border-radius: 4px;
+  background-color: #fff;
+  box-shadow: 0 2px 12px 0 rgba(64, 158, 255, 0.2);
 }
 
-.user-confirm .el-message-box__title {
-  color: #4A2B90;
+.tech-message .el-message__content {
+  color: #1E2B45;
 }
 
-.user-confirm .el-message-box__content {
-  color: #5F4B8B;
+.el-popconfirm__action {
+  text-align: center;
 }
 
-.user-message {
-  border-radius: 20px;
+.el-popconfirm__action button {
+  border-radius: 4px;
+  padding: 6px 12px;
 }
 
-.el-tree-node__content {
-  height: 40px;
+.el-popconfirm__action button:first-child {
+  background: linear-gradient(135deg, #409EFF, #3375B9);
+  border: none;
+  color: white;
 }
 
-.el-tree-node:focus>.el-tree-node__content {
-  background-color: #F0EEF7 !important;
+.el-popconfirm__action button:last-child {
+  color: #409EFF;
+  border: 1px solid #DCDFE6;
+  background: #fff;
 }
 
-.el-tree--highlight-current .el-tree-node.is-current>.el-tree-node__content {
-  background-color: #F0EEF7;
-  color: #7B68EE;
-  font-weight: bold;
+.el-tag {
+  display: inline-flex;
+  align-items: center;
+  padding: 0 8px;
+  height: 24px;
+  line-height: 24px;
+  border-radius: 4px;
+}
+
+.el-tag i {
+  margin-right: 4px;
 }
 </style>
