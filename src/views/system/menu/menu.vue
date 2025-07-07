@@ -8,10 +8,10 @@
               <i class="el-icon-menu"></i> 菜单名称:
             </span>
             <el-input
-              size="small"
-              placeholder="请输入菜单名称"
-              v-model="search.menuName"
-              class="tech-input">
+                size="small"
+                placeholder="请输入菜单名称"
+                v-model="search.menuName"
+                class="tech-input">
               <i slot="prefix" class="el-icon-edit-outline"></i>
             </el-input>
           </div>
@@ -21,22 +21,22 @@
             <span class="search-title">
               <i class="el-icon-circle-check"></i> 菜单状态:
             </span>
-            <el-select 
-              clearable 
-              size="small" 
-              v-model="search.status" 
-              placeholder="请选择"
-              class="tech-select">
+            <el-select
+                clearable
+                size="small"
+                v-model="search.status"
+                placeholder="请选择"
+                class="tech-select">
               <el-option
-                label="正常"
-                value="0">
+                  label="正常"
+                  value="0">
                 <span class="status-option">
                   <i class="el-icon-success" style="color:#67C23A"></i> 正常
                 </span>
               </el-option>
               <el-option
-                label="停用"
-                value="1">
+                  label="停用"
+                  value="1">
                 <span class="status-option">
                   <i class="el-icon-error" style="color:#F56C6C"></i> 停用
                 </span>
@@ -46,19 +46,19 @@
         </el-col>
         <el-col :xs="24" :sm="12" :md="8" :lg="8" :xl="8">
           <div class="search-actions">
-            <el-button 
-              size="small" 
-              icon="el-icon-search" 
-              type="primary" 
-              @click="query"
-              class="search-btn">
+            <el-button
+                size="small"
+                icon="el-icon-search"
+                type="primary"
+                @click="query"
+                class="search-btn">
               查询
             </el-button>
-            <el-button 
-              size="small" 
-              icon="el-icon-refresh" 
-              @click="refresh"
-              class="reset-btn">
+            <el-button
+                size="small"
+                icon="el-icon-refresh"
+                @click="refresh"
+                class="reset-btn">
               重置
             </el-button>
           </div>
@@ -68,39 +68,39 @@
 
     <div class="data-panel">
       <div class="action-bar">
-        <el-button 
-          type="primary" 
-          size="small" 
-          icon="el-icon-plus" 
-          @click="addMenu"
-          class="action-btn add-btn">
+        <el-button
+            type="primary"
+            size="small"
+            icon="el-icon-plus"
+            @click="addMenu"
+            class="action-btn add-btn">
           新增
         </el-button>
-        <el-button 
-          type="info" 
-          size="small" 
-          icon="el-icon-sort" 
-          @click="changeExpand"
-          class="action-btn expand-btn">
+        <el-button
+            type="info"
+            size="small"
+            icon="el-icon-sort"
+            @click="changeExpand"
+            class="action-btn expand-btn">
           {{ expand ? '折叠' : '展开' }}
         </el-button>
       </div>
 
       <el-table
-        v-if="refreshTable"
-        v-loading="loading"
-        :data="tableData"
-        :header-cell-style="tableHeaderStyle"
-        :row-style="tableRowStyle"
-        style="width: 100%;margin-bottom: 20px;"
-        row-key="id"
-        :default-expand-all="expand"
-        :tree-props="{children: 'children', hasChildren: 'hasChildren'}"
-        class="tech-table">
+          v-if="refreshTable"
+          v-loading="loading"
+          :data="tableData"
+          :header-cell-style="tableHeaderStyle"
+          :row-style="tableRowStyle"
+          style="width: 100%;margin-bottom: 20px;"
+          row-key="id"
+          :default-expand-all="expand"
+          :tree-props="{children: 'children', hasChildren: 'hasChildren'}"
+          class="tech-table">
         <el-table-column
-          prop="menuName"
-          label="菜单名称"
-          min-width="200">
+            prop="menuName"
+            label="菜单名称"
+            min-width="200">
           <template #default="{row}">
             <div class="name-cell">
               <i :class="row.icon || 'el-icon-document'" style="color:#7B68EE; margin-right:8px"></i>
@@ -109,9 +109,9 @@
           </template>
         </el-table-column>
         <el-table-column
-          prop="icon"
-          label="图标"
-          width="120">
+            prop="icon"
+            label="图标"
+            width="120">
           <template #default="{row}">
             <div class="icon-cell">
               <i :class="row.icon || 'el-icon-question'" style="color:#9370DB"></i>
@@ -119,9 +119,9 @@
           </template>
         </el-table-column>
         <el-table-column
-          prop="orderNum"
-          label="排序"
-          width="100">
+            prop="orderNum"
+            label="排序"
+            width="100">
           <template #default="{row}">
             <div class="order-cell">
               <i class="el-icon-sort" style="color:#A5A4BF; margin-right:5px"></i>
@@ -129,7 +129,8 @@
             </div>
           </template>
         </el-table-column>
-        <el-table-column
+        <!-- 注释掉权限标识列 -->
+        <!-- <el-table-column
           prop="perms"
           label="权限标识"
           min-width="180">
@@ -139,8 +140,9 @@
               <span>{{ row.perms || '-' }}</span>
             </div>
           </template>
-        </el-table-column>
-        <el-table-column
+        </el-table-column> -->
+        <!-- 注释掉组件路径列 -->
+        <!-- <el-table-column
           prop="componentUrl"
           label="组件路径"
           min-width="200">
@@ -150,32 +152,32 @@
               <span>{{ row.componentUrl || '-' }}</span>
             </div>
           </template>
-        </el-table-column>
+        </el-table-column> -->
         <el-table-column
-          prop="status"
-          label="状态"
-          width="120">
+            prop="status"
+            label="状态"
+            width="120">
           <template #default="{row}">
             <div class="status-cell">
-              <el-tag 
-                v-if="row.status == 0" 
-                type="success"
-                effect="dark">
+              <el-tag
+                  v-if="row.status == 0"
+                  type="success"
+                  effect="dark">
                 <i class="el-icon-success"></i> 正常
               </el-tag>
-              <el-tag 
-                v-if="row.status == 1" 
-                type="warning"
-                effect="dark">
+              <el-tag
+                  v-if="row.status == 1"
+                  type="warning"
+                  effect="dark">
                 <i class="el-icon-error"></i> 停用
               </el-tag>
             </div>
           </template>
         </el-table-column>
         <el-table-column
-          prop="createTime"
-          label="创建时间"
-          width="180">
+            prop="createTime"
+            label="创建时间"
+            width="180">
           <template #default="{row}">
             <div class="time-cell">
               <i class="el-icon-time" style="color:#A5A4BF; margin-right:5px"></i>
@@ -184,37 +186,38 @@
           </template>
         </el-table-column>
         <el-table-column
-          label="操作"
-          width="180"
-          fixed="right">
+            label="操作"
+            width="180"
+            fixed="right">
           <template #default="{row}">
             <div class="action-buttons">
-              <el-dropdown 
-                trigger="click" 
-                @command="handleCommand"
-                placement="bottom-end">
-                <el-button 
-                  size="mini" 
-                  class="action-btn more-btn">
+              <el-dropdown
+                  trigger="click"
+                  @command="handleCommand"
+                  placement="bottom-end">
+                <el-button
+                    size="mini"
+                    class="action-btn more-btn">
                   <i class="el-icon-more"></i> 操作
                 </el-button>
                 <el-dropdown-menu slot="dropdown" class="tech-dropdown">
-                  <el-dropdown-item 
-                    icon="el-icon-plus" 
+                  <!-- 注释掉新增操作（与父菜单相关） -->
+                  <!-- <el-dropdown-item
+                    icon="el-icon-plus"
                     :command="row.idArrary + '#add#' + row.id"
                     class="dropdown-item">
                     新增
-                  </el-dropdown-item>
-                  <el-dropdown-item 
-                    icon="el-icon-edit" 
-                    :command="row.id + '#edit'"
-                    class="dropdown-item">
+                  </el-dropdown-item> -->
+                  <el-dropdown-item
+                      icon="el-icon-edit"
+                      :command="row.id + '#edit'"
+                      class="dropdown-item">
                     修改
                   </el-dropdown-item>
-                  <el-dropdown-item 
-                    icon="el-icon-delete" 
-                    :command="row.id + '#remove'"
-                    class="dropdown-item delete-item">
+                  <el-dropdown-item
+                      icon="el-icon-delete"
+                      :command="row.id + '#remove'"
+                      class="dropdown-item delete-item">
                     删除
                   </el-dropdown-item>
                 </el-dropdown-menu>
@@ -224,9 +227,10 @@
         </el-table-column>
       </el-table>
     </div>
-    
-    <add-menu @addMenuFalse="addMenuFalse" :disable="disable" :parentId="parentId" :dropData="tableData" :addMenuVisible="addMenuVisible"></add-menu>
-    <update-menu @updateMenuFalse="updateMenuFalse" :updateId="updateId" :dropData="tableData" :updateMenuVisible="updateMenuVisible"></update-menu>
+
+    <!-- 注释掉与父菜单相关的组件 -->
+    <!-- <add-menu @addMenuFalse="addMenuFalse" :disable="disable" :parentId="parentId" :dropData="tableData" :addMenuVisible="addMenuVisible"></add-menu> -->
+    <!-- <update-menu @updateMenuFalse="updateMenuFalse" :updateId="updateId" :dropData="tableData" :updateMenuVisible="updateMenuVisible"></update-menu> -->
   </div>
 </template>
 

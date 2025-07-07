@@ -1,116 +1,137 @@
 <template>
-<div>
-  <el-dialog title="新增菜单" width="40%" :destroy-on-close="true" :visible.sync="updateMenuVisible" :before-close="handleClose">
-    <el-form :model="form" :rules="rules" ref="ruleForm">
-      <el-row :gutter="10">
-        <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
-            <span class="search-title">上级菜单:</span>
-            <el-form-item prop="menuName" style="margin-bottom:0">
-                <el-cascader
-                    :value="parentId"
-                    @change="handleChange"
-                    size="mini"
-                    :options="dropData"
-                    :props="{ checkStrictly: true,value:'id',label:'menuName',children:'children' }"
-                    clearable>
-                </el-cascader>
-            </el-form-item>
-        </el-col>
-        <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
-            <span class="search-title">菜单类型:</span>
-            <el-form-item prop="menuType" style="margin-bottom:0">
-                <el-radio-group style="margin-top:1px;height:40px;display:flex;align-items: center" v-model="form.menuType">
-                  <el-radio style="margin-right:10px" label="0">目录</el-radio>
-                  <el-radio style="margin-right:10px" label="1">菜单</el-radio>
-                  <el-radio style="margin-right:10px" label="2">按钮</el-radio>
-                </el-radio-group>
-            </el-form-item>
-        </el-col>
-        <el-col v-if="form.menuType != 2" :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
+  <div>
+    <el-dialog title="新增菜单" width="40%" :destroy-on-close="true" :visible.sync="updateMenuVisible" :before-close="handleClose">
+      <el-form :model="form" :rules="rules" ref="ruleForm">
+        <el-row :gutter="10">
+          <!-- 注释掉上级菜单部分 -->
+          <!-- <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
+              <span class="search-title">上级菜单:</span>
+              <el-form-item prop="menuName" style="margin-bottom:0">
+                  <el-cascader
+                      :value="parentId"
+                      @change="handleChange"
+                      size="mini"
+                      :options="dropData"
+                      :props="{ checkStrictly: true,value:'id',label:'menuName',children:'children' }"
+                      clearable>
+                  </el-cascader>
+              </el-form-item>
+          </el-col> -->
+
+          <!-- 注释掉菜单类型部分 -->
+          <!-- <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
+              <span class="search-title">菜单类型:</span>
+              <el-form-item prop="menuType" style="margin-bottom:0">
+                  <el-radio-group style="margin-top:1px;height:40px;display:flex;align-items: center" v-model="form.menuType">
+                    <el-radio style="margin-right:10px" label="0">目录</el-radio>
+                    <el-radio style="margin-right:10px" label="1">菜单</el-radio>
+                    <el-radio style="margin-right:10px" label="2">按钮</el-radio>
+                  </el-radio-group>
+              </el-form-item>
+          </el-col> -->
+
+          <!-- 保留菜单图标部分 -->
+          <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
             <span class="search-title">菜单图标:</span>
             <el-form-item prop="icon" style="margin-bottom:0">
-                <el-autocomplete  size="mini"
-                    popper-class="my-autocomplete"
-                    v-model="form.icon"
-                    :fetch-suggestions="querySearch"
-                    placeholder="请选择图标">
-                    <template slot-scope="{ item }">
-                      <div style="text-align:center"><i :class="item.value"></i></div>
-                    </template>
-                </el-autocomplete>
+              <el-autocomplete  size="mini"
+                                popper-class="my-autocomplete"
+                                v-model="form.icon"
+                                :fetch-suggestions="querySearch"
+                                placeholder="请选择图标">
+                <template slot-scope="{ item }">
+                  <div style="text-align:center"><i :class="item.value"></i></div>
+                </template>
+              </el-autocomplete>
             </el-form-item>
-        </el-col>
-        <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
+          </el-col>
+
+          <!-- 保留菜单名称部分 -->
+          <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
             <span class="search-title">菜单名称:</span>
             <el-form-item prop="menuName" style="margin-bottom:0">
-                <el-input v-model="form.menuName" size="mini" placeholder="请输入菜单名称" autocomplete="off"></el-input>
+              <el-input v-model="form.menuName" size="mini" placeholder="请输入菜单名称" autocomplete="off"></el-input>
             </el-form-item>
-        </el-col>
-        <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
+          </el-col>
+
+          <!-- 保留显示排序部分 -->
+          <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
             <span class="search-title">显示排序:</span>
             <el-form-item prop="orderNum" style="margin-bottom:0">
               <el-input-number size="mini" v-model="form.orderNum" :min="1"  label="显示排序"></el-input-number>
             </el-form-item>
-        </el-col>
-        <el-col v-if="form.menuType != 0" :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
-            <span class="search-title">
-                <el-tooltip class="item" effect="dark" content="控制器中定义的权限字符，如：@PreAuthorize(`@ss.hasRole('admin')`)" placement="top-start">
-                    <i class="el-icon-question"></i>
-                </el-tooltip>
-                权限字符:
-                </span>
-            <el-form-item prop="perms" style="margin-bottom:0">
-                <el-input v-model="form.perms" size="mini" placeholder="请输入权限字符" autocomplete="off"></el-input>
-            </el-form-item>
-        </el-col>
-        <el-col v-if="form.menuType != 2" :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
-            <span class="search-title">
-                <el-tooltip class="item" effect="dark" content="访问的路由地址，如：`user`，如外网地址需内链访问则以`http(s)://`开头" placement="top-start">
-                    <i class="el-icon-question"></i>
-                </el-tooltip>
-                路由地址:
-            </span>
-            <el-form-item prop="routeUrl" style="margin-bottom:0">
-                <el-input v-model="form.routeUrl" size="mini" placeholder="请输入路由地址" autocomplete="off"></el-input>
-            </el-form-item>
-        </el-col>
-        <el-col v-if="form.menuType == 1" :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
-            <span class="search-title">
-                <el-tooltip class="item" effect="dark" content="访问的组件路径，如：`system/user/index`，默认在`views`目录下" placement="top-start">
-                    <i class="el-icon-question"></i>
-                </el-tooltip>
-                组件路径:
-            </span>
-            <el-form-item prop="componentUrl" style="margin-bottom:0">
-                <el-input v-model="form.componentUrl" size="mini" placeholder="请输入路由路径" autocomplete="off"></el-input>
-            </el-form-item>
-        </el-col>
-        <el-col v-if="form.menuType == 1" :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
-            <span class="search-title">
-                <el-tooltip class="item" effect="dark" content="访问路由的默认传递参数" placement="top-start">
-                    <i class="el-icon-question"></i>
-                </el-tooltip>
-                路由参数:
-            </span>
-            <el-form-item prop="param" style="margin-bottom:0">
-                <el-input v-model="form.param" size="mini" placeholder="请输入路由参数" autocomplete="off"></el-input>
-            </el-form-item>
-        </el-col>
-        <el-col v-if="form.menuType != 2" :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
-            <span class="search-title">
-                <el-tooltip class="item" effect="dark" content="选择是外链则路由地址需要以`http(s)://`开头" placement="top-start">
-                    <i class="el-icon-question"></i>
-                </el-tooltip>
-                是否外链:
-            </span>
-            <el-form-item prop="target" style="margin-bottom:0">
-                <el-radio-group style="margin-top:1px;height:40px;display:flex;align-items: center" v-model="form.target">
-                    <el-radio label="0">是</el-radio>
-                    <el-radio label="1">否</el-radio>
-                </el-radio-group>
-            </el-form-item>
-        </el-col>
-        <el-col v-if="form.menuType != 2" :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
+          </el-col>
+
+          <!-- 注释掉权限字符部分 -->
+          <!-- <el-col v-if="form.menuType != 0" :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
+              <span class="search-title">
+                  <el-tooltip class="item" effect="dark" content="控制器中定义的权限字符，如：@PreAuthorize(`@ss.hasRole('admin')`)" placement="top-start">
+                      <i class="el-icon-question"></i>
+                  </el-tooltip>
+                  权限字符:
+                  </span>
+              <el-form-item prop="perms" style="margin-bottom:0">
+                  <el-input v-model="form.perms" size="mini" placeholder="请输入权限标识" autocomplete="off"></el-input>
+              </el-form-item>
+          </el-col> -->
+
+          <!-- 注释掉路由地址部分 -->
+          <!-- <el-col v-if="form.menuType != 2" :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
+              <span class="search-title">
+                  <el-tooltip class="item" effect="dark" content="访问的路由地址，如：`user`，如外网地址需内链访问则以`http(s)://`开头" placement="top-start">
+                      <i class="el-icon-question"></i>
+                  </el-tooltip>
+                  路由地址:
+              </span>
+              <el-form-item prop="routeUrl" style="margin-bottom:0">
+                  <el-input v-model="form.routeUrl" size="mini" placeholder="请输入路由地址" autocomplete="off"></el-input>
+              </el-form-item>
+          </el-col> -->
+
+          <!-- 注释掉组件路径部分 -->
+          <!-- <el-col v-if="form.menuType == 1" :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
+              <span class="search-title">
+                  <el-tooltip class="item" effect="dark" content="访问的组件路径，如：`system/user/index`，默认在`views`目录下" placement="top-start">
+                      <i class="el-icon-question"></i>
+                  </el-tooltip>
+                  组件路径:
+              </span>
+              <el-form-item prop="componentUrl" style="margin-bottom:0">
+                  <el-input v-model="form.componentUrl" size="mini" placeholder="请输入路由路径" autocomplete="off"></el-input>
+              </el-form-item>
+          </el-col> -->
+
+          <!-- 注释掉路由参数部分 -->
+          <!-- <el-col v-if="form.menuType == 1" :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
+              <span class="search-title">
+                  <el-tooltip class="item" effect="dark" content="访问路由的默认传递参数" placement="top-start">
+                      <i class="el-icon-question"></i>
+                  </el-tooltip>
+                  路由参数:
+              </span>
+              <el-form-item prop="param" style="margin-bottom:0">
+                  <el-input v-model="form.param" size="mini" placeholder="请输入路由参数" autocomplete="off"></el-input>
+              </el-form-item>
+          </el-col> -->
+
+          <!-- 注释掉是否外链部分 -->
+          <!-- <el-col v-if="form.menuType != 2" :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
+              <span class="search-title">
+                  <el-tooltip class="item" effect="dark" content="选择是外链则路由地址需要以`http(s)://`开头" placement="top-start">
+                      <i class="el-icon-question"></i>
+                  </el-tooltip>
+                  是否外链:
+              </span>
+              <el-form-item prop="target" style="margin-bottom:0">
+                  <el-radio-group style="margin-top:1px;height:40px;display:flex;align-items: center" v-model="form.target">
+                      <el-radio label="0">是</el-radio>
+                      <el-radio label="1">否</el-radio>
+                  </el-radio-group>
+              </el-form-item>
+          </el-col> -->
+
+          <!-- 保留显示状态部分 -->
+          <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
             <span class="search-title">
                 <el-tooltip class="item" effect="dark" content="选择隐藏则路由将不会出现在侧边栏，但仍然可以访问" placement="top-start">
                     <i class="el-icon-question"></i>
@@ -118,13 +139,15 @@
                 显示状态:
             </span>
             <el-form-item prop="visible" style="margin-bottom:0">
-                <el-radio-group style="margin-top:1px;height:40px;display:flex;align-items: center" v-model="form.visible">
-                    <el-radio label="0">显示</el-radio>
-                    <el-radio label="1">隐藏</el-radio>
-                </el-radio-group>
+              <el-radio-group style="margin-top:1px;height:40px;display:flex;align-items: center" v-model="form.visible">
+                <el-radio label="0">显示</el-radio>
+                <el-radio label="1">隐藏</el-radio>
+              </el-radio-group>
             </el-form-item>
-        </el-col>
-        <el-col v-if="form.menuType != 2" :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
+          </el-col>
+
+          <!-- 保留菜单状态部分 -->
+          <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
             <span class="search-title">
                 <el-tooltip class="item" effect="dark" content="选择停用则路由将不会出现在侧边栏，也不能被访问" placement="top-start">
                     <i class="el-icon-question"></i>
@@ -132,20 +155,20 @@
                 菜单状态:
             </span>
             <el-form-item prop="status" style="margin-bottom:0">
-                <el-radio-group style="margin-top:1px;height:40px;display:flex;align-items: center" v-model="form.status">
-                    <el-radio label="0">正常</el-radio>
-                    <el-radio label="1">停用</el-radio>
-                </el-radio-group>
+              <el-radio-group style="margin-top:1px;height:40px;display:flex;align-items: center" v-model="form.status">
+                <el-radio label="0">正常</el-radio>
+                <el-radio label="1">停用</el-radio>
+              </el-radio-group>
             </el-form-item>
-        </el-col>
-      </el-row>
-    </el-form>
-    <div slot="footer" class="dialog-footer">
-      <el-button size="mini" type="primary" @click="submit">确 定</el-button>
-      <el-button size="mini" @click="handleClose">取 消</el-button>
-    </div>
-  </el-dialog>
-</div>
+          </el-col>
+        </el-row>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button size="mini" type="primary" @click="submit">确 定</el-button>
+        <el-button size="mini" @click="handleClose">取 消</el-button>
+      </div>
+    </el-dialog>
+  </div>
 </template>
 
 <script>

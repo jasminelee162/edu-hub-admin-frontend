@@ -12,7 +12,7 @@
                       <el-input v-model="form.name" size="mini" placeholder="请输入考试名称" autocomplete="off"></el-input>
                   </el-form-item>
                 </div>
-        </el-col> 
+        </el-col>
         <el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24">
             <span class="search-title">
                 所属课程:
@@ -72,6 +72,8 @@
             </el-form-item>
             </div>
         </el-col>
+
+
         <el-col style="margin-top:20px" :xs="24" :sm="24" :md="24" :lg="24" :xl="24">
             <span class="search-title">
                 备注:
@@ -185,7 +187,7 @@
       },
     },
     created() {
-     
+
     },
     mounted() {
       if(this.flag == 2) {
@@ -209,7 +211,7 @@
             }
           })
         }
-        
+
       }
     }
  }
