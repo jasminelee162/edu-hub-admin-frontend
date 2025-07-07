@@ -68,14 +68,14 @@
 
     <div class="data-panel">
       <div class="action-bar">
-        <el-button
+        <!--<el-button
             type="primary"
             size="small"
             icon="el-icon-plus"
             @click="addMenu"
             class="action-btn add-btn">
           新增
-        </el-button>
+        </el-button>-->
         <el-button
             type="info"
             size="small"
@@ -129,30 +129,28 @@
             </div>
           </template>
         </el-table-column>
-        <!-- 注释掉权限标识列 -->
-        <!-- <el-table-column
-          prop="perms"
-          label="权限标识"
-          min-width="180">
+        <!--<el-table-column
+            prop="perms"
+            label="权限标识"
+            min-width="180">
           <template #default="{row}">
             <div class="perms-cell">
               <i class="el-icon-key" style="color:#A5A4BF; margin-right:5px"></i>
               <span>{{ row.perms || '-' }}</span>
             </div>
           </template>
-        </el-table-column> -->
-        <!-- 注释掉组件路径列 -->
-        <!-- <el-table-column
-          prop="componentUrl"
-          label="组件路径"
-          min-width="200">
+        </el-table-column>
+        <el-table-column
+            prop="componentUrl"
+            label="组件路径"
+            min-width="200">
           <template #default="{row}">
             <div class="path-cell">
               <i class="el-icon-link" style="color:#A5A4BF; margin-right:5px"></i>
               <span>{{ row.componentUrl || '-' }}</span>
             </div>
           </template>
-        </el-table-column> -->
+        </el-table-column>-->
         <el-table-column
             prop="status"
             label="状态"
@@ -201,13 +199,12 @@
                   <i class="el-icon-more"></i> 操作
                 </el-button>
                 <el-dropdown-menu slot="dropdown" class="tech-dropdown">
-                  <!-- 注释掉新增操作（与父菜单相关） -->
-                  <!-- <el-dropdown-item
-                    icon="el-icon-plus"
-                    :command="row.idArrary + '#add#' + row.id"
-                    class="dropdown-item">
+                  <!--<el-dropdown-item
+                      icon="el-icon-plus"
+                      :command="row.idArrary + '#add#' + row.id"
+                      class="dropdown-item">
                     新增
-                  </el-dropdown-item> -->
+                  </el-dropdown-item>-->
                   <el-dropdown-item
                       icon="el-icon-edit"
                       :command="row.id + '#edit'"
@@ -228,59 +225,128 @@
       </el-table>
     </div>
 
-    <!-- 注释掉与父菜单相关的组件 -->
-    <!-- <add-menu @addMenuFalse="addMenuFalse" :disable="disable" :parentId="parentId" :dropData="tableData" :addMenuVisible="addMenuVisible"></add-menu> -->
-    <!-- <update-menu @updateMenuFalse="updateMenuFalse" :updateId="updateId" :dropData="tableData" :updateMenuVisible="updateMenuVisible"></update-menu> -->
+    <add-menu @addMenuFalse="addMenuFalse" :disable="disable" :parentId="parentId" :dropData="tableData" :addMenuVisible="addMenuVisible"></add-menu>
+    <update-menu @updateMenuFalse="updateMenuFalse" :updateId="updateId" :dropData="tableData" :updateMenuVisible="updateMenuVisible"></update-menu>
   </div>
 </template>
 
 <script>
-  import {getMenuList,removeMenu} from '../../../api/api' 
-  import addMenu from '../../../components/system/menu/addMenu'
-  import updateMenu from '../../../components/system/menu/updateMenu'
-  export default {
-    data() {
-      return{
-        loading: true,
-        refreshTable: true,
-        expand:true,
-        addMenuVisible: false,
-        updateMenuVisible: false,
-        search: {
-            menuName: "",
-            status: "",
-        },
-        tableData: [],
-        parentId: [],
-        disable: false,
-        updateId: "",
+import {getMenuList,removeMenu} from '../../../api/api'
+import addMenu from '../../../components/system/menu/addMenu'
+import updateMenu from '../../../components/system/menu/updateMenu'
+export default {
+  data() {
+    return{
+      loading: true,
+      refreshTable: true,
+      expand:true,
+      addMenuVisible: false,
+      updateMenuVisible: false,
+      search: {
+        menuName: "",
+        status: "",
+      },
+      tableData: [],
+      parentId: [],
+      disable: false,
+      updateId: "",
+    }
+  },
+  components: {
+    addMenu,
+    updateMenu
+  },
+  methods: {
+    tableHeaderStyle() {
+      return {
+        'color': '#4A2B90',
+        'background-color': '#ECE9F4',
+        'font-weight': 'bold',
+        'border-bottom': '1px solid #7B68EE'
       }
     },
-    components: {
-      addMenu,
-      updateMenu
+    tableRowStyle() {
+      return {
+        'color': '#5F4B8B',
+        'font-size': '14px',
+        'border-bottom': '1px solid #F0EEF7'
+      }
     },
-    methods: {
-      tableHeaderStyle() {
-        return {
-          'color': '#4A2B90',
-          'background-color': '#ECE9F4',
-          'font-weight': 'bold',
-          'border-bottom': '1px solid #7B68EE'
+    query() {
+      getMenuList(this.search).then(res => {
+        if(res.code == 1000) {
+          this.tableData = res.data
+          this.loading = false
+        } else {
+          this.$notify.error({
+            title: '错误',
+            message: res.message
+          });
         }
-      },
-      tableRowStyle() {
-        return {
-          'color': '#5F4B8B',
-          'font-size': '14px',
-          'border-bottom': '1px solid #F0EEF7'
+      })
+    },
+    refresh() {
+      this.search.menuName = ""
+      this.search.status = ""
+      this.query()
+    },
+    changeExpand() {
+      this.refreshTable = false;
+      this.expand = !this.expand;
+      this.$nextTick(() => {
+        this.refreshTable = true;
+      });
+    },
+    addMenu() {
+      this.addMenuVisible = true
+    },
+    addMenuFalse() {
+      this.addMenuVisible = false
+      this.parentId = []
+      this.disable = false
+      this.query()
+    },
+    updateMenu() {
+      this.updateMenuVisible = true
+    },
+    updateMenuFalse() {
+      this.updateId = ""
+      this.updateMenuVisible = false
+      this.query()
+    },
+    handleCommand(command) {
+      var data = command.split("#")
+      if(data[1] == 'add') {
+        var idArrary = data[0].split(",")
+        var id = data[2]
+        if (idArrary[0] != "0") {
+          this.parentId = idArrary
         }
-      },
-      query() {
-        getMenuList(this.search).then(res => {
+        this.parentId.push(id)
+        this.disable = true
+        this.addMenu()
+      } else if (data[1] == 'edit') {
+        this.updateId = data[0]
+        this.updateMenu()
+      } else {
+        this.deleteDate(data[0])
+      }
+    },
+    deleteDate(id) {
+      this.$confirm('确定删除选中的数据?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning',
+        customClass: 'tech-message-box'
+      }).then(() => {
+        removeMenu({id:id}).then(res => {
           if(res.code == 1000) {
-            this.tableData = res.data
-            this.loading = false
+            this.$message({
+              type: 'success',
+              message: '删除成功!',
+              customClass: 'tech-message'
+            });
+            this.query()
           } else {
             this.$notify.error({
               title: '错误',
@@ -288,83 +354,13 @@
             });
           }
         })
-      },
-      refresh() {
-        this.search.menuName = ""
-        this.search.status = ""
-        this.query()
-      },
-      changeExpand() {
-        this.refreshTable = false;
-        this.expand = !this.expand;
-        this.$nextTick(() => {
-          this.refreshTable = true;
-        });
-      },
-      addMenu() {
-        this.addMenuVisible = true
-      },
-      addMenuFalse() {
-        this.addMenuVisible = false
-        this.parentId = []
-        this.disable = false
-        this.query()
-      },
-      updateMenu() {
-        this.updateMenuVisible = true
-      },
-      updateMenuFalse() {
-        this.updateId = ""
-        this.updateMenuVisible = false
-        this.query()
-      },
-      handleCommand(command) {
-        var data = command.split("#")
-        if(data[1] == 'add') {
-          var idArrary = data[0].split(",")
-          var id = data[2]
-          if (idArrary[0] != "0") {
-            this.parentId = idArrary
-          }
-          this.parentId.push(id)
-          this.disable = true
-          this.addMenu()
-        } else if (data[1] == 'edit') {
-          this.updateId = data[0]
-          this.updateMenu()
-        } else {
-          this.deleteDate(data[0])
-        }
-      },
-      deleteDate(id) {
-        this.$confirm('确定删除选中的数据?', '提示', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          type: 'warning',
-          customClass: 'tech-message-box'
-        }).then(() => {
-          removeMenu({id:id}).then(res => {
-            if(res.code == 1000) {
-              this.$message({
-                type: 'success',
-                message: '删除成功!',
-                customClass: 'tech-message'
-              });
-              this.query()
-            } else {
-              this.$notify.error({
-                title: '错误',
-                message: res.message
-              });
-            }
-          })
-        }).catch(() => {});
-      }
-    },
-    mounted() {
-      this.query()
+      }).catch(() => {});
     }
- }
+  },
+  mounted() {
+    this.query()
+  }
+}
 </script>
 
 <style scoped>
@@ -418,7 +414,7 @@
   border-bottom: 1px solid #F0EEF7;
 }
 
-.name-cell, .icon-cell, .order-cell, .perms-cell, 
+.name-cell, .icon-cell, .order-cell, .perms-cell,
 .path-cell, .status-cell, .time-cell {
   display: flex;
   align-items: center;
