@@ -69,8 +69,8 @@
                 <el-checkbox v-for="(item, index) in content" :key="'check-' + index" :label="item.value">{{ item.value }}</el-checkbox>
               </el-checkbox-group>
               <el-radio-group v-else-if="form.type == '3'" v-model="form.answer" size="mini">
-                <el-radio label="对">对</el-radio>
-                <el-radio label="错">错</el-radio>
+                <el-radio label="正确">正确</el-radio>
+                <el-radio label="错误">错误</el-radio>
               </el-radio-group>
               <el-input v-else type="textarea" v-model="form.answer" size="mini" placeholder="请输入答案" autocomplete="off" />
             </el-form-item>

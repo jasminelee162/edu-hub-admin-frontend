@@ -575,3 +575,64 @@ export default {
   margin-right: 4px;
 }
 </style>
+
+<style scoped>
+/* 调整表格单元格的对齐和间距 */
+.name-cell, .icon-cell, .order-cell, .status-cell, .time-cell {
+  display: flex;
+  align-items: center;
+  padding: 8px 0; /* 增加垂直内边距 */
+}
+
+/* 调整图标和文本的间距 */
+.name-cell i, .icon-cell i, .order-cell i, .time-cell i {
+  margin-right: 8px; /* 统一图标右边距 */
+  width: 20px; /* 固定图标宽度 */
+  text-align: center; /* 图标居中 */
+}
+
+/* 调整状态标签样式 */
+.status-cell .el-tag {
+  margin: 0 auto; /* 状态标签居中 */
+  width: 60px; /* 固定宽度 */
+  justify-content: center; /* 内容居中 */
+}
+
+/* 调整操作按钮 */
+.action-buttons {
+  display: flex;
+  justify-content: center; /* 操作按钮居中 */
+  padding: 8px 0;
+}
+
+/* 调整表格行高 */
+.el-table .el-table__row {
+  height: 50px; /* 固定行高 */
+}
+
+/* 调整表头样式 */
+.el-table__header th {
+  padding: 12px 0; /* 增加表头内边距 */
+  text-align: center; /* 表头文本居中 */
+}
+
+/* 调整表格单元格内边距 */
+.el-table .cell {
+  padding: 0 10px; /* 调整单元格左右内边距 */
+}
+</style>
+
+<style>
+/* 全局调整下拉菜单样式 */
+.el-dropdown-menu__item {
+  padding: 0 20px; /* 调整下拉菜单项内边距 */
+  text-align: center; /* 下拉菜单文本居中 */
+}
+
+/* 调整操作按钮的悬停效果 */
+.action-btn:hover {
+  transform: none; /* 移除悬停时的位移效果 */
+  box-shadow: 0 2px 6px rgba(123, 104, 238, 0.2); /* 减小阴影 */
+}
+</style>
+

@@ -67,8 +67,8 @@
 
               <!-- 判断题 -->
               <el-radio-group v-else-if="form.type == 3" v-model="form.answer" size="mini">
-                <el-radio label="对">对</el-radio>
-                <el-radio label="错">错</el-radio>
+                <el-radio label="正确">正确</el-radio>
+                <el-radio label="错误">错误</el-radio>
               </el-radio-group>
 
               <!-- 填空等其他 -->
