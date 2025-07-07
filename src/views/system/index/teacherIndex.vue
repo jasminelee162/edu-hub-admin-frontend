@@ -106,80 +106,37 @@
             </el-col>
         </el-row>
         
+        <!-- 中间图表区 - 修改后的版本 -->
         <el-row :gutter="20" class="index-center">
+            <!-- 左侧图表 - 替换为教学进度与成绩分布组合图 -->
             <el-col :span="16">
                 <el-card shadow="always" class="item-07">
-                    <div id="chart">
-
+                    <div class="chart-header">
+                        <span>教学进度与成绩分析</span>
+                        <el-select v-model="courseSelect" placeholder="选择课程" size="mini">
+                            <el-option
+                                v-for="item in courses"
+                                :key="item.value"
+                                :label="item.label"
+                                :value="item.value">
+                            </el-option>
+                        </el-select>
                     </div>
+                    <div id="progress-chart" style="width:100%;height:360px"></div>
                 </el-card>
             </el-col>
+            
+            <!-- 右侧图表 - 替换为课程资源旭日图 -->
             <el-col :span="8">
                 <el-card shadow="always" class="item-08">
-                    <div id="pie-chart">
-
+                    <div class="chart-header">
+                        <span>课程资源分布</span>
                     </div>
+                    <div id="resource-chart" style="width:100%;height:360px"></div>
                 </el-card>
             </el-col>
         </el-row>
-        <el-row :gutter="20" class="index-center-01">
-            <el-col :span="24">
-                <el-card shadow="always" class="item-09">
-                    <el-table
-                            :data="taskList"
-                            :header-cell-style="{
-              'color': '#4A2B90',
-              'background-color': '#ECE9F4',
-            }"
-                            :row-style="{
-              'color': '#888897',
-              'font-size': '15px',
-              'font-family':'黑体'
-            }"
-                            stripe
-                            style="width: 100%">
-                        <el-table-column
-                                prop="name"
-                                label="课程名称"
-                        >
-                        </el-table-column>
-                        <el-table-column
-                                prop="teacherName"
-                                label="教师"
-                        >
-                            <template slot-scope="scope">
-                                <div style="display:flex;align-items: center">
-                                    <img style="width:35px;height:35px" src="../../../assets/image/avator.png">
-                                    <div style="margin-left:10px">{{scope.row.teacherName}}</div>
-                                </div>
-                            </template>
-                        </el-table-column>
-                        <el-table-column
-                                prop="major"
-                                label="专业">
-                            <template slot-scope="scope">
-                                <el-button size="mini" type="primary">{{scope.row.major}}</el-button>
-                            </template>
-                        </el-table-column>
-                        <el-table-column
-                                prop="classification"
-                                label="课程分类">
-                            <template slot-scope="scope">
-                                <el-button size="mini" type="primary">{{scope.row.classification}}</el-button>
-                            </template>
-                        </el-table-column>
-                        <el-table-column
-                                prop="num"
-                                label="学生数量">
-                        </el-table-column>
-                        <el-table-column
-                                prop="createTime"
-                                label="创建时间">
-                        </el-table-column>
-                    </el-table>
-                </el-card>
-            </el-col>
-        </el-row>
+
         <el-row :gutter="20" class="index-under">
             <el-col :span="16">
                 <el-card shadow="always" class="item-10">
@@ -215,6 +172,7 @@
 <script>
 import {getIndexData,getIndexSexData,getTaskChart,getTaskIndexList} from '../../../api/api'
 import * as echarts from "echarts";
+
 export default {
     data() {
         return{
@@ -227,6 +185,14 @@ export default {
             today: new Date(),
             myChart: "",
             pieChart: "",
+                        courseSelect: '',
+            courses: [
+                { value: '1', label: '计算机科学导论' },
+                { value: '2', label: '数据结构与算法' },
+                { value: '3', label: '数据库系统原理' }
+            ],
+            progressChart: null,
+            resourceChart: null
         }
     },
     methods: {
@@ -283,20 +249,247 @@ export default {
             this.$store.commit('menu/addActiveMenu', param)
             this.$router.push("/teacher")
             this.$store.commit('menu/setActiveMenu', "/teacher")
+        },
+        initProgressChart() {
+            this.progressChart = echarts.init(document.getElementById("progress-chart"));
+            
+            // 模拟数据 - 实际应从API获取
+            const option = {
+                tooltip: {
+                    trigger: 'axis',
+                    axisPointer: {
+                        type: 'cross',
+                        crossStyle: {
+                            color: '#999'
+                        }
+                    }
+                },
+                legend: {
+                    data: ['计划进度', '实际进度', '平均成绩']
+                },
+                grid: [
+                    {
+                        top: '15%',
+                        height: '30%'
+                    },
+                    {
+                        top: '55%',
+                        height: '30%'
+                    }
+                ],
+                xAxis: [
+                    {
+                        type: 'category',
+                        data: ['第1周', '第2周', '第3周', '第4周', '第5周', '第6周', '第7周'],
+                        axisPointer: {
+                            type: 'shadow'
+                        },
+                        gridIndex: 0
+                    },
+                    {
+                        type: 'category',
+                        data: ['0-59', '60-69', '70-79', '80-89', '90-100'],
+                        gridIndex: 1
+                    }
+                ],
+                yAxis: [
+                    {
+                        type: 'value',
+                        name: '进度(%)',
+                        min: 0,
+                        max: 100,
+                        gridIndex: 0
+                    },
+                    {
+                        type: 'value',
+                        name: '人数',
+                        gridIndex: 1
+                    }
+                ],
+                series: [
+                    {
+                        name: '计划进度',
+                        type: 'line',
+                        smooth: true,
+                        data: [15, 30, 45, 60, 75, 90, 100],
+                        lineStyle: {
+                            color: '#8884d8',
+                            width: 3,
+                            type: 'dashed'
+                        },
+                        itemStyle: {
+                            color: '#8884d8'
+                        },
+                        xAxisIndex: 0,
+                        yAxisIndex: 0
+                    },
+                    {
+                        name: '实际进度',
+                        type: 'line',
+                        smooth: true,
+                        data: [10, 25, 40, 50, 65, 80, 95],
+                        lineStyle: {
+                            color: '#82ca9d',
+                            width: 3
+                        },
+                        itemStyle: {
+                            color: '#82ca9d'
+                        },
+                        areaStyle: {
+                            color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+                                {
+                                    offset: 0,
+                                    color: 'rgba(130, 202, 157, 0.3)'
+                                },
+                                {
+                                    offset: 1,
+                                    color: 'rgba(130, 202, 157, 0.1)'
+                                }
+                            ])
+                        },
+                        xAxisIndex: 0,
+                        yAxisIndex: 0
+                    },
+                    {
+                        name: '成绩分布',
+                        type: 'bar',
+                        barWidth: '60%',
+                        data: [2, 4, 10, 15, 8],
+                        itemStyle: {
+                            color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+                                { offset: 0, color: '#83bff6' },
+                                { offset: 0.5, color: '#188df0' },
+                                { offset: 1, color: '#188df0' }
+                            ])
+                        },
+                        xAxisIndex: 1,
+                        yAxisIndex: 1
+                    }
+                ]
+            };
+            
+            this.progressChart.setOption(option);
+        },
+        
+        initResourceChart() {
+            this.resourceChart = echarts.init(document.getElementById("resource-chart"));
+            
+            // 模拟数据 - 实际应从API获取
+            const option = {
+                title: {
+                    text: '资源类型分布',
+                    left: 'center',
+                    top: 10
+                },
+                series: {
+                    name: '资源分布',
+                    type: 'sunburst',
+                    data: [{
+                        name: '课程资源',
+                        children: [
+                            {
+                                name: '教学视频',
+                                value: 35,
+                                itemStyle: { color: '#5470c6' }
+                            },
+                            {
+                                name: '课件资料',
+                                value: 25,
+                                itemStyle: { color: '#91cc75' }
+                            },
+                            {
+                                name: '测试题库',
+                                value: 20,
+                                itemStyle: { color: '#fac858' }
+                            },
+                            {
+                                name: '阅读材料',
+                                value: 15,
+                                itemStyle: { color: '#ee6666' }
+                            },
+                            {
+                                name: '其他资源',
+                                value: 5,
+                                itemStyle: { color: '#73c0de' }
+                            }
+                        ]
+                    }],
+                    radius: [0, '90%'],
+                    label: {
+                        rotate: 'radial'
+                    },
+                    levels: [
+                        {},
+                        {
+                            r0: '15%',
+                            r: '45%',
+                            itemStyle: {
+                                borderWidth: 2
+                            },
+                            label: {
+                                rotate: 'tangential'
+                            }
+                        },
+                        {
+                            r0: '45%',
+                            r: '80%',
+                            label: {
+                                align: 'right'
+                            }
+                        },
+                        {
+                            r0: '80%',
+                            r: '82%',
+                            label: {
+                                position: 'outside',
+                                padding: 3,
+                                silent: false
+                            },
+                            itemStyle: {
+                                borderWidth: 3
+                            }
+                        }
+                    ]
+                }
+            };
+            
+            this.resourceChart.setOption(option);
         }
     },
     created() {
 
     },
     mounted() {
+        this.initProgressChart();
+        this.initResourceChart();
+        
+        // 窗口大小变化时重绘图表
+        window.addEventListener('resize', () => {
+            this.progressChart && this.progressChart.resize();
+            this.resourceChart && this.resourceChart.resize();
+        });
+    },
+    beforeDestroy() {
+        window.removeEventListener('resize', () => {
+            this.progressChart && this.progressChart.resize();
+            this.resourceChart && this.resourceChart.resize();
+        });
+    },
+    mounted() {
+        this.initProgressChart();
+        this.initResourceChart();
+
+        // 获取首页顶部数据
         getIndexData({type:1}).then(res => {
             if (res.code == 1000) {
                 this.top = res.data
             }
-        })
+        });
+
+        // 获取学生性别数据
         getIndexSexData({type:1}).then(res => {
             if (res.code == 1000) {
-                this.sex  =res.data
+                this.sex  = res.data
                 this.pieChart = echarts.init(document.getElementById("pie-chart"))
                 var optionPie = {
                     tooltip: {
@@ -323,7 +516,9 @@ export default {
                 };
                 this.pieChart.setOption(optionPie)
             }
-        })
+        });
+
+        // 获取任务图表数据
         getTaskChart({type:1}).then(res => {
             if (res.code == 1000) {
                 this.tasks = res.data.tasks
@@ -416,22 +611,27 @@ export default {
                 };
                 this.myChart.setOption(option);
             }
-        })
+        });
+
+        // 获取任务列表数据
         getTaskIndexList({type:1}).then(res => {
             if (res.code == 1000) {
                 this.taskList = res.data.slice(0,5)
                 this.taskCard = res.data.slice(0,3)
             }
-        })
-        var that = this
-        window.onresize = function () {
-          if (that.myChart && typeof that.myChart.resize === 'function') {
-            that.myChart.resize()
-          }
-          if (that.pieChart && typeof that.pieChart.resize === 'function') {
-            that.pieChart.resize()
-          }
-        }
+        });
+
+        // 窗口大小变化时重绘图表
+        window.addEventListener('resize', () => {
+            this.progressChart && this.progressChart.resize();
+            this.resourceChart && this.resourceChart.resize();
+            if (this.myChart && typeof this.myChart.resize === 'function') {
+                this.myChart.resize()
+            }
+            if (this.pieChart && typeof this.pieChart.resize === 'function') {
+                this.pieChart.resize()
+            }
+        });
     }
 }
 </script>
@@ -760,5 +960,19 @@ export default {
     display: flex;
     flex-direction: column;
     justify-content: center;
+}
+
+.chart-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 15px;
+    border-bottom: 1px solid #eee;
+    margin-bottom: 10px;
+}
+
+.chart-header span {
+    font-weight: bold;
+    color: #4A2B90;
 }
 </style>
