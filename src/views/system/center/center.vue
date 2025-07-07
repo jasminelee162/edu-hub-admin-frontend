@@ -4,7 +4,7 @@
       <div class="profile-header">
         <h2 class="profile-title">
           <i class="el-icon-user-solid"></i>
-          超级管理员
+          <span>个人中心</span>
         </h2>
       </div>
       

@@ -122,7 +122,8 @@
                             </el-option>
                         </el-select>
                     </div>
-                    <div id="progress-chart" style="width:100%;height:360px"></div>
+                    <div v-if="!chartDestroyed" id="progress-chart" style="width:100%;height:360px"></div>
+                    <div v-else class="chart-loading">图表加载中...</div>
                 </el-card>
             </el-col>
             
@@ -132,7 +133,8 @@
                     <div class="chart-header">
                         <span>课程资源分布</span>
                     </div>
-                    <div id="resource-chart" style="width:100%;height:360px"></div>
+                    <div v-if="!chartDestroyed" id="resource-chart" style="width:100%;height:360px"></div>
+                    <div v-else class="chart-loading">图表加载中...</div>
                 </el-card>
             </el-col>
         </el-row>
@@ -172,6 +174,7 @@
 <script>
 import {getIndexData,getIndexSexData,getTaskChart,getTaskIndexList} from '../../../api/api'
 import * as echarts from "echarts";
+import debounce from 'lodash/debounce';
 
 export default {
     data() {
@@ -183,20 +186,21 @@ export default {
             taskList: [],
             taskCard: [],
             today: new Date(),
-            myChart: "",
-            pieChart: "",
-                        courseSelect: '',
+            myChart: null,
+            pieChart: null,
+            courseSelect: '',
             courses: [
                 { value: '1', label: '计算机科学导论' },
                 { value: '2', label: '数据结构与算法' },
                 { value: '3', label: '数据库系统原理' }
             ],
             progressChart: null,
-            resourceChart: null
+            resourceChart: null,
+            chartDestroyed: false
         }
     },
     methods: {
-                // 新增的四个跳转方法
+        // 新增的四个跳转方法
         toTeacherTask() {
             this.$router.push("/teacherTask");
             this.setActiveMenu("/teacherTask", "课程管理");
@@ -250,235 +254,242 @@ export default {
             this.$router.push("/teacher")
             this.$store.commit('menu/setActiveMenu', "/teacher")
         },
-        initProgressChart() {
-            this.progressChart = echarts.init(document.getElementById("progress-chart"));
-            
-            // 模拟数据 - 实际应从API获取
-            const option = {
-                tooltip: {
-                    trigger: 'axis',
-                    axisPointer: {
-                        type: 'cross',
-                        crossStyle: {
-                            color: '#999'
-                        }
-                    }
-                },
-                legend: {
-                    data: ['计划进度', '实际进度', '平均成绩']
-                },
-                grid: [
-                    {
-                        top: '15%',
-                        height: '30%'
-                    },
-                    {
-                        top: '55%',
-                        height: '30%'
-                    }
-                ],
-                xAxis: [
-                    {
-                        type: 'category',
-                        data: ['第1周', '第2周', '第3周', '第4周', '第5周', '第6周', '第7周'],
-                        axisPointer: {
-                            type: 'shadow'
-                        },
-                        gridIndex: 0
-                    },
-                    {
-                        type: 'category',
-                        data: ['0-59', '60-69', '70-79', '80-89', '90-100'],
-                        gridIndex: 1
-                    }
-                ],
-                yAxis: [
-                    {
-                        type: 'value',
-                        name: '进度(%)',
-                        min: 0,
-                        max: 100,
-                        gridIndex: 0
-                    },
-                    {
-                        type: 'value',
-                        name: '人数',
-                        gridIndex: 1
-                    }
-                ],
-                series: [
-                    {
-                        name: '计划进度',
-                        type: 'line',
-                        smooth: true,
-                        data: [15, 30, 45, 60, 75, 90, 100],
-                        lineStyle: {
-                            color: '#8884d8',
-                            width: 3,
-                            type: 'dashed'
-                        },
-                        itemStyle: {
-                            color: '#8884d8'
-                        },
-                        xAxisIndex: 0,
-                        yAxisIndex: 0
-                    },
-                    {
-                        name: '实际进度',
-                        type: 'line',
-                        smooth: true,
-                        data: [10, 25, 40, 50, 65, 80, 95],
-                        lineStyle: {
-                            color: '#82ca9d',
-                            width: 3
-                        },
-                        itemStyle: {
-                            color: '#82ca9d'
-                        },
-                        areaStyle: {
-                            color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
-                                {
-                                    offset: 0,
-                                    color: 'rgba(130, 202, 157, 0.3)'
-                                },
-                                {
-                                    offset: 1,
-                                    color: 'rgba(130, 202, 157, 0.1)'
-                                }
-                            ])
-                        },
-                        xAxisIndex: 0,
-                        yAxisIndex: 0
-                    },
-                    {
-                        name: '成绩分布',
-                        type: 'bar',
-                        barWidth: '60%',
-                        data: [2, 4, 10, 15, 8],
-                        itemStyle: {
-                            color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
-                                { offset: 0, color: '#83bff6' },
-                                { offset: 0.5, color: '#188df0' },
-                                { offset: 1, color: '#188df0' }
-                            ])
-                        },
-                        xAxisIndex: 1,
-                        yAxisIndex: 1
-                    }
-                ]
-            };
-            
-            this.progressChart.setOption(option);
-        },
         
-        initResourceChart() {
-            this.resourceChart = echarts.init(document.getElementById("resource-chart"));
-            
-            // 模拟数据 - 实际应从API获取
-            const option = {
-                title: {
-                    text: '资源类型分布',
-                    left: 'center',
-                    top: 10
-                },
-                series: {
-                    name: '资源分布',
-                    type: 'sunburst',
-                    data: [{
-                        name: '课程资源',
-                        children: [
-                            {
-                                name: '教学视频',
-                                value: 35,
-                                itemStyle: { color: '#5470c6' }
-                            },
-                            {
-                                name: '课件资料',
-                                value: 25,
-                                itemStyle: { color: '#91cc75' }
-                            },
-                            {
-                                name: '测试题库',
-                                value: 20,
-                                itemStyle: { color: '#fac858' }
-                            },
-                            {
-                                name: '阅读材料',
-                                value: 15,
-                                itemStyle: { color: '#ee6666' }
-                            },
-                            {
-                                name: '其他资源',
-                                value: 5,
-                                itemStyle: { color: '#73c0de' }
+        // 安全初始化图表方法
+        safeInitChart(chartId, option) {
+            return new Promise((resolve) => {
+                this.$nextTick(() => {
+                    const dom = document.getElementById(chartId);
+                    if (!dom) {
+                        console.error(`DOM element #${chartId} not found`);
+                        return resolve(null);
+                    }
+                    
+                    // 先销毁旧实例
+                    if (this[`${chartId.replace('-', '')}Chart`]) {
+                        this[`${chartId.replace('-', '')}Chart`].dispose();
+                    }
+                    
+                    const chart = echarts.init(dom);
+                    chart.setOption(option);
+                    resolve(chart);
+                });
+            });
+        },
+
+        // 初始化所有图表
+        async initCharts() {
+            try {
+                this.chartDestroyed = false;
+                
+                // 进度图表
+                this.progressChart = await this.safeInitChart('progress-chart', {
+                    tooltip: {
+                        trigger: 'axis',
+                        axisPointer: {
+                            type: 'cross',
+                            crossStyle: {
+                                color: '#999'
                             }
-                        ]
-                    }],
-                    radius: [0, '90%'],
-                    label: {
-                        rotate: 'radial'
+                        }
                     },
-                    levels: [
-                        {},
+                    legend: {
+                        data: ['计划进度', '实际进度', '平均成绩']
+                    },
+                    grid: [
                         {
-                            r0: '15%',
-                            r: '45%',
-                            itemStyle: {
-                                borderWidth: 2
-                            },
-                            label: {
-                                rotate: 'tangential'
-                            }
+                            top: '15%',
+                            height: '30%'
                         },
                         {
-                            r0: '45%',
-                            r: '80%',
-                            label: {
-                                align: 'right'
-                            }
+                            top: '55%',
+                            height: '30%'
+                        }
+                    ],
+                    xAxis: [
+                        {
+                            type: 'category',
+                            data: ['第1周', '第2周', '第3周', '第4周', '第5周', '第6周', '第7周'],
+                            axisPointer: {
+                                type: 'shadow'
+                            },
+                            gridIndex: 0
                         },
                         {
-                            r0: '80%',
-                            r: '82%',
-                            label: {
-                                position: 'outside',
-                                padding: 3,
-                                silent: false
+                            type: 'category',
+                            data: ['0-59', '60-69', '70-79', '80-89', '90-100'],
+                            gridIndex: 1
+                        }
+                    ],
+                    yAxis: [
+                        {
+                            type: 'value',
+                            name: '进度(%)',
+                            min: 0,
+                            max: 100,
+                            gridIndex: 0
+                        },
+                        {
+                            type: 'value',
+                            name: '人数',
+                            gridIndex: 1
+                        }
+                    ],
+                    series: [
+                        {
+                            name: '计划进度',
+                            type: 'line',
+                            smooth: true,
+                            data: [15, 30, 45, 60, 75, 90, 100],
+                            lineStyle: {
+                                color: '#8884d8',
+                                width: 3,
+                                type: 'dashed'
                             },
                             itemStyle: {
-                                borderWidth: 3
-                            }
+                                color: '#8884d8'
+                            },
+                            xAxisIndex: 0,
+                            yAxisIndex: 0
+                        },
+                        {
+                            name: '实际进度',
+                            type: 'line',
+                            smooth: true,
+                            data: [10, 25, 40, 50, 65, 80, 95],
+                            lineStyle: {
+                                color: '#82ca9d',
+                                width: 3
+                            },
+                            itemStyle: {
+                                color: '#82ca9d'
+                            },
+                            areaStyle: {
+                                color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+                                    {
+                                        offset: 0,
+                                        color: 'rgba(130, 202, 157, 0.3)'
+                                    },
+                                    {
+                                        offset: 1,
+                                        color: 'rgba(130, 202, 157, 0.1)'
+                                    }
+                                ])
+                            },
+                            xAxisIndex: 0,
+                            yAxisIndex: 0
+                        },
+                        {
+                            name: '成绩分布',
+                            type: 'bar',
+                            barWidth: '60%',
+                            data: [2, 4, 10, 15, 8],
+                            itemStyle: {
+                                color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+                                    { offset: 0, color: '#83bff6' },
+                                    { offset: 0.5, color: '#188df0' },
+                                    { offset: 1, color: '#188df0' }
+                                ])
+                            },
+                            xAxisIndex: 1,
+                            yAxisIndex: 1
                         }
                     ]
-                }
-            };
-            
-            this.resourceChart.setOption(option);
-        }
+                });
+                
+                // 资源图表
+                this.resourceChart = await this.safeInitChart('resource-chart', {
+                    title: {
+                        text: '资源类型分布',
+                        left: 'center',
+                        top: 10
+                    },
+                    series: {
+                        name: '资源分布',
+                        type: 'sunburst',
+                        data: [{
+                            name: '课程资源',
+                            children: [
+                                {
+                                    name: '教学视频',
+                                    value: 35,
+                                    itemStyle: { color: '#5470c6' }
+                                },
+                                {
+                                    name: '课件资料',
+                                    value: 25,
+                                    itemStyle: { color: '#91cc75' }
+                                },
+                                {
+                                    name: '测试题库',
+                                    value: 20,
+                                    itemStyle: { color: '#fac858' }
+                                },
+                                {
+                                    name: '阅读材料',
+                                    value: 15,
+                                    itemStyle: { color: '#ee6666' }
+                                },
+                                {
+                                    name: '其他资源',
+                                    value: 5,
+                                    itemStyle: { color: '#73c0de' }
+                                }
+                            ]
+                        }],
+                        radius: [0, '90%'],
+                        label: {
+                            rotate: 'radial'
+                        },
+                        levels: [
+                            {},
+                            {
+                                r0: '15%',
+                                r: '45%',
+                                itemStyle: {
+                                    borderWidth: 2
+                                },
+                                label: {
+                                    rotate: 'tangential'
+                                }
+                            },
+                            {
+                                r0: '45%',
+                                r: '80%',
+                                label: {
+                                    align: 'right'
+                                }
+                            },
+                            {
+                                r0: '80%',
+                                r: '82%',
+                                label: {
+                                    position: 'outside',
+                                    padding: 3,
+                                    silent: false
+                                },
+                                itemStyle: {
+                                    borderWidth: 3
+                                }
+                            }
+                        ]
+                    }
+                });
+                
+            } catch (error) {
+                console.error('图表初始化失败:', error);
+            }
+        },
+        
+        // 处理窗口大小变化
+        handleResize: debounce(function() {
+            this.progressChart && this.progressChart.resize();
+            this.resourceChart && this.resourceChart.resize();
+            this.myChart && this.myChart.resize();
+            this.pieChart && this.pieChart.resize();
+        }, 200)
     },
     created() {
-
-    },
-    mounted() {
-        this.initProgressChart();
-        this.initResourceChart();
-        
-        // 窗口大小变化时重绘图表
-        window.addEventListener('resize', () => {
-            this.progressChart && this.progressChart.resize();
-            this.resourceChart && this.resourceChart.resize();
-        });
-    },
-    beforeDestroy() {
-        window.removeEventListener('resize', () => {
-            this.progressChart && this.progressChart.resize();
-            this.resourceChart && this.resourceChart.resize();
-        });
-    },
-    mounted() {
-        this.initProgressChart();
-        this.initResourceChart();
-
         // 获取首页顶部数据
         getIndexData({type:1}).then(res => {
             if (res.code == 1000) {
@@ -489,32 +500,36 @@ export default {
         // 获取学生性别数据
         getIndexSexData({type:1}).then(res => {
             if (res.code == 1000) {
-                this.sex  = res.data
-                this.pieChart = echarts.init(document.getElementById("pie-chart"))
-                var optionPie = {
-                    tooltip: {
-                        trigger: 'item'
-                    },
-                    legend: {
-                        center: 'center'
-                    },
-                    series: [
-                        {
-                            name: '学生性别分析',
-                            type: 'pie',
-                            radius: '50%',
-                            data: this.sex,
-                            emphasis: {
-                                itemStyle: {
-                                    shadowBlur: 10,
-                                    shadowOffsetX: 0,
-                                    shadowColor: 'rgba(0, 0, 0, 0.5)'
+                this.sex = res.data
+                this.$nextTick(() => {
+                    const dom = document.getElementById("pie-chart");
+                    if (dom) {
+                        this.pieChart = echarts.init(dom);
+                        this.pieChart.setOption({
+                            tooltip: {
+                                trigger: 'item'
+                            },
+                            legend: {
+                                center: 'center'
+                            },
+                            series: [
+                                {
+                                    name: '学生性别分析',
+                                    type: 'pie',
+                                    radius: '50%',
+                                    data: this.sex,
+                                    emphasis: {
+                                        itemStyle: {
+                                            shadowBlur: 10,
+                                            shadowOffsetX: 0,
+                                            shadowColor: 'rgba(0, 0, 0, 0.5)'
+                                        }
+                                    }
                                 }
-                            }
-                        }
-                    ]
-                };
-                this.pieChart.setOption(optionPie)
+                            ]
+                        });
+                    }
+                });
             }
         });
 
@@ -523,93 +538,96 @@ export default {
             if (res.code == 1000) {
                 this.tasks = res.data.tasks
                 this.nums = res.data.nums
-                this.myChart = echarts.init(document.getElementById("chart"))
-                var option = {
-                    tooltip: {
-                        trigger: 'axis'
-                    },
-                    legend: {
-                        data: ['学生数量', '学生数量']
-                    },
-                    backgroundColor: '#fff',
-                    xAxis: [{
-                        type: 'category',
-                        color: '#59588D',
-                        data: this.tasks,
-                        axisLine: {
-                            lineStyle: {
-                                color: 'rgba(107,107,107,0.37)',
-                            }
-                        },
-                        axisTick: {
-                            show: true
-                        },
-                    }],
-                    yAxis: [{
-                        axisLine: {
-                            lineStyle: {
-                                color: 'rgba(107,107,107,0.37)',
-                            }
-                        },
-                        axisTick: {
-                            show: true
-                        },
-                        splitLine: {
-                            lineStyle: {
-                                color: 'rgba(131,101,101,0.2)',
-                                type: 'dashed',
-                            }
-                        }
-                    }],
-                    series: [{
-                        data: this.nums,
-                        type: 'line',
-                        name: '折线图',
-                        symbol: 'none',
-                        areaStyle: {
-                            color: "#E6F8EE"
-                        },
-                        lineStyle: {
-                            color: '#3AC977',
-                            width: 2,
-                            shadowColor: 'rgba(0, 0, 0, 0.3)',//设置折线阴影
-                            shadowBlur: 15,
-                            shadowOffsetY: 20,
-                        },
-                        zlevel: 1
-                    },{
-                        type: 'bar',
-                        data: this.nums,
-                        barWidth: '15px',
-                        name: '柱状图',
-                        itemStyle: {
-                            normal: {
-                                color: function(params){//展示正值的柱子，负数设为透明
-                                    let colorArr = params.value > 0?['#7866BE', '#7866BE']:['rgba(0,0,0,0)', 'rgba(0,0,0,0)']
-                                    return new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
-                                        offset: 0,
-                                        color: colorArr[0] // 0% 处的颜色
-                                    }, {
-                                        offset: 1,
-                                        color:  colorArr[1]// 100% 处的颜色
-                                    }], false)
-                                },
-                                barBorderRadius: [30,30,0,0]
+                this.$nextTick(() => {
+                    const dom = document.getElementById("chart");
+                    if (dom) {
+                        this.myChart = echarts.init(dom);
+                        this.myChart.setOption({
+                            tooltip: {
+                                trigger: 'axis'
                             },
-                        },
-                        label: {
-                            normal: {
-                                show: true,
-                                fontSize: 13,
-                                color: '#333',
-                                position: 'top',
-                            }
-                        },
-                        zlevel: 2
+                            legend: {
+                                data: ['学生数量', '学生数量']
+                            },
+                            backgroundColor: '#fff',
+                            xAxis: [{
+                                type: 'category',
+                                color: '#59588D',
+                                data: this.tasks,
+                                axisLine: {
+                                    lineStyle: {
+                                        color: 'rgba(107,107,107,0.37)',
+                                    }
+                                },
+                                axisTick: {
+                                    show: true
+                                },
+                            }],
+                            yAxis: [{
+                                axisLine: {
+                                    lineStyle: {
+                                        color: 'rgba(107,107,107,0.37)',
+                                    }
+                                },
+                                axisTick: {
+                                    show: true
+                                },
+                                splitLine: {
+                                    lineStyle: {
+                                        color: 'rgba(131,101,101,0.2)',
+                                        type: 'dashed',
+                                    }
+                                }
+                            }],
+                            series: [{
+                                data: this.nums,
+                                type: 'line',
+                                name: '折线图',
+                                symbol: 'none',
+                                areaStyle: {
+                                    color: "#E6F8EE"
+                                },
+                                lineStyle: {
+                                    color: '#3AC977',
+                                    width: 2,
+                                    shadowColor: 'rgba(0, 0, 0, 0.3)',
+                                    shadowBlur: 15,
+                                    shadowOffsetY: 20,
+                                },
+                                zlevel: 1
+                            },{
+                                type: 'bar',
+                                data: this.nums,
+                                barWidth: '15px',
+                                name: '柱状图',
+                                itemStyle: {
+                                    normal: {
+                                        color: function(params){
+                                            let colorArr = params.value > 0?['#7866BE', '#7866BE']:['rgba(0,0,0,0)', 'rgba(0,0,0,0)']
+                                            return new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
+                                                offset: 0,
+                                                color: colorArr[0]
+                                            }, {
+                                                offset: 1,
+                                                color: colorArr[1]
+                                            }], false)
+                                        },
+                                        barBorderRadius: [30,30,0,0]
+                                    },
+                                },
+                                label: {
+                                    normal: {
+                                        show: true,
+                                        fontSize: 13,
+                                        color: '#333',
+                                        position: 'top',
+                                    }
+                                },
+                                zlevel: 2
+                            }]
+                        });
                     }
-                    ]
-                };
-                this.myChart.setOption(option);
+                });
             }
         });
 
@@ -620,16 +638,19 @@ export default {
                 this.taskCard = res.data.slice(0,3)
             }
         });
-
-        // 窗口大小变化时重绘图表
-        window.addEventListener('resize', () => {
-            this.progressChart && this.progressChart.resize();
-            this.resourceChart && this.resourceChart.resize();
-            if (this.myChart && typeof this.myChart.resize === 'function') {
-                this.myChart.resize()
-            }
-            if (this.pieChart && typeof this.pieChart.resize === 'function') {
-                this.pieChart.resize()
+    },
+    mounted() {
+        this.initCharts();
+        window.addEventListener('resize', this.handleResize);
+    },
+    beforeDestroy() {
+        this.chartDestroyed = true;
+        window.removeEventListener('resize', this.handleResize);
+        
+        // 安全销毁所有图表实例
+        [this.progressChart, this.resourceChart, this.myChart, this.pieChart].forEach(chart => {
+            if (chart) {
+                chart.dispose();
             }
         });
     }
@@ -642,7 +663,6 @@ export default {
     height: 210px;
 }
 .item-01 {
-    
     display: flex;
     align-items: center;
     padding: 10px 0;
@@ -756,7 +776,7 @@ export default {
     flex-direction: column;
     align-items: center;
 }
-#chart,#pie-chart {
+#chart, #pie-chart {
     width: 100%;
     height: 380px;
 }
@@ -782,8 +802,6 @@ export default {
     height: 45px !important;
     border: none;
 }
-/* 鼠标悬停颜色加深 */
-/* 新增卡片样式 */
 .dashboard-card {
     transition: all 0.3s ease;
     border-radius: 10px;
@@ -791,13 +809,11 @@ export default {
     position: relative;
     overflow: hidden;
 }
-
 .card-content {
     padding: 20px;
     position: relative;
     z-index: 2;
 }
-
 .card-folder-edge {
     position: absolute;
     left: 0;
@@ -807,26 +823,22 @@ export default {
     z-index: 1;
     transition: all 0.3s ease;
 }
-
 .card-icon {
     width: 70px;
     height: 70px;
     transition: all 0.3s ease;
 }
-
 .card-title {
     color: #4A2B90;
     font-size: 18px;
     font-weight: bold;
     margin-bottom: 10px;
 }
-
 .card-value {
     color: #4A2B90;
     font-size: 28px;
     font-weight: bold;
 }
-
 .card-footer {
     display: flex;
     align-items: center;
@@ -836,13 +848,10 @@ export default {
     font-size: 14px;
     transition: all 0.3s ease;
 }
-
 .card-footer i {
     margin-left: 5px;
     transition: all 0.3s ease;
 }
-
-/* 卡片1 - 淡紫色 */
 .card-1 {
     background-color: #F0EBFA;
 }
@@ -867,8 +876,6 @@ export default {
 .card-1:hover .card-footer i {
     transform: translateX(5px);
 }
-
-/* 卡片2 - 淡蓝色 */
 .card-2 {
     background-color: #E8F4FE;
 }
@@ -893,8 +900,6 @@ export default {
 .card-2:hover .card-footer i {
     transform: translateX(5px);
 }
-
-/* 卡片3 - 淡绿色 */
 .card-3 {
     background-color: #E8F8F0;
 }
@@ -919,8 +924,6 @@ export default {
 .card-3:hover .card-footer i {
     transform: translateX(5px);
 }
-
-/* 卡片4 - 淡橙色 */
 .card-4 {
     background-color: #FEF0E8;
 }
@@ -945,7 +948,6 @@ export default {
 .card-4:hover .card-footer i {
     transform: translateX(5px);
 }
-
 .item-01-top {
     height: auto;
     display: flex;
@@ -953,7 +955,6 @@ export default {
     align-items: center;
     justify-content: space-between;
 }
-
 .item-01-top-center {
     margin-left: 15px;
     height: 100%;
@@ -961,7 +962,6 @@ export default {
     flex-direction: column;
     justify-content: center;
 }
-
 .chart-header {
     display: flex;
     justify-content: space-between;
@@ -970,9 +970,15 @@ export default {
     border-bottom: 1px solid #eee;
     margin-bottom: 10px;
 }
-
 .chart-header span {
     font-weight: bold;
     color: #4A2B90;
+}
+.chart-loading {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 360px;
+    color: #999;
 }
 </style>
