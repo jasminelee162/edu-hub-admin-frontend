@@ -132,7 +132,34 @@ export default {
         title: [{ required: true, message: '请输入题目', trigger: 'blur' }],
         sort: [{ required: true, message: '请输入序号', trigger: 'blur' }],
         score: [{ required: true, message: '请输入分数', trigger: 'blur' }],
-        answer: [{ required: true, message: '请输入答案', trigger: 'blur' }],
+        answer: [
+          {
+            required: true,
+            validator: (rule, value, callback) => {
+              if (this.form.type === '1') {
+                if (!this.multipleAnswers.length) {
+                  callback(new Error('请选择一个或多个正确答案'))
+                } else {
+                  callback()
+                }
+              } else if (this.form.type === '0' || this.form.type === '3') {
+                if (!value) {
+                  callback(new Error('请选择答案'))
+                } else {
+                  callback()
+                }
+              } else {
+                // 填空、问答、计算题等
+                if (!value) {
+                  callback(new Error('请输入答案'))
+                } else {
+                  callback()
+                }
+              }
+            },
+            trigger: 'blur'
+          }
+        ],
         type: [{ required: true, message: '请选择类型', trigger: 'blur' }],
       },
     }
@@ -167,23 +194,10 @@ export default {
           }
           this.form.content = JSON.stringify(this.content)
 
-          if (this.form.type === '0') {
-            if (!this.form.answer) {
-              this.$message.warning('请选择一个正确答案')
-              return
-            }
-          } else {
-            if (!this.multipleAnswers.length) {
-              this.$message.warning('请选择一个或多个正确答案')
-              return
-            }
+          if (this.form.type === '1') {
             this.form.answer = this.multipleAnswers.join(',')
           }
         } else if (this.form.type === '3') {
-          if (!this.form.answer) {
-            this.$message.warning('请选择判断题答案')
-            return
-          }
           this.form.content = ''
         } else {
           this.form.content = ''
@@ -232,6 +246,7 @@ export default {
   },
 }
 </script>
+
 
 
 <style   scoped>
