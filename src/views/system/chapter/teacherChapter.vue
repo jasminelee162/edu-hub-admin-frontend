@@ -8,11 +8,11 @@
               <i class="el-icon-collection-tag"></i> 课程名称:
             </span>
             <el-input
-              :disabled="type == 0"
-              size="small"
-              placeholder="请输入课程名称"
-              v-model="search.taskName"
-              class="purple-input">
+                :disabled="type == 0"
+                size="small"
+                placeholder="请输入课程名称"
+                v-model="search.taskName"
+                class="purple-input">
               <i slot="prefix" class="el-icon-notebook-2"></i>
             </el-input>
           </div>
@@ -23,29 +23,29 @@
               <i class="el-icon-collection"></i> 章节名称:
             </span>
             <el-input
-              size="small"
-              placeholder="请输入章节名称"
-              v-model="search.name"
-              class="purple-input">
+                size="small"
+                placeholder="请输入章节名称"
+                v-model="search.name"
+                class="purple-input">
               <i slot="prefix" class="el-icon-folder-opened"></i>
             </el-input>
           </div>
         </el-col>
         <el-col :xs="24" :sm="12" :md="8" :lg="8" :xl="8">
           <div class="search-actions">
-            <el-button 
-              size="small" 
-              icon="el-icon-search" 
-              type="primary" 
-              @click="searchPage"
-              class="search-button purple-gradient">
+            <el-button
+                size="small"
+                icon="el-icon-search"
+                type="primary"
+                @click="searchPage"
+                class="search-button purple-gradient">
               查询
             </el-button>
-            <el-button 
-              size="small" 
-              icon="el-icon-refresh-left" 
-              @click="refresh"
-              class="reset-button">
+            <el-button
+                size="small"
+                icon="el-icon-refresh-left"
+                @click="refresh"
+                class="reset-button">
               重置
             </el-button>
           </div>
@@ -55,50 +55,50 @@
 
     <div class="data-card">
       <div class="toolbar">
-        <el-button 
-          type="primary" 
-          size="small" 
-          icon="el-icon-plus" 
-          @click="add"
-          class="tool-button add-button">
+        <el-button
+            type="primary"
+            size="small"
+            icon="el-icon-plus"
+            @click="add"
+            class="tool-button add-button">
           新增
         </el-button>
-        <el-button 
-          type="success" 
-          size="small" 
-          icon="el-icon-edit" 
-          :disabled="update.length != 1"
-          @click="updateDataBtn"
-          class="tool-button edit-button">
+        <el-button
+            type="success"
+            size="small"
+            icon="el-icon-edit"
+            :disabled="update.length != 1"
+            @click="updateDataBtn"
+            class="tool-button edit-button">
           修改
         </el-button>
-        <el-button 
-          type="danger" 
-          size="small" 
-          icon="el-icon-delete" 
-          :disabled="update.length <= 0"
-          @click="deleteDataBtn"
-          class="tool-button delete-button">
+        <el-button
+            type="danger"
+            size="small"
+            icon="el-icon-delete"
+            :disabled="update.length <= 0"
+            @click="deleteDataBtn"
+            class="tool-button delete-button">
           删除
         </el-button>
       </div>
 
       <el-table
-        v-loading="loading"
-        :data="tableData"
-        :header-cell-style="tableHeaderStyle"
-        :row-style="tableRowStyle"
-        @selection-change="handleSelectionChange"
-        stripe
-        class="purple-table">
+          v-loading="loading"
+          :data="tableData"
+          :header-cell-style="tableHeaderStyle"
+          :row-style="tableRowStyle"
+          @selection-change="handleSelectionChange"
+          stripe
+          class="purple-table">
         <el-table-column
-          type="selection"
-          width="55"
-          align="center">
+            type="selection"
+            width="55"
+            align="center">
         </el-table-column>
         <el-table-column
-          prop="taskName"
-          label="课程名称">
+            prop="taskName"
+            label="课程名称">
           <template #default="{row}">
             <div class="cell-content">
               <i class="el-icon-collection-tag" style="color:#7B68EE"></i>
@@ -107,8 +107,8 @@
           </template>
         </el-table-column>
         <el-table-column
-          prop="name"
-          label="章节名称">
+            prop="name"
+            label="章节名称">
           <template #default="{row}">
             <div class="cell-content">
               <i class="el-icon-folder" style="color:#9370DB"></i>
@@ -117,9 +117,9 @@
           </template>
         </el-table-column>
         <el-table-column
-          prop="createTime"
-          label="创建时间"
-          width="200">
+            prop="createTime"
+            label="创建时间"
+            width="200">
           <template #default="{row}">
             <div class="cell-content">
               <i class="el-icon-time" style="color:#A5A4BF"></i>
@@ -128,53 +128,53 @@
           </template>
         </el-table-column>
         <el-table-column
-          label="操作"
-          fixed="right"
-          width="300">
+            label="操作"
+            fixed="right"
+            width="300">
           <template #default="{row}">
             <div class="action-buttons">
               <el-tooltip content="学习情况" placement="top">
-                <el-button 
-                  size="mini" 
-                  type="warning" 
-                  @click="toStudyInfo(row.id)"
-                  class="action-button study-button">
+                <el-button
+                    size="mini"
+                    type="warning"
+                    @click="toStudyInfo(row.id)"
+                    class="action-button study-button">
                   <i class="el-icon-data-analysis"></i> 学习
                 </el-button>
               </el-tooltip>
-              
+
               <el-tooltip content="章节作业" placement="top">
-                <el-button 
-                  size="mini" 
-                  type="primary" 
-                  @click="toHomework(row.id)"
-                  class="action-button homework-button">
+                <el-button
+                    size="mini"
+                    type="primary"
+                    @click="toHomework(row.id)"
+                    class="action-button homework-button">
                   <i class="el-icon-document-checked"></i> 作业
                 </el-button>
               </el-tooltip>
-              
+
               <el-tooltip content="修改章节" placement="top">
-                <el-button 
-                  size="mini" 
-                  type="success" 
-                  @click="updateData(row.id)"
-                  class="action-button edit-button">
+                <el-button
+                    size="mini"
+                    type="success"
+                    @click="updateData(row.id)"
+                    class="action-button edit-button">
                   <i class="el-icon-edit-outline"></i> 修改
                 </el-button>
               </el-tooltip>
-              
+
               <el-popconfirm
-                title="确认删除此章节？"
-                @confirm="deleteDate(row.id)"
-                confirm-button-text="确认"
-                cancel-button-text="取消"
-                icon="el-icon-warning"
-                icon-color="#7B68EE">
+                  title="确认删除此章节？"
+                  @confirm="deleteDate(row.id)"
+                  confirm-button-text="确认"
+                  cancel-button-text="取消"
+                  icon="el-icon-warning"
+                  icon-color="#7B68EE">
                 <el-tooltip content="删除章节" placement="top">
-                  <el-button 
-                    size="mini"
-                    type="danger"
-                    class="action-button delete-button">
+                  <el-button
+                      size="mini"
+                      type="danger"
+                      class="action-button delete-button">
                     <i class="el-icon-delete-solid"></i> 删除
                   </el-button>
                 </el-tooltip>
@@ -185,18 +185,18 @@
       </el-table>
 
       <el-pagination
-        background
-        layout="total, sizes, prev, pager, next, jumper"
-        :page-sizes="[10, 20, 50, 100]"
-        :page-size="search.pageSize"
-        :current-page="search.pageNumber"
-        @size-change="handleSizeChange"
-        @current-change="handleCurrentChange"
-        :total="total"
-        class="purple-pagination">
+          background
+          layout="total, sizes, prev, pager, next, jumper"
+          :page-sizes="[10, 20, 50, 100]"
+          :page-size="search.pageSize"
+          :current-page="search.pageNumber"
+          @size-change="handleSizeChange"
+          @current-change="handleCurrentChange"
+          :total="total"
+          class="purple-pagination">
       </el-pagination>
     </div>
-    
+
     <add @addFalse="addFalse" flag="2" :taskId="taskId" :type="type" :addVisible="addVisible"></add>
     <update @updateFalse="updateFalse" flag="2" :taskId="taskId" :type="type" :updateId="updateId" :updateVisible="updateVisible"></update>
   </div>
@@ -218,11 +218,11 @@ export default {
       taskId: "",
       type: 1,
       search: {
-          type:1,
-          taskName: "",
-          name: "",
-          pageNumber: 1,
-          pageSize:10
+        type:1,
+        taskName: "",
+        name: "",
+        pageNumber: 1,
+        pageSize:10
       },
       total: 0,
       tableData: []
@@ -252,8 +252,8 @@ export default {
     },
     toStudyInfo(id) {
       var param = {
-          "name": "学习情况",
-          "url": "/chapterStudy?id=" + id
+        "name": "学习情况",
+        "url": "/chapterStudy?id=" + id
       }
       this.$store.commit('menu/addActiveMenu', param)
       this.$router.push("/chapterStudy?id=" + id)
@@ -261,16 +261,16 @@ export default {
     },
     toHomework(id) {
       var param = {
-          "name": "章节作业",
-          "url": "/homework?id=" + id
+        "name": "章节作业",
+        "url": "/homework?id=" + id
       }
       this.$store.commit('menu/addActiveMenu', param)
       this.$router.push("/homework?id=" + id)
       this.$store.commit('menu/setActiveMenu', "/homework?id=" + id)
     },
     searchPage() {
-        this.search.pageNumber = 1
-        this.query()
+      this.search.pageNumber = 1
+      this.query()
     },
     query() {
       getChapterPage(this.search).then(res => {
@@ -339,21 +339,21 @@ export default {
     },
     deleteDate(ids) {
       removeChapter({ids:ids}).then(res => {
-          if(res.code == 1000) {
-            this.$message({
-              type: 'success',
-              message: '删除成功!',
-              customClass: 'purple-message'
-            });
-            this.pageNumber = 1
-            this.query()
-          } else {
-            this.$notify.error({
-              title: '错误',
-              message: res.message
-            });
-          }
-        })
+        if(res.code == 1000) {
+          this.$message({
+            type: 'success',
+            message: '删除成功!',
+            customClass: 'purple-message'
+          });
+          this.pageNumber = 1
+          this.query()
+        } else {
+          this.$notify.error({
+            title: '错误',
+            message: res.message
+          });
+        }
+      })
     },
   },
   mounted() {
