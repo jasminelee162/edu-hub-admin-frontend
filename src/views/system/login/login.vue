@@ -45,28 +45,82 @@
       <p class="sub-slogan">精准掌握每位学生的学习轨迹<br>用数据驱动个性化教学方案</p>
       
       <div class="login-form">
-        <el-input
-          v-model="username"
-          placeholder="工号/用户名"
-          prefix-icon="el-icon-user"
-          class="custom-input"
-        ></el-input>
-        
-        <el-input
-          v-model="password"
-          placeholder="密码"
-          prefix-icon="el-icon-lock"
-          show-password
-          class="custom-input"
-        ></el-input>
-        
-        <el-button 
-          type="primary" 
-          class="login-btn"
-          @click="login"
-        >
-          登 录
-        </el-button>
+        <!-- 登录方式切换 -->
+        <div class="login-type-switch">
+          <span
+            :class="['login-type-option', loginType === 'account' ? 'active' : '']"
+            @click="loginType = 'account'"
+          >
+            账号密码登录
+          </span>
+          <span
+            :class="['login-type-option', loginType === 'email' ? 'active' : '']"
+            @click="loginType = 'email'"
+          >
+            邮箱验证码登录
+          </span>
+        </div>
+
+        <!-- 账号密码登录表单 -->
+        <div v-if="loginType === 'account'">
+          <el-input
+            v-model="username"
+            placeholder="工号/用户名"
+            prefix-icon="el-icon-user"
+            class="custom-input"
+          ></el-input>
+          
+          <el-input
+            v-model="password"
+            placeholder="密码"
+            prefix-icon="el-icon-lock"
+            show-password
+            class="custom-input"
+          ></el-input>
+          
+          <el-button 
+            type="primary" 
+            class="login-btn"
+            @click="login"
+          >
+            登 录
+          </el-button>
+        </div>
+
+        <!-- 邮箱验证码登录表单 -->
+        <div v-else>
+          <el-input
+            v-model="emailInfo.email"
+            placeholder="请输入邮箱"
+            prefix-icon="el-icon-message"
+            class="custom-input"
+          ></el-input>
+          
+          <div style="display: flex;">
+            <el-input
+              v-model="emailInfo.code"
+              placeholder="请输入验证码"
+              prefix-icon="el-icon-key"
+              class="custom-input"
+              style="flex: 1; margin-right: 10px;"
+            ></el-input>
+            <el-button 
+              :disabled="isSending"
+              @click="sendCode"
+              style="width: 120px;"
+            >
+              {{ isSending ? countdown + 's 后重发' : '获取验证码' }}
+            </el-button>
+          </div>
+          
+          <el-button 
+            type="primary" 
+            class="login-btn"
+            @click="emailLogin"
+          >
+            登 录
+          </el-button>
+        </div>
       </div>
       
       <div class="footer">
@@ -78,170 +132,269 @@
 </template>
 
 <script>
-import {login,getUser} from '../../../api/api'
+import { login, getUser, sendEmailCode, loginWithEmail } from '../../../api/api'
 import { setLock } from '@/utils/lock'
+
 export default {
   data() {
     return {
       username: '',
-      password: ''
+      password: '',
+      loginType: 'account', // 登录方式切换
+      emailInfo: {
+        email: '',
+        code: ''
+      },
+      isSending: false,
+      countdown: 60,
+      timer: null,
+      sentEmail: '' // 记录发送验证码时的邮箱
     }
   },
   mounted() {
     this.initParticles()
   },
   created() {
-    // 检查是否是密码修改后的跳转
-  if (this.$route.query.passwordChanged) {
-    this.$notify.success({
-      title: '提示',
-      message: '密码修改成功，请使用新密码登录',
-      duration: 5000
-    });
-    
-    // 清除query参数避免刷新后重复显示
-    const query = {...this.$route.query};
-    delete query.passwordChanged;
-    this.$router.replace({...this.$route, query});
-  }
-    },
+    if (this.$route.query.passwordChanged) {
+      this.$notify.success({
+        title: '提示',
+        message: '密码修改成功，请使用新密码登录',
+        duration: 5000
+      });
+
+      const query = { ...this.$route.query }
+      delete query.passwordChanged
+      this.$router.replace({ ...this.$route, query })
+    }
+  },
   methods: {
-              login() {
-        if(!this.username) {
-          this.$message({
-            message: '请输入用户名',
-            type: 'warning'
-          });
-          return;
-        }
-        if(!this.password) {
-          this.$message({
-            message: '请输入密码',
-            type: 'warning'
-          });
-          return;
-        }
-        
-        var params = {
-          username: this.username,
-          password: this.password
-        }
-        
-        this.$loading({
-          lock: true,
-          text: '正在登录...',
-          spinner: 'el-icon-loading',
-          background: 'rgba(0, 0, 0, 0.7)'
+    sendCode() {
+      if (!this.emailInfo.email) {
+        this.$message({
+          message: '请输入邮箱',
+          type: 'warning'
         });
-        
-        login(params).then(res => {
-          this.$loading().close();
-          
-          if(res.code == 1000) {
-            this.$message({
-              message: '登录成功',
-              type: 'success'
-            });
-            
-            var token = res.data.token;
-            this.$store.commit('user/setToken', token);
-            
-            this.getUserInfo().then(() => {
-              setLock(false);
-              
-              // 获取redirect参数，默认跳转到首页
-              const redirect = this.$route.query.redirect || '/index';
-              this.$router.push(redirect);
-            });
-            
+        return;
+      }
+
+      // 记录发送验证码的邮箱
+      this.sentEmail = this.emailInfo.email;
+
+      const loadingInstance = this.$loading({
+        lock: true,
+        text: '正在发送验证码...',
+        spinner: 'el-icon-loading',
+        background: 'rgba(0, 0, 0, 0.7)'
+      });
+
+      sendEmailCode(this.emailInfo.email).then(() => {
+        loadingInstance.close();
+        this.$message.success('验证码发送成功');
+        this.isSending = true;
+        this.countdown = 60;
+        this.timer = setInterval(() => {
+          this.countdown--;
+          if (this.countdown <= 0) {
+            clearInterval(this.timer);
+            this.isSending = false;
+          }
+        }, 1000);
+      }).catch(() => {
+        loadingInstance.close();
+        this.$message.error('验证码发送失败');
+      });
+    },
+
+emailLogin() {
+  if (!this.emailInfo.email) {
+    this.$message.warning('请输入邮箱');
+    return;
+  }
+  if (!this.emailInfo.code) {
+    this.$message.warning('请输入验证码');
+    return;
+  }
+  if (!this.sentEmail) {
+    this.$message.warning('请先发送验证码');
+    return;
+  }
+  if (this.emailInfo.email !== this.sentEmail) {
+    this.$message.warning('邮箱与发送验证码的邮箱不一致，请重新发送验证码');
+    return;
+  }
+
+  const loadingInstance = this.$loading({
+    lock: true,
+    text: '正在登录...',
+    spinner: 'el-icon-loading',
+    background: 'rgba(0, 0, 0, 0.7)'
+  });
+
+  console.log('请求登录参数:', {
+    email: this.emailInfo.email,
+    code: this.emailInfo.code
+  });
+
+  loginWithEmail(this.emailInfo.email, this.emailInfo.code)
+    .then(res => {
+      loadingInstance.close();
+      console.log('登录接口返回:', res);
+      if (res.code === 1000) {
+        this.$message.success('登录成功');
+        const token = res.data.token;
+        localStorage.setItem('user_token', token);
+        this.$store.commit('user/setToken', token);
+
+        this.getUserInfo().then(() => {
+          setLock(false);
+          this.$router.push(this.$route.query.redirect || '/index');
+        });
+      } else {
+        this.$message.error(res.message || '登录失败，请检查验证码');
+      }
+    })
+    .catch(err => {
+      loadingInstance.close();
+      console.error('登录失败错误:', err);
+      this.$message.error(err.response?.data?.message || '登录失败，请稍后重试');
+    });
+},
+
+
+    login() {
+      if (!this.username) {
+        this.$message({
+          message: '请输入用户名',
+          type: 'warning'
+        });
+        return;
+      }
+      if (!this.password) {
+        this.$message({
+          message: '请输入密码',
+          type: 'warning'
+        });
+        return;
+      }
+
+      var params = {
+        username: this.username,
+        password: this.password
+      };
+
+      const loadingInstance = this.$loading({
+        lock: true,
+        text: '正在登录...',
+        spinner: 'el-icon-loading',
+        background: 'rgba(0, 0, 0, 0.7)'
+      });
+
+      login(params).then(res => {
+        loadingInstance.close();
+
+        if (res.code == 1000) {
+          this.$message({
+            message: '登录成功',
+            type: 'success'
+          });
+
+          var token = res.data.token;
+          this.$store.commit('user/setToken', token);
+
+          this.getUserInfo().then(() => {
+            setLock(false);
+            const redirect = this.$route.query.redirect || '/index';
+            this.$router.push(redirect);
+          });
+
+        } else {
+          this.$message.error(res.message);
+        }
+      }).catch(error => {
+        loadingInstance.close();
+        this.$message.error('登录失败，请稍后重试');
+      });
+    },
+
+    getUserInfo() {
+      return new Promise((resolve, reject) => {
+        getUser().then(res => {
+          if (res.code == 1000) {
+            this.$store.commit('user/setUser', JSON.stringify(res.data));
+            resolve();
           } else {
-            this.$message.error(res.message);
+            reject(res.message);
           }
         }).catch(error => {
-          this.$loading().close();
-          this.$message.error('登录失败，请稍后重试');
+          reject(error);
         });
-      },
-
-      getUserInfo() {
-        return new Promise((resolve, reject) => {
-          getUser().then(res => {
-            if(res.code == 1000) {
-              this.$store.commit('user/setUser', JSON.stringify(res.data));
-              resolve();
-            } else {
-              reject(res.message);
-            }
-          }).catch(error => {
-            reject(error);
-          });
-        });
-      },
+      });
+    },
 
     initParticles() {
       const canvas = document.getElementById('particle-canvas')
       const ctx = canvas.getContext('2d')
       canvas.width = window.innerWidth
       canvas.height = window.innerHeight
-      
-      // 深紫色系粒子配置 - 更专业的色调
+
       const particles = []
       const particleCount = 80
       const colors = ['#6A5ACD', '#483D8B', '#4B0082', '#663399']
-      
+
       for (let i = 0; i < particleCount; i++) {
         particles.push({
           x: Math.random() * canvas.width,
           y: Math.random() * canvas.height,
-          size: Math.random() * 3 + 1, // 稍小的粒子
-          speedX: Math.random() * 0.3 - 0.15, // 更慢的速度
+          size: Math.random() * 3 + 1,
+          speedX: Math.random() * 0.3 - 0.15,
           speedY: Math.random() * 0.3 - 0.15,
           color: colors[Math.floor(Math.random() * colors.length)]
         })
       }
-      
+
       const animate = () => {
         ctx.clearRect(0, 0, canvas.width, canvas.height)
-        
+
         particles.forEach(particle => {
           ctx.beginPath()
           ctx.arc(particle.x, particle.y, particle.size, 0, Math.PI * 2)
           ctx.fillStyle = particle.color
           ctx.fill()
-          
+
           particle.x += particle.speedX
           particle.y += particle.speedY
-          
+
           if (particle.x < 0 || particle.x > canvas.width) {
             particle.speedX *= -1
           }
           if (particle.y < 0 || particle.y > canvas.height) {
             particle.speedY *= -1
           }
-          
+
           particles.forEach(other => {
             const distance = Math.sqrt(
-              Math.pow(particle.x - other.x, 2) + 
+              Math.pow(particle.x - other.x, 2) +
               Math.pow(particle.y - other.y, 2)
             )
-            if (distance < 120) { // 更短的连接线
+            if (distance < 120) {
               ctx.beginPath()
-              ctx.strokeStyle = `rgba(106, 90, 205, ${1 - distance/120})`
-              ctx.lineWidth = 0.3 // 更细的连接线
+              ctx.strokeStyle = `rgba(106, 90, 205, ${1 - distance / 120})`
+              ctx.lineWidth = 0.3
               ctx.moveTo(particle.x, particle.y)
               ctx.lineTo(other.x, other.y)
               ctx.stroke()
             }
           })
         })
-        
+
         requestAnimationFrame(animate)
       }
-      
+
       animate()
     }
   }
 }
+
 </script>
 
 <style scoped>
@@ -431,5 +584,34 @@ export default {
   margin-top: 10px;
   font-style: italic;
   color: #B0C4DE;
+}
+
+/* 登录方式切换样式 */
+.login-type-switch {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+.login-type-option {
+  padding: 8px 20px;
+  margin: 0 10px;
+  cursor: pointer;
+  border-radius: 20px;
+  color: #6A5ACD;
+  font-size: 14px;
+  transition: all 0.3s;
+  border: 1px solid #6A5ACD;
+  background-color: rgba(106, 90, 205, 0.1);
+}
+
+.login-type-option:hover {
+  background-color: rgba(106, 90, 205, 0.2);
+}
+
+.login-type-option.active {
+  background-color: #6A5ACD;
+  color: white;
+  font-weight: bold;
 }
 </style>

@@ -17,6 +17,11 @@ export const logout = () => get("/login/logout")
 //修改密码
 export const changePassword = (params) => post("/user/changePassword",params)
 
+// 发送验证码
+export const sendEmailCode = (email) => post('/email/sendCode', { email })
+
+// 邮箱验证码登录
+export const loginWithEmail = (email, code) => post('/email/login', { email, code })
 //-------------------------------上传---------------------------------------
 // 上传图片
 export const uploadImage = (params) => post("/common/uploadImage",params)
