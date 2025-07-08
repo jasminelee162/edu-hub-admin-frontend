@@ -1,42 +1,42 @@
 <template>
   <div class="menu-management">
+    <!-- 搜索区域 -->
     <div class="search-panel">
       <el-row :gutter="15">
-        <el-col :xs="24" :sm="12" :md="8" :lg="8" :xl="8">
+        <el-col :xs="24" :sm="12" :md="8" :lg="6" :xl="6">
           <div class="search-item">
             <span class="search-title">
               <i class="el-icon-menu"></i> 菜单名称:
             </span>
             <el-input
-                size="small"
-                placeholder="请输入菜单名称"
-                v-model="search.menuName"
-                class="tech-input">
-              <i slot="prefix" class="el-icon-edit-outline"></i>
+              size="small"
+              placeholder="请输入菜单名称"
+              v-model="search.menuName"
+              class="tech-input">
             </el-input>
           </div>
         </el-col>
-        <el-col :xs="24" :sm="12" :md="8" :lg="8" :xl="8">
+        <el-col :xs="24" :sm="12" :md="8" :lg="6" :xl="6">
           <div class="search-item">
             <span class="search-title">
               <i class="el-icon-circle-check"></i> 菜单状态:
             </span>
             <el-select
-                clearable
-                size="small"
-                v-model="search.status"
-                placeholder="请选择"
-                class="tech-select">
+              clearable
+              size="small"
+              v-model="search.status"
+              placeholder="请选择"
+              class="tech-select">
               <el-option
-                  label="正常"
-                  value="0">
+                label="正常"
+                value="0">
                 <span class="status-option">
                   <i class="el-icon-success" style="color:#67C23A"></i> 正常
                 </span>
               </el-option>
               <el-option
-                  label="停用"
-                  value="1">
+                label="停用"
+                value="1">
                 <span class="status-option">
                   <i class="el-icon-error" style="color:#F56C6C"></i> 停用
                 </span>
@@ -44,21 +44,25 @@
             </el-select>
           </div>
         </el-col>
-        <el-col :xs="24" :sm="12" :md="8" :lg="8" :xl="8">
+      </el-row>
+      
+      <!-- 操作按钮 - 单独一行靠右 -->
+      <el-row>
+        <el-col :span="24" class="search-actions-col">
           <div class="search-actions">
             <el-button
-                size="small"
-                icon="el-icon-search"
-                type="primary"
-                @click="query"
-                class="search-btn">
+              size="small"
+              icon="el-icon-search"
+              type="primary"
+              @click="query"
+              class="search-btn">
               查询
             </el-button>
             <el-button
-                size="small"
-                icon="el-icon-refresh"
-                @click="refresh"
-                class="reset-btn">
+              size="small"
+              icon="el-icon-refresh"
+              @click="refresh"
+              class="reset-btn">
               重置
             </el-button>
           </div>
@@ -66,41 +70,36 @@
       </el-row>
     </div>
 
+    <!-- 数据面板 -->
     <div class="data-panel">
+      <!-- 操作栏 -->
       <div class="action-bar">
-        <!--<el-button
-            type="primary"
-            size="small"
-            icon="el-icon-plus"
-            @click="addMenu"
-            class="action-btn add-btn">
-          新增
-        </el-button>-->
         <el-button
-            type="info"
-            size="small"
-            icon="el-icon-sort"
-            @click="changeExpand"
-            class="action-btn expand-btn">
+          type="info"
+          size="small"
+          icon="el-icon-sort"
+          @click="changeExpand"
+          class="action-btn expand-btn">
           {{ expand ? '折叠' : '展开' }}
         </el-button>
       </div>
 
+      <!-- 数据表格 -->
       <el-table
-          v-if="refreshTable"
-          v-loading="loading"
-          :data="tableData"
-          :header-cell-style="tableHeaderStyle"
-          :row-style="tableRowStyle"
-          style="width: 100%;margin-bottom: 20px;"
-          row-key="id"
-          :default-expand-all="expand"
-          :tree-props="{children: 'children', hasChildren: 'hasChildren'}"
-          class="tech-table">
+        v-if="refreshTable"
+        v-loading="loading"
+        :data="tableData"
+        :header-cell-style="tableHeaderStyle"
+        :row-style="tableRowStyle"
+        style="width: 100%;margin-bottom: 20px;"
+        row-key="id"
+        :default-expand-all="expand"
+        :tree-props="{children: 'children', hasChildren: 'hasChildren'}"
+        class="tech-table">
         <el-table-column
-            prop="menuName"
-            label="菜单名称"
-            min-width="200">
+          prop="menuName"
+          label="菜单名称"
+          min-width="200">
           <template #default="{row}">
             <div class="name-cell">
               <i :class="row.icon || 'el-icon-document'" style="color:#7B68EE; margin-right:8px"></i>
@@ -109,9 +108,9 @@
           </template>
         </el-table-column>
         <el-table-column
-            prop="icon"
-            label="图标"
-            width="120">
+          prop="icon"
+          label="图标"
+          width="120">
           <template #default="{row}">
             <div class="icon-cell">
               <i :class="row.icon || 'el-icon-question'" style="color:#9370DB"></i>
@@ -119,9 +118,9 @@
           </template>
         </el-table-column>
         <el-table-column
-            prop="orderNum"
-            label="排序"
-            width="100">
+          prop="orderNum"
+          label="排序"
+          width="100">
           <template #default="{row}">
             <div class="order-cell">
               <i class="el-icon-sort" style="color:#A5A4BF; margin-right:5px"></i>
@@ -129,53 +128,31 @@
             </div>
           </template>
         </el-table-column>
-        <!--<el-table-column
-            prop="perms"
-            label="权限标识"
-            min-width="180">
-          <template #default="{row}">
-            <div class="perms-cell">
-              <i class="el-icon-key" style="color:#A5A4BF; margin-right:5px"></i>
-              <span>{{ row.perms || '-' }}</span>
-            </div>
-          </template>
-        </el-table-column>
         <el-table-column
-            prop="componentUrl"
-            label="组件路径"
-            min-width="200">
-          <template #default="{row}">
-            <div class="path-cell">
-              <i class="el-icon-link" style="color:#A5A4BF; margin-right:5px"></i>
-              <span>{{ row.componentUrl || '-' }}</span>
-            </div>
-          </template>
-        </el-table-column>-->
-        <el-table-column
-            prop="status"
-            label="状态"
-            width="120">
+          prop="status"
+          label="状态"
+          width="120">
           <template #default="{row}">
             <div class="status-cell">
               <el-tag
-                  v-if="row.status == 0"
-                  type="success"
-                  effect="dark">
+                v-if="row.status == 0"
+                type="success"
+                effect="dark">
                 <i class="el-icon-success"></i> 正常
               </el-tag>
               <el-tag
-                  v-if="row.status == 1"
-                  type="warning"
-                  effect="dark">
+                v-if="row.status == 1"
+                type="warning"
+                effect="dark">
                 <i class="el-icon-error"></i> 停用
               </el-tag>
             </div>
           </template>
         </el-table-column>
         <el-table-column
-            prop="createTime"
-            label="创建时间"
-            width="180">
+          prop="createTime"
+          label="创建时间"
+          width="180">
           <template #default="{row}">
             <div class="time-cell">
               <i class="el-icon-time" style="color:#A5A4BF; margin-right:5px"></i>
@@ -184,41 +161,31 @@
           </template>
         </el-table-column>
         <el-table-column
-            label="操作"
-            width="180"
-            fixed="right">
+          label="操作"
+          width="180"
+          fixed="right">
           <template #default="{row}">
             <div class="action-buttons">
-              <el-dropdown
-                  trigger="click"
-                  @command="handleCommand"
-                  placement="bottom-end">
+              <el-button
+                size="mini"
+                @click="handleEdit(row.id)"
+                class="action-btn edit-btn">
+                <i class="el-icon-edit"></i> 修改
+              </el-button>
+              <el-popconfirm
+                title="确认删除此菜单？"
+                @confirm="deleteDate(row.id)"
+                confirm-button-text="确认"
+                cancel-button-text="取消"
+                icon="el-icon-warning"
+                icon-color="#FF6B6B">
                 <el-button
-                    size="mini"
-                    class="action-btn more-btn">
-                  <i class="el-icon-more"></i> 操作
+                  size="mini"
+                  slot="reference"
+                  class="action-btn delete-btn">
+                  <i class="el-icon-delete"></i> 删除
                 </el-button>
-                <el-dropdown-menu slot="dropdown" class="tech-dropdown">
-                  <!--<el-dropdown-item
-                      icon="el-icon-plus"
-                      :command="row.idArrary + '#add#' + row.id"
-                      class="dropdown-item">
-                    新增
-                  </el-dropdown-item>-->
-                  <el-dropdown-item
-                      icon="el-icon-edit"
-                      :command="row.id + '#edit'"
-                      class="dropdown-item">
-                    修改
-                  </el-dropdown-item>
-                  <el-dropdown-item
-                      icon="el-icon-delete"
-                      :command="row.id + '#remove'"
-                      class="dropdown-item delete-item">
-                    删除
-                  </el-dropdown-item>
-                </el-dropdown-menu>
-              </el-dropdown>
+              </el-popconfirm>
             </div>
           </template>
         </el-table-column>
@@ -306,7 +273,8 @@ export default {
       this.disable = false
       this.query()
     },
-    updateMenu() {
+    handleEdit(id) {
+      this.updateId = id
       this.updateMenuVisible = true
     },
     updateMenuFalse() {
@@ -326,8 +294,7 @@ export default {
         this.disable = true
         this.addMenu()
       } else if (data[1] == 'edit') {
-        this.updateId = data[0]
-        this.updateMenu()
+        this.handleEdit(data[0])
       } else {
         this.deleteDate(data[0])
       }
@@ -365,29 +332,34 @@ export default {
 
 <style scoped>
 .menu-management {
-  padding: 20px;
-  background-color: #F8F7FC;
+  padding: 24px;
+  background-color: #f8f9fc;
+  min-height: calc(100vh - 48px);
 }
 
 .search-panel {
-  background: #fff;
-  border-radius: 8px;
-  padding: 15px;
-  margin-bottom: 20px;
-  box-shadow: 0 2px 12px rgba(123, 104, 238, 0.1);
+  background: linear-gradient(135deg, #ffffff, #f9f9ff);
+  border-radius: 12px;
+  padding: 20px;
+  margin-bottom: 24px;
+  box-shadow: 0 6px 18px rgba(123, 104, 238, 0.08);
+  border: 1px solid #e6e8f0;
 }
 
 .search-item {
   display: flex;
   flex-direction: column;
+  margin-bottom: 8px;
 }
 
 .search-title {
-  font-size: 14px;
-  color: #4A2B90;
+  font-size: 13px;
+  color: #5a6487;
   margin-bottom: 8px;
   display: flex;
   align-items: center;
+  font-weight: 600;
+  letter-spacing: 0.5px;
 }
 
 .search-title i {
@@ -395,49 +367,73 @@ export default {
   color: #7B68EE;
 }
 
+.search-actions-col {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 15px;
+}
+
 .search-actions {
   display: flex;
-  align-items: flex-end;
-  height: 100%;
+  gap: 12px;
 }
 
 .data-panel {
-  background: #fff;
-  border-radius: 8px;
-  padding: 15px;
-  box-shadow: 0 2px 12px rgba(123, 104, 238, 0.1);
+  background: #ffffff;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 6px 18px rgba(123, 104, 238, 0.08);
+  border: 1px solid #e6e8f0;
 }
 
 .action-bar {
-  padding: 10px 0 15px 10px;
-  margin-bottom: 15px;
-  border-bottom: 1px solid #F0EEF7;
+  padding: 0 0 20px 0;
+  margin-bottom: 20px;
+  display: flex;
+  gap: 12px;
+  border-bottom: 1px solid #f0f2f7;
 }
 
-.name-cell, .icon-cell, .order-cell, .perms-cell,
-.path-cell, .status-cell, .time-cell {
+.name-cell,
+.icon-cell,
+.order-cell,
+.status-cell,
+.time-cell {
   display: flex;
   align-items: center;
+}
+
+.name-cell i {
+  color: #7B68EE;
+  margin-right: 8px;
+  font-size: 16px;
+}
+
+.icon-cell i {
+  color: #9370DB;
+  font-size: 16px;
+}
+
+.order-cell i {
+  color: #A5A4BF;
+  margin-right: 8px;
+  font-size: 16px;
+}
+
+.status-cell i {
+  margin-right: 4px;
+}
+
+.time-cell i {
+  color: #A5A4BF;
+  margin-right: 8px;
+  font-size: 16px;
 }
 
 .action-buttons {
   display: flex;
-  justify-content: flex-end;
-}
-
-.action-btn {
-  border-radius: 15px;
-  padding: 6px 10px;
-  font-size: 12px;
-  display: inline-flex;
-  align-items: center;
   justify-content: center;
-  transition: all 0.3s ease;
-}
-
-.action-btn i {
-  margin-right: 4px;
-  font-size: 14px;
+  gap: 8px;
 }
 
 .status-option {
@@ -453,11 +449,19 @@ export default {
 <style>
 /* 全局样式 */
 .tech-input .el-input__inner {
-  border-radius: 20px;
-  border: 1px solid #D8D8E5;
-  color: #5F4B8B;
-  background-color: #F9F8FD;
-  padding-left: 30px;
+  border-radius: 8px;
+  border: 1px solid #e0e3ed;
+  color: #3d4766;
+  background-color: #fcfcff;
+  height: 36px;
+  line-height: 36px;
+  transition: all 0.25s ease;
+  font-size: 13px;
+}
+
+.tech-input .el-input__inner:focus {
+  border-color: #7B68EE;
+  box-shadow: 0 0 0 2px rgba(123, 104, 238, 0.15);
 }
 
 .tech-input .el-input__prefix {
@@ -466,80 +470,101 @@ export default {
 }
 
 .tech-select .el-input__inner {
-  border-radius: 20px;
-  border: 1px solid #D8D8E5;
-  color: #5F4B8B;
-  background-color: #F9F8FD;
+  border-radius: 8px;
+  border: 1px solid #e0e3ed;
+  color: #3d4766;
+  background-color: #fcfcff;
+  height: 36px;
+  line-height: 36px;
 }
 
 .search-btn {
   background: linear-gradient(135deg, #7B68EE, #9370DB);
   border: none;
-  border-radius: 20px;
+  border-radius: 8px;
   color: white;
-  padding: 7px 15px;
+  padding: 9px 18px;
+  height: 36px;
+  box-shadow: 0 4px 12px rgba(123, 104, 238, 0.2);
+  transition: all 0.25s ease;
+}
+
+.search-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px rgba(123, 104, 238, 0.3);
 }
 
 .reset-btn {
-  border-radius: 20px;
+  border-radius: 8px;
   color: #7B68EE;
-  border: 1px solid #D8D8E5;
-  padding: 7px 15px;
+  border: 1px solid #e0e3ed;
+  padding: 9px 18px;
+  height: 36px;
+  background: #ffffff;
+  transition: all 0.25s ease;
 }
 
-.action-btn.add-btn {
-  background: linear-gradient(135deg, #7B68EE, #9370DB);
-  color: white;
+.reset-btn:hover {
+  background-color: #f8f9ff;
+  border-color: #d5d9e8;
+}
+
+.action-btn {
+  border-radius: 6px;
+  padding: 7px 12px;
+  font-size: 12px;
+  min-width: 70px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
   border: none;
+  font-weight: 500;
+  letter-spacing: 0.3px;
 }
 
-.action-btn.expand-btn {
+.action-btn i {
+  margin-right: 5px;
+  font-size: 14px;
+}
+
+.expand-btn {
   background: linear-gradient(135deg, #909399, #A6A9AD);
   color: white;
-  border: none;
 }
 
-.action-btn.more-btn {
-  background: linear-gradient(135deg, #5F4B8B, #7B68EE);
+.edit-btn {
+  background: linear-gradient(135deg, #67C23A, #85CE61);
   color: white;
-  border: none;
+}
+
+.delete-btn {
+  background: linear-gradient(135deg, #ff7675, #e66767);
+  color: white;
 }
 
 .action-btn:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+  opacity: 0.95;
 }
 
 .tech-table {
-  border-radius: 8px;
-  border: 1px solid #ECE9F4;
+  border-radius: 12px;
+  border: 1px solid #e6e8f0;
+  overflow: hidden;
+}
+
+.tech-table .el-table__header th {
+  font-weight: 600;
 }
 
 .tech-table .el-table__body tr:hover>td {
-  background-color: #F5F2FF !important;
+  background-color: #f8f9ff !important;
 }
 
-.tech-dropdown {
-  border-radius: 8px;
-  border: 1px solid #ECE9F4;
-  box-shadow: 0 2px 12px rgba(123, 104, 238, 0.1);
-}
-
-.dropdown-item {
-  color: #5F4B8B;
-  padding: 8px 20px;
-}
-
-.dropdown-item i {
-  color: #7B68EE;
-}
-
-.delete-item i {
-  color: #F56C6C;
-}
-
-.dropdown-item:hover {
-  background-color: #F5F2FF;
+.tech-table .el-table__body td {
+  transition: background-color 0.2s ease;
 }
 
 .tech-message-box {
@@ -553,14 +578,15 @@ export default {
 }
 
 .tech-message {
-  border-radius: 20px;
-  background-color: #F5F2FF;
+  border-radius: 8px;
+  background-color: #ffffff;
+  box-shadow: 0 6px 18px rgba(123, 104, 238, 0.15);
   border: none;
-  box-shadow: 0 2px 12px 0 rgba(123, 104, 238, 0.2);
 }
 
 .tech-message .el-message__content {
-  color: #4A2B90;
+  color: #3d4766;
+  font-weight: 500;
 }
 
 .el-tag {
@@ -569,70 +595,32 @@ export default {
   padding: 0 8px;
   height: 24px;
   line-height: 24px;
+  border: none;
 }
 
 .el-tag i {
   margin-right: 4px;
 }
-</style>
 
-<style scoped>
-/* 调整表格单元格的对齐和间距 */
-.name-cell, .icon-cell, .order-cell, .status-cell, .time-cell {
-  display: flex;
-  align-items: center;
-  padding: 8px 0; /* 增加垂直内边距 */
+.el-popconfirm__action {
+  text-align: center;
 }
 
-/* 调整图标和文本的间距 */
-.name-cell i, .icon-cell i, .order-cell i, .time-cell i {
-  margin-right: 8px; /* 统一图标右边距 */
-  width: 20px; /* 固定图标宽度 */
-  text-align: center; /* 图标居中 */
+.el-popconfirm__action button {
+  border-radius: 6px;
+  padding: 7px 12px;
+  font-size: 12px;
+  min-width: 70px;
 }
 
-/* 调整状态标签样式 */
-.status-cell .el-tag {
-  margin: 0 auto; /* 状态标签居中 */
-  width: 60px; /* 固定宽度 */
-  justify-content: center; /* 内容居中 */
+.el-popconfirm__action button:first-child {
+  background: linear-gradient(135deg, #7B68EE, #9370DB);
+  border: none;
+  color: white;
 }
 
-/* 调整操作按钮 */
-.action-buttons {
-  display: flex;
-  justify-content: center; /* 操作按钮居中 */
-  padding: 8px 0;
-}
-
-/* 调整表格行高 */
-.el-table .el-table__row {
-  height: 50px; /* 固定行高 */
-}
-
-/* 调整表头样式 */
-.el-table__header th {
-  padding: 12px 0; /* 增加表头内边距 */
-  text-align: center; /* 表头文本居中 */
-}
-
-/* 调整表格单元格内边距 */
-.el-table .cell {
-  padding: 0 10px; /* 调整单元格左右内边距 */
+.el-popconfirm__action button:last-child {
+  color: #7B68EE;
+  border: 1px solid #e0e3ed;
 }
 </style>
-
-<style>
-/* 全局调整下拉菜单样式 */
-.el-dropdown-menu__item {
-  padding: 0 20px; /* 调整下拉菜单项内边距 */
-  text-align: center; /* 下拉菜单文本居中 */
-}
-
-/* 调整操作按钮的悬停效果 */
-.action-btn:hover {
-  transform: none; /* 移除悬停时的位移效果 */
-  box-shadow: 0 2px 6px rgba(123, 104, 238, 0.2); /* 减小阴影 */
-}
-</style>
-

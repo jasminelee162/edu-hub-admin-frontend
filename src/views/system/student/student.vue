@@ -1,8 +1,9 @@
 <template>
   <div class="student-management">
+    <!-- 搜索区域 -->
     <div class="search-panel">
       <el-row :gutter="15">
-        <el-col :xs="24" :sm="12" :md="8" :lg="8" :xl="8">
+        <el-col :xs="24" :sm="12" :md="8" :lg="6" :xl="6">
           <div class="search-item">
             <span class="search-title">
               <i class="el-icon-user"></i> 学生名称:
@@ -11,12 +12,24 @@
               size="small"
               placeholder="请输入学生名称"
               v-model="search.userName"
-              class="student-input">
-              <i slot="prefix" class="el-icon-user-solid"></i>
+              class="stu-input">
             </el-input>
           </div>
         </el-col>
-        <el-col :xs="24" :sm="12" :md="8" :lg="8" :xl="8">
+        <el-col :xs="24" :sm="12" :md="8" :lg="6" :xl="6">
+          <div class="search-item">
+            <span class="search-title">
+              <i class="el-icon-mobile-phone"></i> 手机号码:
+            </span>
+            <el-input
+              size="small"
+              placeholder="请输入手机号码"
+              v-model="search.tel"
+              class="stu-input">
+            </el-input>
+          </div>
+        </el-col>
+        <el-col :xs="24" :sm="12" :md="8" :lg="6" :xl="6">
           <div class="search-item">
             <span class="search-title">
               <i class="el-icon-school"></i> 学校:
@@ -26,7 +39,7 @@
               size="small" 
               v-model="search.school" 
               placeholder="请选择"
-              class="student-select">
+              class="stu-select">
               <el-option 
                 v-for="(item,index) in school" 
                 :key="index"
@@ -36,7 +49,7 @@
             </el-select>
           </div>
         </el-col>
-        <el-col :xs="24" :sm="12" :md="8" :lg="8" :xl="8">
+        <el-col :xs="24" :sm="12" :md="8" :lg="6" :xl="6">
           <div class="search-item">
             <span class="search-title">
               <i class="el-icon-reading"></i> 专业:
@@ -46,7 +59,7 @@
               size="small" 
               v-model="search.major" 
               placeholder="请选择"
-              class="student-select">
+              class="stu-select">
               <el-option 
                 v-for="(item,index) in major" 
                 :key="index"
@@ -56,7 +69,11 @@
             </el-select>
           </div>
         </el-col>
-        <el-col :xs="24" :sm="12" :md="8" :lg="8" :xl="8">
+      </el-row>
+      
+      <!-- 操作按钮 - 单独一行靠右 -->
+      <el-row>
+        <el-col :span="24" class="search-actions-col">
           <div class="search-actions">
             <el-button 
               size="small" 
@@ -78,7 +95,9 @@
       </el-row>
     </div>
 
+    <!-- 数据面板 -->
     <div class="data-panel">
+      <!-- 操作栏 -->
       <div class="action-bar">
         <el-button 
           type="primary" 
@@ -116,6 +135,7 @@
         </el-popconfirm>
       </div>
 
+      <!-- 数据表格 -->
       <el-table
         v-loading="loading"
         :data="tableData"
@@ -123,7 +143,7 @@
         :row-style="tableRowStyle"
         @selection-change="handleSelectionChange"
         stripe
-        class="student-table">
+        class="stu-table">
         <el-table-column 
           type="selection" 
           width="55"
@@ -137,18 +157,8 @@
               <el-avatar :size="35" :src="$store.state.configure.HOST + row.avatar"></el-avatar>
               <div class="student-info">
                 <span class="student-name">{{row.userName}}</span>
+                <span class="student-id">ID: {{row.loginAccount}}</span>
               </div>
-            </div>
-          </template>
-        </el-table-column>
-        <el-table-column 
-          prop="loginAccount" 
-          label="登陆账号"
-          width="150">
-          <template #default="{row}">
-            <div class="account-cell">
-              <i class="el-icon-s-custom"></i>
-              <span>{{row.loginAccount}}</span>
             </div>
           </template>
         </el-table-column>
@@ -186,6 +196,39 @@
           </template>
         </el-table-column>
         <el-table-column 
+          prop="tel" 
+          label="手机号"
+          width="140">
+          <template #default="{row}">
+            <div class="tel-cell">
+              <i class="el-icon-mobile-phone"></i>
+              <span>{{row.tel || '--'}}</span>
+            </div>
+          </template>
+        </el-table-column>
+        <el-table-column 
+          prop="email" 
+          label="邮箱"
+          width="200">
+          <template #default="{row}">
+            <div class="email-cell">
+              <i class="el-icon-message"></i>
+              <span>{{row.email || '--'}}</span>
+            </div>
+          </template>
+        </el-table-column>
+        <el-table-column 
+          label="状态"
+          width="100">
+          <template #default="{row}">
+            <el-tag 
+              size="small"
+              :type="row.status === 1 ? 'success' : 'danger'">
+              {{row.status === 1 ? '活跃' : '禁用'}}
+            </el-tag>
+          </template>
+        </el-table-column>
+        <el-table-column 
           label="操作" 
           width="180"  
           fixed="right">
@@ -195,7 +238,7 @@
                 <el-button size="mini" class="action-btn more-btn">
                   操作<i class="el-icon-arrow-down el-icon--right"></i>
                 </el-button>
-                <el-dropdown-menu slot="dropdown" class="student-dropdown">
+                <el-dropdown-menu slot="dropdown" class="stu-dropdown">
                   <el-dropdown-item 
                     icon="el-icon-edit" 
                     :command="row.id + '#edit'"
@@ -223,6 +266,7 @@
         </el-table-column>
       </el-table>
 
+      <!-- 分页 -->
       <el-pagination
         background
         layout="total, sizes, prev, pager, next, jumper"
@@ -232,19 +276,21 @@
         @size-change="handleSizeChange"
         @current-change="handleCurrentChange"
         :total="total"
-        class="student-pagination">
+        class="stu-pagination">
       </el-pagination>
     </div>
 
+    <!-- 弹窗组件 -->
     <add-user @addUserFalse="addUserFalse" :addUserVisible="addUserVisible"></add-user>
     <update-user @updateUserFalse="updateUserFalse" :updateId="updateId" :updateUserVisible="updateUserVisible"></update-user>
     
+    <!-- 重置密码对话框 -->
     <el-dialog
       title="重置密码"
       :visible.sync="passwordDialogVisible"
       width="30%"
       :before-close="handlePasswordClose"
-      class="student-dialog">
+      class="stu-dialog">
       <div class="dialog-content">
         <div class="password-info">
           <i class="el-icon-key" style="color:#7B68EE;font-size:20px"></i>
@@ -256,7 +302,7 @@
           v-model="newPassword" 
           size="small" 
           placeholder="请输入新密码"
-          class="student-input">
+          class="stu-input">
           <i slot="prefix" class="el-icon-lock"></i>
         </el-input>
       </div>
@@ -430,7 +476,7 @@ export default {
           cancelButtonText: '取消',
           type: 'warning',
           iconClass: 'el-icon-warning',
-          customClass: 'student-confirm'
+          customClass: 'stu-confirm'
         }).then(() => {
           this.deleteDate(id)
         }).catch(() => {});
@@ -442,7 +488,7 @@ export default {
         cancelButtonText: '取消',
         type: 'warning',
         iconClass: 'el-icon-warning',
-        customClass: 'student-confirm'
+        customClass: 'stu-confirm'
       }).then(() => {
         this.deleteDate(this.remove.join(","))
       }).catch(() => {});
@@ -453,7 +499,7 @@ export default {
           this.$message({
             type: 'success',
             message: '删除成功!',
-            customClass: 'student-message'
+            customClass: 'stu-message'
           });
           this.search.pageNumber = 1
           this.query()
@@ -480,7 +526,7 @@ export default {
         this.$message({
           message: '请输入新密码',
           type: 'warning',
-          customClass: 'student-message'
+          customClass: 'stu-message'
         });
         return;
       }
@@ -489,13 +535,13 @@ export default {
           this.$message({
             type: 'success',
             message: '重置成功',
-            customClass: 'student-message'
+            customClass: 'stu-message'
           });
           this.handlePasswordClose()
         } else {
           this.$message.error({
             message: res.message,
-            customClass: 'student-message'
+            customClass: 'stu-message'
           });
         }
       })
@@ -511,29 +557,34 @@ export default {
 
 <style scoped>
 .student-management {
-  padding: 20px;
-  background-color: #F8F7FC;
+  padding: 24px;
+  background-color: #f8f9fc;
+  min-height: calc(100vh - 48px);
 }
 
 .search-panel {
-  background: #fff;
-  border-radius: 8px;
-  padding: 15px;
-  margin-bottom: 20px;
-  box-shadow: 0 2px 12px rgba(123, 104, 238, 0.1);
+  background: linear-gradient(135deg, #ffffff, #f9f9ff);
+  border-radius: 12px;
+  padding: 20px;
+  margin-bottom: 24px;
+  box-shadow: 0 6px 18px rgba(123, 104, 238, 0.08);
+  border: 1px solid #e6e8f0;
 }
 
 .search-item {
   display: flex;
   flex-direction: column;
+  margin-bottom: 8px;
 }
 
 .search-title {
-  font-size: 14px;
-  color: #4A2B90;
+  font-size: 13px;
+  color: #5a6487;
   margin-bottom: 8px;
   display: flex;
   align-items: center;
+  font-weight: 600;
+  letter-spacing: 0.5px;
 }
 
 .search-title i {
@@ -541,23 +592,31 @@ export default {
   color: #7B68EE;
 }
 
+.search-actions-col {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 15px;
+}
+
 .search-actions {
   display: flex;
-  align-items: flex-end;
-  height: 100%;
+  gap: 12px;
 }
 
 .data-panel {
-  background: #fff;
-  border-radius: 8px;
-  padding: 15px;
-  box-shadow: 0 2px 12px rgba(123, 104, 238, 0.1);
+  background: #ffffff;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 6px 18px rgba(123, 104, 238, 0.08);
+  border: 1px solid #e6e8f0;
 }
 
 .action-bar {
-  padding: 10px 0 15px 10px;
-  margin-bottom: 15px;
-  border-bottom: 1px solid #F0EEF7;
+  padding: 0 0 20px 0;
+  margin-bottom: 20px;
+  display: flex;
+  gap: 12px;
+  border-bottom: 1px solid #f0f2f7;
 }
 
 .student-cell {
@@ -576,18 +635,26 @@ export default {
   color: #4A2B90;
 }
 
-.account-cell, 
+.student-id {
+  font-size: 12px;
+  color: #A5A4BF;
+  margin-top: 2px;
+}
+
 .country-cell, 
 .school-cell, 
-.major-cell {
+.major-cell, 
+.tel-cell, 
+.email-cell {
   display: flex;
   align-items: center;
 }
 
-.account-cell i,
 .country-cell i,
 .school-cell i,
-.major-cell i {
+.major-cell i,
+.tel-cell i,
+.email-cell i {
   color: #7B68EE;
   margin-right: 8px;
   font-size: 16px;
@@ -620,86 +687,150 @@ export default {
 
 <style>
 /* 全局样式 */
-.student-input .el-input__inner {
-  border-radius: 20px;
-  border: 1px solid #D8D8E5;
-  color: #5F4B8B;
-  background-color: #F9F8FD;
-  padding-left: 30px;
+.stu-input .el-input__inner {
+  border-radius: 8px;
+  border: 1px solid #e0e3ed;
+  color: #3d4766;
+  background-color: #fcfcff;
+  height: 36px;
+  line-height: 36px;
+  transition: all 0.25s ease;
+  font-size: 13px;
 }
 
-.student-input .el-input__prefix {
+.stu-input .el-input__inner:focus {
+  border-color: #7B68EE;
+  box-shadow: 0 0 0 2px rgba(123, 104, 238, 0.15);
+}
+
+.stu-input .el-input__prefix {
   left: 5px;
   color: #7B68EE;
 }
 
-.student-select .el-input__inner {
-  border-radius: 20px;
+.stu-select .el-input__inner {
+  border-radius: 8px;
+  border: 1px solid #e0e3ed;
+  color: #3d4766;
+  background-color: #fcfcff;
+  height: 36px;
+  line-height: 36px;
 }
 
 .search-btn {
   background: linear-gradient(135deg, #7B68EE, #9370DB);
   border: none;
-  border-radius: 20px;
+  border-radius: 8px;
   color: white;
-  padding: 7px 15px;
+  padding: 9px 18px;
+  height: 36px;
+  box-shadow: 0 4px 12px rgba(123, 104, 238, 0.2);
+  transition: all 0.25s ease;
+}
+
+.search-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px rgba(123, 104, 238, 0.3);
 }
 
 .reset-btn {
-  border-radius: 20px;
+  border-radius: 8px;
   color: #7B68EE;
-  border: 1px solid #D8D8E5;
-  padding: 7px 15px;
+  border: 1px solid #e0e3ed;
+  padding: 9px 18px;
+  height: 36px;
+  background: #ffffff;
+  transition: all 0.25s ease;
 }
 
-.action-btn.add-btn {
+.reset-btn:hover {
+  background-color: #f8f9ff;
+  border-color: #d5d9e8;
+}
+
+.action-btn {
+  border-radius: 6px;
+  padding: 7px 12px;
+  font-size: 12px;
+  min-width: 70px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  border: none;
+  font-weight: 500;
+  letter-spacing: 0.3px;
+}
+
+.action-btn i {
+  margin-right: 5px;
+  font-size: 14px;
+}
+
+.add-btn {
   background: linear-gradient(135deg, #7B68EE, #9370DB);
   color: white;
-  border: none;
 }
 
-.action-btn.edit-btn {
-  background: linear-gradient(135deg, #67C23A, #5DA934);
+.edit-btn {
+  background: linear-gradient(135deg, #67C23A, #85CE61);
   color: white;
-  border: none;
 }
 
-.action-btn.delete-btn {
-  background: linear-gradient(135deg, #FF6B6B, #FF8E8E);
+.delete-btn {
+  background: linear-gradient(135deg, #ff7675, #e66767);
   color: white;
-  border: none;
 }
 
-.action-btn.more-btn {
+.more-btn {
   background: linear-gradient(135deg, #A5A4BF, #C4C3D9);
   color: white;
-  border: none;
 }
 
 .action-btn:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+  opacity: 0.95;
 }
 
-.student-table {
-  border-radius: 8px;
-  border: 1px solid #ECE9F4;
+.stu-table {
+  border-radius: 12px;
+  border: 1px solid #e6e8f0;
+  overflow: hidden;
 }
 
-.student-table .el-table__body tr:hover>td {
-  background-color: #F5F2FF !important;
+.stu-table .el-table__header th {
+  font-weight: 600;
 }
 
-.student-pagination .el-pagination.is-background .el-pager li:not(.disabled).active {
+.stu-table .el-table__body tr:hover>td {
+  background-color: #f8f9ff !important;
+}
+
+.stu-table .el-table__body td {
+  transition: background-color 0.2s ease;
+}
+
+.stu-pagination {
+  margin-top: 24px;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.stu-pagination .el-pagination.is-background .el-pager li:not(.disabled).active {
   background-color: #7B68EE;
   color: white;
-  border-radius: 50%;
+  font-weight: 600;
 }
 
-.student-dropdown {
+.stu-pagination .el-pagination.is-background .el-pager li:hover {
+  color: #7B68EE;
+}
+
+.stu-dropdown {
   border-radius: 8px;
-  box-shadow: 0 2px 12px rgba(123, 104, 238, 0.1);
-  border: 1px solid #ECE9F4;
+  box-shadow: 0 6px 18px rgba(123, 104, 238, 0.1);
+  border: 1px solid #e6e8f0;
 }
 
 .dropdown-item {
@@ -716,12 +847,12 @@ export default {
   color: #FF6B6B;
 }
 
-.student-dialog .el-dialog__header {
-  border-bottom: 1px solid #F0EEF7;
+.stu-dialog .el-dialog__header {
+  border-bottom: 1px solid #f0f2f7;
   padding: 15px 20px;
 }
 
-.student-dialog .el-dialog__title {
+.stu-dialog .el-dialog__title {
   color: #4A2B90;
   font-weight: bold;
 }
@@ -729,32 +860,40 @@ export default {
 .confirm-btn {
   background: linear-gradient(135deg, #7B68EE, #9370DB);
   border: none;
-  border-radius: 20px;
+  border-radius: 8px;
   color: white;
-  padding: 7px 15px;
+  padding: 9px 18px;
 }
 
 .cancel-btn {
-  border-radius: 20px;
+  border-radius: 8px;
   color: #7B68EE;
-  border: 1px solid #D8D8E5;
-  padding: 7px 15px;
+  border: 1px solid #e0e3ed;
+  padding: 9px 18px;
 }
 
-.student-confirm .el-message-box__header {
+.stu-confirm .el-message-box__header {
   background-color: #ECE9F4;
   padding: 15px 20px;
 }
 
-.student-confirm .el-message-box__title {
+.stu-confirm .el-message-box__title {
   color: #4A2B90;
 }
 
-.student-confirm .el-message-box__content {
+.stu-confirm .el-message-box__content {
   color: #5F4B8B;
 }
 
-.student-message {
-  border-radius: 20px;
+.stu-message {
+  border-radius: 8px;
+  background-color: #ffffff;
+  box-shadow: 0 6px 18px rgba(123, 104, 238, 0.15);
+  border: none;
+}
+
+.stu-message .el-message__content {
+  color: #3d4766;
+  font-weight: 500;
 }
 </style>

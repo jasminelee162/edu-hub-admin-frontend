@@ -617,57 +617,62 @@ export default {
 
 <style scoped>
 .template-management {
-  padding: 20px;
-  background-color: #fff;
+  padding: 24px;
+  background-color: #f8f9fc;
+  min-height: calc(100vh - 48px);
 }
 
 .search-panel {
-  background: #fff;
-  border-radius: 8px;
-  padding: 15px;
-  margin-bottom: 20px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-  border: 1px solid #EBEEF5;
+  background: linear-gradient(135deg, #ffffff, #f9f9ff);
+  border-radius: 12px;
+  padding: 20px;
+  margin-bottom: 24px;
+  box-shadow: 0 6px 18px rgba(100, 87, 255, 0.08);
+  border: 1px solid #e6e8f0;
 }
 
 .search-item {
   display: flex;
   flex-direction: column;
+  margin-bottom: 8px;
 }
 
 .search-title {
-  font-size: 14px;
-  color: #1E2B45;
+  font-size: 13px;
+  color: #5a6487;
   margin-bottom: 8px;
   display: flex;
   align-items: center;
-  font-weight: 500;
+  font-weight: 600;
+  letter-spacing: 0.5px;
 }
 
 .search-title i {
-  margin-right: 6px;
-  color: #409EFF;
+  margin-right: 8px;
+  color: #6c5ce7;
 }
 
 .search-actions {
   display: flex;
   align-items: flex-end;
   height: 100%;
+  justify-content: flex-end;
 }
 
 .data-panel {
-  background: #fff;
-  border-radius: 8px;
-  padding: 15px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-  border: 1px solid #EBEEF5;
+  background: #ffffff;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 6px 18px rgba(100, 87, 255, 0.08);
+  border: 1px solid #e6e8f0;
 }
 
 .action-bar {
-  padding: 10px 0 15px 0;
-  margin-bottom: 15px;
+  padding: 0 0 20px 0;
+  margin-bottom: 20px;
   display: flex;
-  gap: 10px;
+  gap: 12px;
+  border-bottom: 1px solid #f0f2f7;
 }
 
 .name-cell, .time-cell {
@@ -676,35 +681,37 @@ export default {
 }
 
 .name-cell i {
-  color: #409EFF;
-  margin-right: 8px;
-  font-size: 16px;
+  color: #6c5ce7;
+  margin-right: 10px;
+  font-size: 18px;
 }
 
 .time-cell i {
-  color: #909399;
-  margin-right: 8px;
+  color: #a7b1cb;
+  margin-right: 10px;
 }
 
 .action-buttons {
   display: flex;
-  gap: 6px;
+  gap: 8px;
 }
 
 .action-btn {
-  border-radius: 4px;
-  padding: 6px 10px;
+  border-radius: 6px;
+  padding: 7px 12px;
   font-size: 12px;
-  min-width: 60px;
+  min-width: 70px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  transition: all 0.3s ease;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
   border: none;
+  font-weight: 500;
+  letter-spacing: 0.3px;
 }
 
 .action-btn i {
-  margin-right: 4px;
+  margin-right: 5px;
   font-size: 14px;
 }
 
@@ -716,117 +723,154 @@ export default {
 <style>
 /* 全局样式 */
 .tech-input .el-input__inner {
-  border-radius: 4px;
-  border: 1px solid #DCDFE6;
-  color: #1E2B45;
-  background-color: #fff;
-  padding-left: 30px;
-  transition: all 0.3s;
+  border-radius: 8px;
+  border: 1px solid #e0e3ed;
+  color: #3d4766;
+  background-color: #fcfcff;
+  height: 36px;
+  line-height: 36px;
+  transition: all 0.25s ease;
+  font-size: 13px;
 }
 
 .tech-input .el-input__inner:focus {
-  border-color: #409EFF;
-  box-shadow: 0 0 0 2px rgba(64, 158, 255, 0.1);
-}
-
-.tech-input .el-input__prefix {
-  left: 5px;
-  color: #409EFF;
+  border-color: #6c5ce7;
+  box-shadow: 0 0 0 2px rgba(108, 92, 231, 0.15);
 }
 
 .tech-date-picker .el-input__inner {
-  border-radius: 4px;
-  border: 1px solid #DCDFE6;
-  color: #1E2B45;
-  background-color: #fff;
+  border-radius: 8px;
+  border: 1px solid #e0e3ed;
+  color: #3d4766;
+  background-color: #fcfcff;
+  height: 36px;
+  line-height: 36px;
 }
 
 .tech-date-picker .el-range-separator {
-  color: #606266;
+  color: #8a94b3;
+  font-weight: 500;
 }
 
 .search-btn {
-  background: linear-gradient(135deg, #409EFF, #3375B9);
+  background: linear-gradient(135deg, #6c5ce7, #5a4bd6);
   border: none;
-  border-radius: 4px;
+  border-radius: 8px;
   color: white;
-  padding: 7px 15px;
-  box-shadow: 0 2px 6px rgba(64, 158, 255, 0.3);
+  padding: 9px 18px;
+  height: 36px;
+  box-shadow: 0 4px 12px rgba(108, 92, 231, 0.2);
+  transition: all 0.25s ease;
+}
+
+.search-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px rgba(108, 92, 231, 0.3);
 }
 
 .reset-btn {
-  border-radius: 4px;
-  color: #409EFF;
-  border: 1px solid #DCDFE6;
-  padding: 7px 15px;
-  background: #fff;
+  border-radius: 8px;
+  color: #6c5ce7;
+  border: 1px solid #e0e3ed;
+  padding: 9px 18px;
+  height: 36px;
+  background: #ffffff;
+  transition: all 0.25s ease;
+}
+
+.reset-btn:hover {
+  background-color: #f8f9ff;
+  border-color: #d5d9e8;
 }
 
 .action-btn.upload-btn {
-  background: linear-gradient(135deg, #409EFF, #3375B9);
+  background: linear-gradient(135deg, #6c5ce7, #5a4bd6);
   color: white;
-  box-shadow: 0 2px 6px rgba(64, 158, 255, 0.3);
+  box-shadow: 0 4px 12px rgba(108, 92, 231, 0.2);
 }
 
 .action-btn.view-btn {
-  background: linear-gradient(135deg, #409EFF, #3375B9);
+  background: linear-gradient(135deg, #6c5ce7, #5a4bd6);
   color: white;
-  box-shadow: 0 2px 6px rgba(64, 158, 255, 0.3);
+  box-shadow: 0 4px 12px rgba(108, 92, 231, 0.2);
 }
 
 .action-btn.download-btn {
-  background: linear-gradient(135deg, #67C23A, #529B2E);
+  background: linear-gradient(135deg, #00b894, #00a884);
   color: white;
-  box-shadow: 0 2px 6px rgba(103, 194, 58, 0.3);
+  box-shadow: 0 4px 12px rgba(0, 184, 148, 0.2);
 }
 
 .action-btn.delete-btn {
-  background: linear-gradient(135deg, #F56C6C, #D95454);
+  background: linear-gradient(135deg, #ff7675, #e66767);
   color: white;
-  box-shadow: 0 2px 6px rgba(245, 108, 108, 0.3);
+  box-shadow: 0 4px 12px rgba(255, 118, 117, 0.2);
 }
 
 .action-btn:hover {
-  transform: translateY(-1px);
-  opacity: 0.9;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+  opacity: 0.95;
 }
 
 .tech-table {
-  border-radius: 8px;
-  border: 1px solid #EBEEF5;
+  border-radius: 12px;
+  border: 1px solid #e6e8f0;
+  overflow: hidden;
 }
 
-.tech-table .el-table__body tr:hover>td {
-  background-color: #F5F9FF !important;
-}
-
-.tech-pagination .el-pagination.is-background .el-pager li:not(.disabled).active {
-  background-color: #409EFF;
-  color: white;
-}
-
-.tech-pagination .el-pagination.is-background .el-pager li:hover {
-  color: #409EFF;
-}
-
-.tech-message-box {
-  border-radius: 8px;
-  border: 1px solid #409EFF;
-}
-
-.tech-message-box .el-message-box__title {
-  color: #1E2B45;
+.tech-table .el-table__header th {
   font-weight: 600;
 }
 
+.tech-table .el-table__body tr:hover>td {
+  background-color: #f8f9ff !important;
+}
+
+.tech-table .el-table__body td {
+  transition: background-color 0.2s ease;
+}
+
+.tech-pagination {
+  margin-top: 24px;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.tech-pagination .el-pagination.is-background .el-pager li:not(.disabled).active {
+  background-color: #6c5ce7;
+  color: white;
+  font-weight: 600;
+}
+
+.tech-pagination .el-pagination.is-background .el-pager li:hover {
+  color: #6c5ce7;
+}
+
+.tech-message-box {
+  border-radius: 12px;
+  border: 1px solid #6c5ce7;
+}
+
+.tech-message-box .el-message-box__title {
+  color: #3d4766;
+  font-weight: 600;
+}
+
+.tech-message-box .el-message-box__content {
+  color: #5a6487;
+}
+
 .tech-message {
-  border-radius: 4px;
-  background-color: #fff;
-  box-shadow: 0 2px 12px 0 rgba(64, 158, 255, 0.2);
+  border-radius: 8px;
+  background-color: #ffffff;
+  box-shadow: 0 6px 18px rgba(100, 87, 255, 0.15);
+  border: none;
 }
 
 .tech-message .el-message__content {
-  color: #1E2B45;
+  color: #3d4766;
+  font-weight: 500;
 }
 
 .el-popconfirm__action {
@@ -834,32 +878,42 @@ export default {
 }
 
 .el-popconfirm__action button {
-  border-radius: 4px;
-  padding: 6px 12px;
+  border-radius: 8px;
+  padding: 8px 16px;
+  transition: all 0.25s ease;
 }
 
 .el-popconfirm__action button:first-child {
-  background: linear-gradient(135deg, #409EFF, #3375B9);
+  background: linear-gradient(135deg, #6c5ce7, #5a4bd6);
   border: none;
   color: white;
 }
 
 .el-popconfirm__action button:last-child {
-  color: #409EFF;
-  border: 1px solid #DCDFE6;
-  background: #fff;
+  color: #6c5ce7;
+  border: 1px solid #e0e3ed;
+  background: #ffffff;
 }
 
 .el-tag {
   display: inline-flex;
   align-items: center;
-  padding: 0 8px;
-  height: 24px;
-  line-height: 24px;
-  border-radius: 4px;
+  padding: 0 10px;
+  height: 26px;
+  line-height: 26px;
+  border-radius: 6px;
+  font-weight: 500;
 }
 
 .el-tag i {
-  margin-right: 4px;
+  margin-right: 5px;
+}
+
+/* 移除输入框图标 */
+.tech-input .el-input__prefix {
+  display: none;
+}
+.tech-input .el-input__inner {
+  padding-left: 15px;
 }
 </style>

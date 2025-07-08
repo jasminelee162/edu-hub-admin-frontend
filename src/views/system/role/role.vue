@@ -1,8 +1,9 @@
 <template>
   <div class="role-management">
+    <!-- 搜索区域 -->
     <div class="search-panel">
       <el-row :gutter="15">
-        <el-col :xs="24" :sm="12" :md="8" :lg="8" :xl="8">
+        <el-col :xs="24" :sm="12" :md="8" :lg="6" :xl="6">
           <div class="search-item">
             <span class="search-title">
               <i class="el-icon-user-solid"></i> 角色名称:
@@ -16,7 +17,7 @@
             </el-input>
           </div>
         </el-col>
-        <el-col :xs="24" :sm="12" :md="8" :lg="8" :xl="8">
+        <el-col :xs="24" :sm="12" :md="8" :lg="6" :xl="6">
           <div class="search-item">
             <span class="search-title">
               <i class="el-icon-key"></i> 权限字符:
@@ -30,7 +31,7 @@
             </el-input>
           </div>
         </el-col>
-        <el-col :xs="24" :sm="12" :md="8" :lg="8" :xl="8">
+        <el-col :xs="24" :sm="12" :md="8" :lg="6" :xl="6">
           <div class="search-item">
             <span class="search-title">
               <i class="el-icon-circle-check"></i> 角色状态:
@@ -58,7 +59,11 @@
             </el-select>
           </div>
         </el-col>
-        <el-col :xs="24" :sm="12" :md="8" :lg="8" :xl="8">
+      </el-row>
+      
+      <!-- 操作按钮 - 单独一行靠右 -->
+      <el-row>
+        <el-col :span="24" class="search-actions-col">
           <div class="search-actions">
             <el-button 
               size="small" 
@@ -80,16 +85,10 @@
       </el-row>
     </div>
 
+    <!-- 数据面板 -->
     <div class="data-panel">
+      <!-- 操作栏 -->
       <div class="action-bar">
-<!--        <el-button -->
-<!--          type="primary" -->
-<!--          size="small" -->
-<!--          icon="el-icon-plus" -->
-<!--          @click="addRole"-->
-<!--          class="action-btn add-btn">-->
-<!--          新增-->
-<!--        </el-button>-->
         <el-button 
           type="success" 
           size="small" 
@@ -99,17 +98,26 @@
           class="action-btn edit-btn">
           修改
         </el-button>
-        <el-button 
-          type="danger" 
-          size="small" 
-          icon="el-icon-delete" 
-          :disabled="update.length <= 0"
-          @click="deleteDateBtn"
-          class="action-btn delete-btn">
-          删除
-        </el-button>
+        <el-popconfirm
+          title="确定删除选中的角色吗？"
+          @confirm="deleteDateBtn"
+          confirm-button-text="确认"
+          cancel-button-text="取消"
+          icon="el-icon-warning"
+          icon-color="#7B68EE">
+          <el-button 
+            slot="reference" 
+            type="danger" 
+            size="small" 
+            icon="el-icon-delete" 
+            :disabled="update.length <= 0"
+            class="action-btn delete-btn">
+            删除
+          </el-button>
+        </el-popconfirm>
       </div>
 
+      <!-- 数据表格 -->
       <el-table
         v-loading="loading"
         :data="tableData"
@@ -159,7 +167,7 @@
               </el-tag>
               <el-tag 
                 v-if="row.status == 1" 
-                type="warning"
+                type="danger"
                 effect="dark">
                 <i class="el-icon-error"></i> 停用
               </el-tag>
@@ -195,7 +203,7 @@
                 confirm-button-text="确认"
                 cancel-button-text="取消"
                 icon="el-icon-warning"
-                icon-color="#7B68EE">
+                icon-color="#FF6B6B">
                 <el-button 
                   size="mini" 
                   slot="reference" 
@@ -208,6 +216,7 @@
         </el-table-column>
       </el-table>
 
+      <!-- 分页 -->
       <el-pagination
         background
         layout="total, sizes, prev, pager, next, jumper"
@@ -227,183 +236,188 @@
 </template>
 
 <script>
-  import {getRolePage,removeRole,getMenuList} from '../../../api/api' 
-  import addRole from '../../../components/system/role/addRole'
-  import updateRole from '../../../components/system/role/updateRole'
-  export default {
-    data() {
-      return{
-        loading: true,
-        update: [],
-        remove: [],
-        updateId: "",
-        addRoleVisible: false,
-        updateRoleVisible: false,
-        search: {
-            roleName: "",
-            roleKey: "",
-            status: "",
-            pageNumber: 1,
-            pageSize:10
-        },
-        total: 0,
-        tableData: [],
-        menu: [],
-      }
-    },
-    components: {
-      addRole,
-      updateRole
-    },
-    methods: {
-      tableHeaderStyle() {
-        return {
-          'color': '#4A2B90',
-          'background-color': '#ECE9F4',
-          'font-weight': 'bold',
-          'border-bottom': '1px solid #7B68EE'
-        }
+import {getRolePage,removeRole,getMenuList} from '../../../api/api' 
+import addRole from '../../../components/system/role/addRole'
+import updateRole from '../../../components/system/role/updateRole'
+export default {
+  data() {
+    return{
+      loading: true,
+      update: [],
+      remove: [],
+      updateId: "",
+      addRoleVisible: false,
+      updateRoleVisible: false,
+      search: {
+          roleName: "",
+          roleKey: "",
+          status: "",
+          pageNumber: 1,
+          pageSize:10
       },
-      tableRowStyle() {
-        return {
-          'color': '#5F4B8B',
-          'font-size': '14px',
-          'border-bottom': '1px solid #F0EEF7'
-        }
-      },
-      searchPage() {
-        this.search.pageNumber = 1
-        this.query()
-      },
-      query() {
-        getRolePage(this.search).then(res => {
-          if(res.code == 1000) {
-            this.tableData = res.data.records
-            this.total = res.data.total
-            this.loading = false
-          } else {
-            this.$notify.error({
-              title: '错误',
-              message: res.message
-            });
-          }
-        })
-      },
-      refresh() {
-        this.search.roleName = ""
-        this.search.roleKey = ""
-        this.search.status = ""
-        this.query()
-      },
-      handleCurrentChange(val) {
-        this.search.pageNumber = val
-        this.query()
-      },
-      handleSizeChange(val) {
-        this.search.pageSize = val
-        this.query()
-      },
-      handleSelectionChange(val) {
-        this.update = []
-        this.remove = []
-        for (let i = 0;i < val.length;i++) {
-          var item = val[i]
-          this.update.push(item.id)
-          this.remove.push(item.id)
-        }
-      },
-      addRole() {
-        this.addRoleVisible = true
-      },
-      addRoleFalse() {
-        this.addRoleVisible = false
-        this.query()
-      },
-      updateRole(id) {
-        this.updateId = id
-        this.updateRoleVisible = true
-      },
-      updateRoleFalse() {
-        this.updateRoleVisible = false
-        this.updateId = ""
-        this.query()
-      },
-      updateRoleBtn() {
-        this.updateRole(this.update[0])
-      },
-      deleteDateBtn() {
-        this.$confirm('确定删除选中的'+ this.remove.length +'条数据?', '提示', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          type: 'warning',
-          customClass: 'tech-message-box'
-        }).then(() => {
-          this.deleteDate(this.remove.join(","))
-        }).catch(() => {});
-      },
-      deleteDate(ids) {
-        removeRole({ids:ids}).then(res => {
-            if(res.code == 1000) {
-              this.$message({
-                type: 'success',
-                message: '删除成功!',
-                customClass: 'tech-message'
-              });
-              this.pageNumber = 1
-              this.query()
-            } else {
-              this.$notify.error({
-                title: '错误',
-                message: res.message
-              });
-            }
-          })
-      },
-      getMenu() {
-        getMenuList(this.search).then(res => {
-          if(res.code == 1000) {
-            this.menu = res.data
-          } else {
-            this.$notify.error({
-              title: '错误',
-              message: res.message
-            });
-          }
-        })
-      }
-    },
-    mounted() {
-      this.query()
-      this.getMenu()
+      total: 0,
+      tableData: [],
+      menu: [],
     }
- }
+  },
+  components: {
+    addRole,
+    updateRole
+  },
+  methods: {
+    tableHeaderStyle() {
+      return {
+        'color': '#4A2B90',
+        'background-color': '#ECE9F4',
+        'font-weight': 'bold',
+        'border-bottom': '1px solid #7B68EE'
+      }
+    },
+    tableRowStyle() {
+      return {
+        'color': '#5F4B8B',
+        'font-size': '14px',
+        'border-bottom': '1px solid #F0EEF7'
+      }
+    },
+    searchPage() {
+      this.search.pageNumber = 1
+      this.query()
+    },
+    query() {
+      getRolePage(this.search).then(res => {
+        if(res.code == 1000) {
+          this.tableData = res.data.records
+          this.total = res.data.total
+          this.loading = false
+        } else {
+          this.$notify.error({
+            title: '错误',
+            message: res.message
+          });
+        }
+      })
+    },
+    refresh() {
+      this.search.roleName = ""
+      this.search.roleKey = ""
+      this.search.status = ""
+      this.query()
+    },
+    handleCurrentChange(val) {
+      this.search.pageNumber = val
+      this.query()
+    },
+    handleSizeChange(val) {
+      this.search.pageSize = val
+      this.query()
+    },
+    handleSelectionChange(val) {
+      this.update = []
+      this.remove = []
+      for (let i = 0;i < val.length;i++) {
+        var item = val[i]
+        this.update.push(item.id)
+        this.remove.push(item.id)
+      }
+    },
+    addRole() {
+      this.addRoleVisible = true
+    },
+    addRoleFalse() {
+      this.addRoleVisible = false
+      this.query()
+    },
+    updateRole(id) {
+      this.updateId = id
+      this.updateRoleVisible = true
+    },
+    updateRoleFalse() {
+      this.updateRoleVisible = false
+      this.updateId = ""
+      this.query()
+    },
+    updateRoleBtn() {
+      this.updateRole(this.update[0])
+    },
+    deleteDateBtn() {
+      this.$confirm('确定删除选中的'+ this.remove.length +'条数据?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning',
+        customClass: 'tech-message-box'
+      }).then(() => {
+        this.deleteDate(this.remove.join(","))
+      }).catch(() => {});
+    },
+    deleteDate(ids) {
+      removeRole({ids:ids}).then(res => {
+          if(res.code == 1000) {
+            this.$message({
+              type: 'success',
+              message: '删除成功!',
+              customClass: 'tech-message'
+            });
+            this.pageNumber = 1
+            this.query()
+          } else {
+            this.$notify.error({
+              title: '错误',
+              message: res.message
+            });
+          }
+        })
+    },
+    getMenu() {
+      getMenuList(this.search).then(res => {
+        if(res.code == 1000) {
+          this.menu = res.data
+        } else {
+          this.$notify.error({
+            title: '错误',
+            message: res.message
+          });
+        }
+      })
+    }
+  },
+  mounted() {
+    this.query()
+    this.getMenu()
+  }
+}
 </script>
 
 <style scoped>
 .role-management {
-  padding: 20px;
-  background-color: #F8F7FC;
+  padding: 24px;
+  background-color: #f8f9fc;
+  min-height: calc(100vh - 48px);
 }
 
 .search-panel {
-  background: #fff;
-  border-radius: 8px;
-  padding: 15px;
-  margin-bottom: 20px;
-  box-shadow: 0 2px 12px rgba(123, 104, 238, 0.1);
+  background: linear-gradient(135deg, #ffffff, #f9f9ff);
+  border-radius: 12px;
+  padding: 20px;
+  margin-bottom: 24px;
+  box-shadow: 0 6px 18px rgba(123, 104, 238, 0.08);
+  border: 1px solid #e6e8f0;
 }
 
 .search-item {
   display: flex;
   flex-direction: column;
+  margin-bottom: 8px;
 }
 
 .search-title {
-  font-size: 14px;
-  color: #4A2B90;
+  font-size: 13px;
+  color: #5a6487;
   margin-bottom: 8px;
   display: flex;
   align-items: center;
+  font-weight: 600;
+  letter-spacing: 0.5px;
 }
 
 .search-title i {
@@ -411,26 +425,37 @@
   color: #7B68EE;
 }
 
+.search-actions-col {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 15px;
+}
+
 .search-actions {
   display: flex;
-  align-items: flex-end;
-  height: 100%;
+  gap: 12px;
 }
 
 .data-panel {
-  background: #fff;
-  border-radius: 8px;
-  padding: 15px;
-  box-shadow: 0 2px 12px rgba(123, 104, 238, 0.1);
+  background: #ffffff;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 6px 18px rgba(123, 104, 238, 0.08);
+  border: 1px solid #e6e8f0;
 }
 
 .action-bar {
-  padding: 10px 0 15px 10px;
-  margin-bottom: 15px;
-  border-bottom: 1px solid #F0EEF7;
+  padding: 0 0 20px 0;
+  margin-bottom: 20px;
+  display: flex;
+  gap: 12px;
+  border-bottom: 1px solid #f0f2f7;
 }
 
-.name-cell, .key-cell, .status-cell, .time-cell {
+.name-cell, 
+.key-cell, 
+.status-cell, 
+.time-cell {
   display: flex;
   align-items: center;
 }
@@ -444,6 +469,7 @@
 .key-cell i {
   color: #9370DB;
   margin-right: 8px;
+  font-size: 16px;
 }
 
 .status-cell i {
@@ -453,26 +479,13 @@
 .time-cell i {
   color: #A5A4BF;
   margin-right: 8px;
+  font-size: 16px;
 }
 
 .action-buttons {
   display: flex;
-  gap: 5px;
-}
-
-.action-btn {
-  border-radius: 15px;
-  padding: 6px 10px;
-  font-size: 12px;
-  display: inline-flex;
-  align-items: center;
   justify-content: center;
-  transition: all 0.3s ease;
-}
-
-.action-btn i {
-  margin-right: 4px;
-  font-size: 14px;
+  gap: 8px;
 }
 
 .status-option {
@@ -488,11 +501,19 @@
 <style>
 /* 全局样式 */
 .tech-input .el-input__inner {
-  border-radius: 20px;
-  border: 1px solid #D8D8E5;
-  color: #5F4B8B;
-  background-color: #F9F8FD;
-  padding-left: 30px;
+  border-radius: 8px;
+  border: 1px solid #e0e3ed;
+  color: #3d4766;
+  background-color: #fcfcff;
+  height: 36px;
+  line-height: 36px;
+  transition: all 0.25s ease;
+  font-size: 13px;
+}
+
+.tech-input .el-input__inner:focus {
+  border-color: #7B68EE;
+  box-shadow: 0 0 0 2px rgba(123, 104, 238, 0.15);
 }
 
 .tech-input .el-input__prefix {
@@ -501,63 +522,112 @@
 }
 
 .tech-select .el-input__inner {
-  border-radius: 20px;
-  border: 1px solid #D8D8E5;
-  color: #5F4B8B;
-  background-color: #F9F8FD;
+  border-radius: 8px;
+  border: 1px solid #e0e3ed;
+  color: #3d4766;
+  background-color: #fcfcff;
+  height: 36px;
+  line-height: 36px;
 }
 
 .search-btn {
   background: linear-gradient(135deg, #7B68EE, #9370DB);
   border: none;
-  border-radius: 20px;
+  border-radius: 8px;
   color: white;
-  padding: 7px 15px;
+  padding: 9px 18px;
+  height: 36px;
+  box-shadow: 0 4px 12px rgba(123, 104, 238, 0.2);
+  transition: all 0.25s ease;
+}
+
+.search-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px rgba(123, 104, 238, 0.3);
 }
 
 .reset-btn {
-  border-radius: 20px;
+  border-radius: 8px;
   color: #7B68EE;
-  border: 1px solid #D8D8E5;
-  padding: 7px 15px;
+  border: 1px solid #e0e3ed;
+  padding: 9px 18px;
+  height: 36px;
+  background: #ffffff;
+  transition: all 0.25s ease;
 }
 
-.action-btn.add-btn {
-  background: linear-gradient(135deg, #7B68EE, #9370DB);
-  color: white;
+.reset-btn:hover {
+  background-color: #f8f9ff;
+  border-color: #d5d9e8;
+}
+
+.action-btn {
+  border-radius: 6px;
+  padding: 7px 12px;
+  font-size: 12px;
+  min-width: 70px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
   border: none;
+  font-weight: 500;
+  letter-spacing: 0.3px;
 }
 
-.action-btn.edit-btn {
+.action-btn i {
+  margin-right: 5px;
+  font-size: 14px;
+}
+
+.edit-btn {
   background: linear-gradient(135deg, #67C23A, #85CE61);
   color: white;
-  border: none;
 }
 
-.action-btn.delete-btn {
-  background: linear-gradient(135deg, #F56C6C, #F78989);
+.delete-btn {
+  background: linear-gradient(135deg, #ff7675, #e66767);
   color: white;
-  border: none;
 }
 
 .action-btn:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+  opacity: 0.95;
 }
 
 .tech-table {
-  border-radius: 8px;
-  border: 1px solid #ECE9F4;
+  border-radius: 12px;
+  border: 1px solid #e6e8f0;
+  overflow: hidden;
+}
+
+.tech-table .el-table__header th {
+  font-weight: 600;
 }
 
 .tech-table .el-table__body tr:hover>td {
-  background-color: #F5F2FF !important;
+  background-color: #f8f9ff !important;
+}
+
+.tech-table .el-table__body td {
+  transition: background-color 0.2s ease;
+}
+
+.tech-pagination {
+  margin-top: 24px;
+  display: flex;
+  justify-content: flex-end;
 }
 
 .tech-pagination .el-pagination.is-background .el-pager li:not(.disabled).active {
   background-color: #7B68EE;
   color: white;
-  border-radius: 50%;
+  font-weight: 600;
+}
+
+.tech-pagination .el-pagination.is-background .el-pager li:hover {
+  color: #7B68EE;
 }
 
 .tech-message-box {
@@ -571,14 +641,28 @@
 }
 
 .tech-message {
-  border-radius: 20px;
-  background-color: #F5F2FF;
+  border-radius: 8px;
+  background-color: #ffffff;
+  box-shadow: 0 6px 18px rgba(123, 104, 238, 0.15);
   border: none;
-  box-shadow: 0 2px 12px 0 rgba(123, 104, 238, 0.2);
 }
 
 .tech-message .el-message__content {
-  color: #4A2B90;
+  color: #3d4766;
+  font-weight: 500;
+}
+
+.el-tag {
+  display: inline-flex;
+  align-items: center;
+  padding: 0 8px;
+  height: 24px;
+  line-height: 24px;
+  border: none;
+}
+
+.el-tag i {
+  margin-right: 4px;
 }
 
 .el-popconfirm__action {
@@ -586,8 +670,10 @@
 }
 
 .el-popconfirm__action button {
-  border-radius: 15px;
-  padding: 6px 12px;
+  border-radius: 6px;
+  padding: 7px 12px;
+  font-size: 12px;
+  min-width: 70px;
 }
 
 .el-popconfirm__action button:first-child {
@@ -598,18 +684,6 @@
 
 .el-popconfirm__action button:last-child {
   color: #7B68EE;
-  border: 1px solid #D8D8E5;
-}
-
-.el-tag {
-  display: inline-flex;
-  align-items: center;
-  padding: 0 8px;
-  height: 24px;
-  line-height: 24px;
-}
-
-.el-tag i {
-  margin-right: 4px;
+  border: 1px solid #e0e3ed;
 }
 </style>

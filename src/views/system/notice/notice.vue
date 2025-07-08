@@ -1,8 +1,9 @@
 <template>
   <div class="notice-management">
+    <!-- 搜索区域 -->
     <div class="search-panel">
       <el-row :gutter="15">
-        <el-col :xs="24" :sm="12" :md="8" :lg="8" :xl="8">
+        <el-col :xs="24" :sm="12" :md="8" :lg="6" :xl="6">
           <div class="search-item">
             <span class="search-title">
               <i class="el-icon-edit-outline"></i> 公告标题:
@@ -12,11 +13,10 @@
               placeholder="请输入公告标题"
               v-model="search.title"
               class="notice-input">
-              <i slot="prefix" class="el-icon-document"></i>
             </el-input>
           </div>
         </el-col>
-        <el-col :xs="24" :sm="12" :md="8" :lg="8" :xl="8">
+        <el-col :xs="24" :sm="12" :md="8" :lg="6" :xl="6">
           <div class="search-item">
             <span class="search-title">
               <i class="el-icon-user"></i> 操作人员:
@@ -26,11 +26,10 @@
               placeholder="请输入操作人员"
               v-model="search.updateBy"
               class="notice-input">
-              <i slot="prefix" class="el-icon-user-solid"></i>
             </el-input>
           </div>
         </el-col>
-        <el-col :xs="24" :sm="12" :md="8" :lg="8" :xl="8">
+        <el-col :xs="24" :sm="12" :md="8" :lg="6" :xl="6">
           <div class="search-item">
             <span class="search-title">
               <i class="el-icon-collection-tag"></i> 类型:
@@ -46,7 +45,11 @@
             </el-select>
           </div>
         </el-col>
-        <el-col :xs="24" :sm="12" :md="8" :lg="8" :xl="8">
+      </el-row>
+      
+      <!-- 操作按钮 - 单独一行靠右 -->
+      <el-row>
+        <el-col :span="24" class="search-actions-col">
           <div class="search-actions">
             <el-button 
               size="small" 
@@ -68,7 +71,9 @@
       </el-row>
     </div>
 
+    <!-- 数据面板 -->
     <div class="data-panel">
+      <!-- 操作栏 -->
       <div class="action-bar">
         <el-button 
           type="primary" 
@@ -106,6 +111,7 @@
         </el-popconfirm>
       </div>
 
+      <!-- 数据表格 -->
       <el-table
         v-loading="loading"
         :data="tableData"
@@ -225,6 +231,7 @@
         </el-table-column>
       </el-table>
 
+      <!-- 分页 -->
       <el-pagination
         background
         layout="total, sizes, prev, pager, next, jumper"
@@ -394,29 +401,34 @@ export default {
 
 <style scoped>
 .notice-management {
-  padding: 20px;
-  background-color: #F8F7FC;
+  padding: 24px;
+  background-color: #f8f9fc;
+  min-height: calc(100vh - 48px);
 }
 
 .search-panel {
-  background: #fff;
-  border-radius: 8px;
-  padding: 15px;
-  margin-bottom: 20px;
-  box-shadow: 0 2px 12px rgba(123, 104, 238, 0.1);
+  background: linear-gradient(135deg, #ffffff, #f9f9ff);
+  border-radius: 12px;
+  padding: 20px;
+  margin-bottom: 24px;
+  box-shadow: 0 6px 18px rgba(123, 104, 238, 0.08);
+  border: 1px solid #e6e8f0;
 }
 
 .search-item {
   display: flex;
   flex-direction: column;
+  margin-bottom: 8px;
 }
 
 .search-title {
-  font-size: 14px;
-  color: #4A2B90;
+  font-size: 13px;
+  color: #5a6487;
   margin-bottom: 8px;
   display: flex;
   align-items: center;
+  font-weight: 600;
+  letter-spacing: 0.5px;
 }
 
 .search-title i {
@@ -424,23 +436,31 @@ export default {
   color: #7B68EE;
 }
 
+.search-actions-col {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 15px;
+}
+
 .search-actions {
   display: flex;
-  align-items: flex-end;
-  height: 100%;
+  gap: 12px;
 }
 
 .data-panel {
-  background: #fff;
-  border-radius: 8px;
-  padding: 15px;
-  box-shadow: 0 2px 12px rgba(123, 104, 238, 0.1);
+  background: #ffffff;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 6px 18px rgba(123, 104, 238, 0.08);
+  border: 1px solid #e6e8f0;
 }
 
 .action-bar {
-  padding: 10px 0 15px 10px;
-  margin-bottom: 15px;
-  border-bottom: 1px solid #F0EEF7;
+  padding: 0 0 20px 0;
+  margin-bottom: 20px;
+  display: flex;
+  gap: 12px;
+  border-bottom: 1px solid #f0f2f7;
 }
 
 .title-cell,
@@ -472,17 +492,26 @@ export default {
 .action-buttons {
   display: flex;
   justify-content: center;
+  gap: 8px;
 }
 </style>
 
 <style>
 /* 全局样式 */
 .notice-input .el-input__inner {
-  border-radius: 20px;
-  border: 1px solid #D8D8E5;
-  color: #5F4B8B;
-  background-color: #F9F8FD;
-  padding-left: 30px;
+  border-radius: 8px;
+  border: 1px solid #e0e3ed;
+  color: #3d4766;
+  background-color: #fcfcff;
+  height: 36px;
+  line-height: 36px;
+  transition: all 0.25s ease;
+  font-size: 13px;
+}
+
+.notice-input .el-input__inner:focus {
+  border-color: #7B68EE;
+  box-shadow: 0 0 0 2px rgba(123, 104, 238, 0.15);
 }
 
 .notice-input .el-input__prefix {
@@ -491,60 +520,117 @@ export default {
 }
 
 .notice-select .el-input__inner {
-  border-radius: 20px;
+  border-radius: 8px;
+  border: 1px solid #e0e3ed;
+  color: #3d4766;
+  background-color: #fcfcff;
+  height: 36px;
+  line-height: 36px;
 }
 
 .search-btn {
   background: linear-gradient(135deg, #7B68EE, #9370DB);
   border: none;
-  border-radius: 20px;
+  border-radius: 8px;
   color: white;
-  padding: 7px 15px;
+  padding: 9px 18px;
+  height: 36px;
+  box-shadow: 0 4px 12px rgba(123, 104, 238, 0.2);
+  transition: all 0.25s ease;
+}
+
+.search-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px rgba(123, 104, 238, 0.3);
 }
 
 .reset-btn {
-  border-radius: 20px;
+  border-radius: 8px;
   color: #7B68EE;
-  border: 1px solid #D8D8E5;
-  padding: 7px 15px;
+  border: 1px solid #e0e3ed;
+  padding: 9px 18px;
+  height: 36px;
+  background: #ffffff;
+  transition: all 0.25s ease;
 }
 
-.action-btn.add-btn {
+.reset-btn:hover {
+  background-color: #f8f9ff;
+  border-color: #d5d9e8;
+}
+
+.action-btn {
+  border-radius: 6px;
+  padding: 7px 12px;
+  font-size: 12px;
+  min-width: 70px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  border: none;
+  font-weight: 500;
+  letter-spacing: 0.3px;
+}
+
+.action-btn i {
+  margin-right: 5px;
+  font-size: 14px;
+}
+
+.add-btn {
   background: linear-gradient(135deg, #7B68EE, #9370DB);
   color: white;
-  border: none;
 }
 
-.action-btn.edit-btn {
-  background: linear-gradient(135deg, #67C23A, #5DA934);
+.edit-btn {
+  background: linear-gradient(135deg, #67C23A, #85CE61);
   color: white;
-  border: none;
 }
 
-.action-btn.delete-btn {
-  background: linear-gradient(135deg, #FF6B6B, #FF8E8E);
+.delete-btn {
+  background: linear-gradient(135deg, #ff7675, #e66767);
   color: white;
-  border: none;
 }
 
 .action-btn:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+  opacity: 0.95;
 }
 
 .notice-table {
-  border-radius: 8px;
-  border: 1px solid #ECE9F4;
+  border-radius: 12px;
+  border: 1px solid #e6e8f0;
+  overflow: hidden;
+}
+
+.notice-table .el-table__header th {
+  font-weight: 600;
 }
 
 .notice-table .el-table__body tr:hover>td {
-  background-color: #F5F2FF !important;
+  background-color: #f8f9ff !important;
+}
+
+.notice-table .el-table__body td {
+  transition: background-color 0.2s ease;
+}
+
+.notice-pagination {
+  margin-top: 24px;
+  display: flex;
+  justify-content: flex-end;
 }
 
 .notice-pagination .el-pagination.is-background .el-pager li:not(.disabled).active {
   background-color: #7B68EE;
   color: white;
-  border-radius: 50%;
+  font-weight: 600;
+}
+
+.notice-pagination .el-pagination.is-background .el-pager li:hover {
+  color: #7B68EE;
 }
 
 .notice-confirm .el-message-box__header {
@@ -561,6 +647,14 @@ export default {
 }
 
 .notice-message {
-  border-radius: 20px;
+  border-radius: 8px;
+  background-color: #ffffff;
+  box-shadow: 0 6px 18px rgba(123, 104, 238, 0.15);
+  border: none;
+}
+
+.notice-message .el-message__content {
+  color: #3d4766;
+  font-weight: 500;
 }
 </style>

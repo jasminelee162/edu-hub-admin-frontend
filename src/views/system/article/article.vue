@@ -1,12 +1,12 @@
 <template>
   <div class="article-management">
-    <div class="search-area">
+    <!-- 搜索区域 -->
+    <div class="search-panel">
       <el-row :gutter="15">
-        <el-col :xs="24" :sm="12" :md="8" :lg="8" :xl="8">
+        <!-- 课程名称搜索 -->
+        <el-col :xs="24" :sm="12" :md="8" :lg="6" :xl="6">
           <div class="search-item">
-            <span class="search-label">
-              <i class="el-icon-notebook-1"></i> 课程名称:
-            </span>
+            <span class="search-title">课程名称:</span>
             <el-input
               :disabled="type == 0"
               size="small"
@@ -15,12 +15,12 @@
               class="tech-input">
             </el-input>
           </div>
-        </el-col>  
-        <el-col :xs="24" :sm="12" :md="8" :lg="8" :xl="8">
+        </el-col>
+        
+        <!-- 标题搜索 -->
+        <el-col :xs="24" :sm="12" :md="8" :lg="6" :xl="6">
           <div class="search-item">
-            <span class="search-label">
-              <i class="el-icon-edit-outline"></i> 标题:
-            </span>
+            <span class="search-title">标题:</span>
             <el-input
               size="small"
               placeholder="请输入标题"
@@ -28,12 +28,12 @@
               class="tech-input">
             </el-input>
           </div>
-        </el-col> 
-        <el-col :xs="24" :sm="12" :md="8" :lg="8" :xl="8">
+        </el-col>
+        
+        <!-- 状态选择 -->
+        <el-col :xs="24" :sm="12" :md="8" :lg="6" :xl="6">
           <div class="search-item">
-            <span class="search-label">
-              <i class="el-icon-s-flag"></i> 状态:
-            </span>
+            <span class="search-title">状态:</span>
             <el-select 
               clearable 
               size="small" 
@@ -45,7 +45,9 @@
             </el-select>
           </div>
         </el-col>
-        <el-col :xs="24" :sm="12" :md="8" :lg="8" :xl="8">
+        
+        <!-- 操作按钮 -->
+        <el-col :xs="24" :sm="12" :md="8" :lg="6" :xl="6">
           <div class="search-actions">
             <el-button 
               size="small" 
@@ -67,7 +69,9 @@
       </el-row>
     </div>
 
-    <div class="table-area">
+    <!-- 数据面板 -->
+    <div class="data-panel">
+      <!-- 操作栏 -->
       <div class="action-bar">
         <el-button 
           type="primary" 
@@ -97,6 +101,7 @@
         </el-button>
       </div>
 
+      <!-- 数据表格 -->
       <el-table
         v-loading="loading"
         :data="tableData"
@@ -108,8 +113,8 @@
         <el-table-column type="selection" width="55"></el-table-column>
         <el-table-column prop="taskName" label="课程名称" width="120">
           <template #default="{row}">
-            <div class="course-name">
-              <i class="el-icon-notebook-2"></i>
+            <div class="course-cell">
+              <i class="el-icon-notebook-2" style="color:#6c5ce7; margin-right:8px"></i>
               <span>{{ row.taskName }}</span>
             </div>
           </template>
@@ -118,51 +123,56 @@
         <el-table-column prop="state" label="状态" width="100">
           <template #default="{row}">
             <el-tag 
-              :type="row.state == 0 ? 'success' : row.state == 1 ? 'warning' : 'info'"
-              class="status-tag">
+              :type="row.state == 0 ? 'success' : 'warning'"
+              class="status-tag"
+              effect="dark">
               {{ getStatusText(row.state) }}
             </el-tag>
           </template>
         </el-table-column>
-        <el-table-column prop="createBy" label="创建者" width="100"></el-table-column>
-        <el-table-column prop="createTime" label="创建时间" width="150"></el-table-column>
-        <el-table-column label="操作" width="400">
+        <el-table-column prop="createBy" label="创建者" width="120"></el-table-column>
+        <el-table-column prop="createTime" label="创建时间" width="160"></el-table-column>
+        <el-table-column label="操作" width="420" fixed="right">
           <template #default="{row}">
             <div class="action-buttons">
               <el-button 
                 size="mini" 
                 v-if="row.state == 0" 
                 @click="offShelf(row.id)"
-                class="action-btn reject-btn">
+                class="table-action-btn reject-btn">
                 <i class="el-icon-close"></i> 审核未通过
               </el-button>
               <el-button 
                 size="mini" 
-                v-if="row.state == 2 || row.state == 1" 
+                v-if="row.state == 1" 
                 @click="listing(row.id)"
-                class="action-btn approve-btn">
+                class="table-action-btn approve-btn">
                 <i class="el-icon-check"></i> 审核通过
               </el-button>
               <el-button 
                 size="mini" 
                 @click="toArticleComment(row.id)"
-                class="action-btn comment-btn">
-                评论
+                class="table-action-btn comment-btn">
+                <i class="el-icon-chat-dot-round"></i> 评论
               </el-button>
               <el-button 
                 size="mini" 
                 @click="updateData(row.id)"
-                class="action-btn edit-btn">
-                修改
+                class="table-action-btn edit-btn">
+                <i class="el-icon-edit"></i> 修改
               </el-button>
               <el-popconfirm
                 title="确认删除选中的数据？"
-                @confirm="deleteDate(row.id)">
+                @confirm="deleteDate(row.id)"
+                confirm-button-text="确认"
+                cancel-button-text="取消"
+                icon="el-icon-warning"
+                icon-color="#6c5ce7">
                 <el-button 
                   size="mini" 
                   slot="reference"
-                  class="action-btn delete-btn">
-                  删除
+                  class="table-action-btn delete-btn">
+                  <i class="el-icon-delete"></i> 删除
                 </el-button>
               </el-popconfirm>
             </div>
@@ -170,6 +180,7 @@
         </el-table-column>
       </el-table>
 
+      <!-- 分页 -->
       <el-pagination
         background
         layout="total, sizes, prev, pager, next, jumper"
@@ -189,99 +200,188 @@
 </template>
 
 <script>
-  import {getArticlePage,removeArticle,editArticle} from '../../../api/api'
-  import add from '../../../components/system/article/addArticle'
-  import update from '../../../components/system/article/updateArticle'
-  export default {
-    data() {
-      return{
-        loading: true,
-        update: [],
-        remove: [],
-        updateId: "",
-        addVisible: false,
-        updateVisible: false,
-        taskId: "",
-        type: 1,
-        search: {
-            title: "",
-            state: "",
-            taskName: "",
-            pageNumber: 1,
-            pageSize:10,
-            type: 0
-        },
-        total: 0,
-        tableData: []
+import {getArticlePage,removeArticle,editArticle} from '../../../api/api'
+import add from '../../../components/system/article/addArticle'
+import update from '../../../components/system/article/updateArticle'
+export default {
+  data() {
+    return{
+      loading: true,
+      update: [],
+      remove: [],
+      updateId: "",
+      addVisible: false,
+      updateVisible: false,
+      taskId: "",
+      type: 1,
+      search: {
+          title: "",
+          state: "",
+          taskName: "",
+          pageNumber: 1,
+          pageSize:10,
+          type: 0
+      },
+      total: 0,
+      tableData: []
+    }
+  },
+  components: {
+    add,
+    update
+  },
+  methods: {
+    getStatusText(state) {
+      const statusMap = {
+        0: '审核通过',
+        1: '未通过',
+      }
+      return statusMap[state] || '未知状态'
+    },
+    tableHeaderStyle() {
+      return {
+        'color': '#1E2B45',
+        'background-color': '#ECE9F4',
+        'font-weight': 'bold',
+        'font-size': '14px'
       }
     },
-    components: {
-      add,
-      update
+    tableRowStyle() {
+      return {
+        'color': '#6A5ACD',
+        'font-size': '14px',
+        'font-family':'Microsoft YaHei',
+        'white-space': 'nowrap'
+      }
     },
-    methods: {
-      getStatusText(state) {
-        const statusMap = {
-          0: '审核通过',
-          1: '未通过',
+    toArticleComment(id) {
+      var param = {
+          "name": "笔记评论",
+          "url": "/articleComment?id=" + id
+      }
+      this.$store.commit('menu/addActiveMenu', param)
+      this.$router.push("/articleComment?id=" + id)
+      this.$store.commit('menu/setActiveMenu', "/articleComment?id=" + id)
+    },
+    listing(id) {
+      var param = {
+        id: id,
+        state: 0
+      }
+      editArticle(param).then(res => {
+        if(res.code == 1000) {
+          this.$notify.success({
+            title: '成功',
+            message: "审核成功"
+          });
+          this.query();
+        } else {
+          this.$notify.error({
+            title: '错误',
+            message: res.message
+          });
         }
-        return statusMap[state] || '未知状态'
-      },
-      tableHeaderStyle() {
-        return {
-          'color': '#4A2B90',
-          'background-color': '#ECE9F4',
-          'font-weight': 'bold',
-          'border-bottom': '1px solid #7B68EE'
+      })
+    },
+    offShelf(id) {
+      var param = {
+        id: id,
+        state: 1
+      }
+      editArticle(param).then(res => {
+        if(res.code == 1000) {
+          this.$notify.success({
+            title: '成功',
+            message: "审核成功"
+          });
+          this.query()
+        } else {
+          this.$notify.error({
+            title: '错误',
+            message: res.message
+          });
         }
-      },
-      tableRowStyle() {
-        return {
-          'color': '#5F4B8B',
-          'font-size': '14px',
-          'border-bottom': '1px solid #F0EEF7'
+      })
+    },
+    searchPage() {
+      this.search.pageNumber = 1
+      this.query()
+    },
+    query() {
+      getArticlePage(this.search).then(res => {
+        if(res.code == 1000) {
+          this.tableData = res.data.records
+          this.total = res.data.total
+          this.loading = false
+        } else {
+          this.$notify.error({
+            title: '错误',
+            message: res.message
+          });
         }
-      },
-      toArticleComment(id) {
-        var param = {
-            "name": "章节作业",
-            "url": "/articleComment?id=" + id
-        }
-        this.$store.commit('menu/addActiveMenu', param)
-        this.$router.push("/articleComment?id=" + id)
-        this.$store.commit('menu/setActiveMenu', "/articleComment?id=" + id)
-      },
-      listing(id) {
-        var param = {
-          id: id,
-          state: 0
-        }
-        editArticle(param).then(res => {
+      })
+    },
+    refresh() {
+      this.search.title = ""
+      this.search.state = ""
+      this.search.taskName = ""
+      this.query()
+    },
+    handleCurrentChange(val) {
+      this.search.pageNumber = val
+      this.query()
+    },
+    handleSizeChange(val) {
+      this.search.pageSize = val
+      this.query()
+    },
+    handleSelectionChange(val) {
+      this.update = []
+      this.remove = []
+      for (let i = 0;i < val.length;i++) {
+        var item = val[i]
+        this.update.push(item.id)
+        this.remove.push(item.id)
+      }
+    },
+    add() {
+      this.addVisible = true
+    },
+    addFalse() {
+      this.addVisible = false
+      this.query()
+    },
+    updateFalse() {
+      this.updateId = ''
+      this.updateVisible = false
+      this.query()
+    },
+    updateData(id) {
+      this.updateId = id
+      this.updateVisible = true
+    },
+    updateDataBtn() {
+      this.updateData(this.update[0])
+    },
+    deleteDataBtn() {
+      this.$confirm('确定删除选中的'+ this.remove.length +'条数据?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning',
+        customClass: 'tech-message-box'
+      }).then(() => {
+        this.deleteDate(this.remove.join(","))
+      }).catch(() => {});
+    },
+    deleteDate(ids) {
+      removeArticle({ids:ids}).then(res => {
           if(res.code == 1000) {
-            this.$notify.success({
-              title: '成功',
-              message: "审核成功"
+            this.$message({
+              type: 'success',
+              message: '删除成功!',
+              customClass: 'tech-message'
             });
-            this.query();
-          } else {
-            this.$notify.error({
-              title: '错误',
-              message: res.message
-            });
-          }
-        })
-      },
-      offShelf(id) {
-        var param = {
-          id: id,
-          state: 1
-        }
-        editArticle(param).then(res => {
-          if(res.code == 1000) {
-            this.$notify.success({
-              title: '成功',
-              message: "审核成功"
-            });
+            this.pageNumber = 1
             this.query()
           } else {
             this.$notify.error({
@@ -290,301 +390,361 @@
             });
           }
         })
-      },
-      searchPage() {
-        this.search.pageNumber = 1
-        this.query()
-      },
-      query() {
-        getArticlePage(this.search).then(res => {
-          if(res.code == 1000) {
-            this.tableData = res.data.records
-            this.total = res.data.total
-            this.loading = false
-          } else {
-            this.$notify.error({
-              title: '错误',
-              message: res.message
-            });
-          }
-        })
-      },
-      refresh() {
-        this.search.title = ""
-        this.search.state = ""
-        this.search.taskName = ""
-        this.query()
-      },
-      handleCurrentChange(val) {
-        this.search.pageNumber = val
-        this.query()
-      },
-      handleSizeChange(val) {
-        this.search.pageSize = val
-        this.query()
-      },
-      handleSelectionChange(val) {
-        this.update = []
-        this.remove = []
-        for (let i = 0;i < val.length;i++) {
-          var item = val[i]
-          this.update.push(item.id)
-          this.remove.push(item.id)
-        }
-      },
-      add() {
-        this.addVisible = true
-      },
-      addFalse() {
-        this.addVisible = false
-        this.query()
-      },
-      updateFalse() {
-        this.updateId = ''
-        this.updateVisible = false
-        this.query()
-      },
-      updateData(id) {
-        this.updateId = id
-        this.updateVisible = true
-      },
-      updateDataBtn() {
-        this.updateData(this.update[0])
-      },
-      deleteDataBtn() {
-        this.$confirm('确定删除选中的'+ this.remove.length +'条数据?', '提示', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          type: 'warning'
-        }).then(() => {
-          this.deleteDate(this.remove.join(","))
-        }).catch(() => {
-                 
-        });
-      },
-      deleteDate(ids) {
-        removeArticle({ids:ids}).then(res => {
-            if(res.code == 1000) {
-              this.$message({
-                type: 'success',
-                message: '删除成功!'
-              });
-              this.pageNumber = 1
-              this.query()
-            } else {
-              this.$notify.error({
-                title: '错误',
-                message: res.message
-              });
-            }
-          })
-      },
     },
-    mounted() {
-      var name = this.$route.query.name
-      var id = this.$route.query.id
-      var type = this.$route.query.type
-      if (name) {
-        this.search.taskName = name
-      }
-      if (id) {
-        this.taskId = id
-      }
-      if (type) {
-        this.type = type
-      }
-      this.query()
+  },
+  mounted() {
+    var name = this.$route.query.name
+    var id = this.$route.query.id
+    var type = this.$route.query.type
+    if (name) {
+      this.search.taskName = name
     }
- }
+    if (id) {
+      this.taskId = id
+    }
+    if (type) {
+      this.type = type
+    }
+    this.query()
+  }
+}
 </script>
 
 <style scoped>
 .article-management {
-  padding: 20px;
-  background-color: #F8F7FC;
+  padding: 24px;
+  background-color: #f8f9fc;
+  min-height: calc(100vh - 48px);
 }
 
-.search-area {
-  background: #fff;
-  border-radius: 8px;
-  padding: 15px;
-  margin-bottom: 20px;
-  box-shadow: 0 2px 12px rgba(123, 104, 238, 0.1);
+.search-panel {
+  background: linear-gradient(135deg, #ffffff, #f9f9ff);
+  border-radius: 12px;
+  padding: 20px;
+  margin-bottom: 24px;
+  box-shadow: 0 6px 18px rgba(100, 87, 255, 0.08);
+  border: 1px solid #e6e8f0;
 }
 
 .search-item {
   display: flex;
   flex-direction: column;
+  margin-bottom: 8px;
 }
 
-.search-label {
-  font-size: 14px;
-  color: #4A2B90;
+.search-title {
+  font-size: 13px;
+  color: #5a6487;
   margin-bottom: 8px;
   display: flex;
   align-items: center;
-}
-
-.search-label i {
-  margin-right: 6px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
 }
 
 .search-actions {
   display: flex;
   align-items: flex-end;
   height: 100%;
+  justify-content: flex-end;
 }
 
-.table-area {
-  background: #fff;
-  border-radius: 8px;
-  padding: 15px;
-  box-shadow: 0 2px 12px rgba(123, 104, 238, 0.1);
+.data-panel {
+  background: #ffffff;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 6px 18px rgba(100, 87, 255, 0.08);
+  border: 1px solid #e6e8f0;
 }
 
 .action-bar {
-  padding: 10px 0 15px 10px;
-  margin-bottom: 15px;
-  border-bottom: 1px solid #F0EEF7;
+  padding: 0 0 20px 0;
+  margin-bottom: 20px;
+  display: flex;
+  gap: 12px;
+  border-bottom: 1px solid #f0f2f7;
 }
 
-.course-name {
+.course-cell {
   display: flex;
   align-items: center;
-}
-
-.course-name i {
-  color: #7B68EE;
-  margin-right: 6px;
 }
 
 .status-tag {
   font-weight: 500;
+  border: none;
 }
 
 .action-buttons {
   display: flex;
-  flex-wrap: wrap;
-  gap: 5px;
-  align-items: center;
+  gap: 8px;
 }
 
-.action-btn {
-  border-radius: 15px;
-  padding: 6px 10px;
+.table-action-btn {
+  border-radius: 16px;
+  padding: 5px 12px;
   font-size: 12px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  transition: all 0.3s ease;
   border: none;
   color: white;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  height: 28px;
+  line-height: 18px;
+  display: inline-flex;
+  align-items: center;
 }
 
-.action-btn i {
+.table-action-btn i {
   margin-right: 4px;
   font-size: 14px;
+}
+
+.table-action-btn.approve-btn {
+  background: linear-gradient(135deg, #67C23A, #85CE61);
+}
+
+.table-action-btn.reject-btn {
+  background: linear-gradient(135deg, #E6A23C, #EEB955);
+}
+
+.table-action-btn.comment-btn {
+  background: linear-gradient(135deg, #409EFF, #3A8BDF);
+}
+
+.table-action-btn.edit-btn {
+  background: linear-gradient(135deg, #7B68EE, #9370DB);
+}
+
+.table-action-btn.delete-btn {
+  background: linear-gradient(135deg, #ff6b6b, #ff5252);
+}
+
+.table-action-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+  opacity: 0.9;
 }
 </style>
 
 <style>
-/* 全局样式覆盖 */
+/* 全局样式 */
 .tech-input .el-input__inner {
-  border-radius: 20px;
-  border: 1px solid #D8D8E5;
-  color: #5F4B8B;
-  background-color: #F9F8FD;
+  border-radius: 8px;
+  border: 1px solid #e0e3ed;
+  color: #3d4766;
+  background-color: #fcfcff;
+  height: 36px;
+  line-height: 36px;
+  transition: all 0.25s ease;
+  font-size: 13px;
+}
+
+.tech-input .el-input__inner:focus {
+  border-color: #6c5ce7;
+  box-shadow: 0 0 0 2px rgba(108, 92, 231, 0.15);
 }
 
 .tech-select .el-input__inner {
-  border-radius: 20px;
+  border-radius: 8px;
+  border: 1px solid #e0e3ed;
+  color: #3d4766;
+  background-color: #fcfcff;
+  height: 36px;
+  line-height: 36px;
 }
 
 .search-btn {
-  background: linear-gradient(135deg, #7B68EE, #9370DB);
+  background: linear-gradient(135deg, #6c5ce7, #5a4bd6);
   border: none;
-  border-radius: 20px;
+  border-radius: 8px;
   color: white;
+  padding: 9px 18px;
+  height: 36px;
+  box-shadow: 0 4px 12px rgba(108, 92, 231, 0.2);
+  transition: all 0.25s ease;
+}
+
+.search-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px rgba(108, 92, 231, 0.3);
 }
 
 .reset-btn {
-  border-radius: 20px;
-  color: #7B68EE;
-  border: 1px solid #D8D8E5;
+  border-radius: 8px;
+  color: #6c5ce7;
+  border: 1px solid #e0e3ed;
+  padding: 9px 18px;
+  height: 36px;
+  background: #ffffff;
+  transition: all 0.25s ease;
 }
 
-/* 批量操作按钮样式 */
-.action-bar .add-btn {
-  background: linear-gradient(135deg, #7B68EE, #9370DB);
-  color: white;
+.reset-btn:hover {
+  background-color: #f8f9ff;
+  border-color: #d5d9e8;
+}
+
+.action-btn {
+  border-radius: 6px;
+  padding: 7px 12px;
+  font-size: 12px;
+  min-width: 70px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
   border: none;
+  font-weight: 500;
+  letter-spacing: 0.3px;
 }
 
-.action-bar .edit-btn {
-  background: linear-gradient(135deg, #67C23A, #5DA934);
+.action-btn i {
+  margin-right: 5px;
+  font-size: 14px;
+}
+
+.add-btn {
+  background: linear-gradient(135deg, #6c5ce7, #5a4bd6);
   color: white;
-  border: none;
 }
 
-.action-bar .delete-btn {
-  background: linear-gradient(135deg, #FF6B6B, #FF8E8E);
+.edit-btn {
+  background: linear-gradient(135deg, #67C23A, #85CE61);
   color: white;
-  border: none;
 }
 
-.action-bar .el-button[disabled] {
-  opacity: 0.5;
-  cursor: not-allowed;
+.delete-btn {
+  background: linear-gradient(135deg, #ff7675, #e66767);
+  color: white;
 }
 
-/* 表格内操作按钮样式 */
-.action-buttons .approve-btn {
-  background: linear-gradient(135deg, #67C23A, #5DA934);
-}
-
-.action-buttons .reject-btn {
-  background: linear-gradient(135deg, #E6A23C, #D5912D);
-}
-
-.action-buttons .comment-btn {
-  background: linear-gradient(135deg, #409EFF, #3A8BDF);
-}
-
-.action-buttons .edit-btn {
-  background: linear-gradient(135deg, #7B68EE, #9370DB);
-}
-
-.action-buttons .delete-btn {
-  background: linear-gradient(135deg, #FF6B6B, #FF8E8E);
-}
-
-.action-buttons .el-button[disabled] {
-  opacity: 0.5;
-  cursor: not-allowed;
+.action-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+  opacity: 0.95;
 }
 
 .tech-table {
-  border-radius: 8px;
-  border: 1px solid #ECE9F4;
+  border-radius: 12px;
+  border: 1px solid #e6e8f0;
+  overflow: hidden;
+}
+
+.tech-table .el-table__header th {
+  font-weight: 600;
 }
 
 .tech-table .el-table__body tr:hover>td {
-  background-color: #F5F2FF !important;
+  background-color: #f8f9ff !important;
+}
+
+.tech-table .el-table__body td {
+  transition: background-color 0.2s ease;
+}
+
+.tech-pagination {
+  margin-top: 24px;
+  display: flex;
+  justify-content: flex-end;
 }
 
 .tech-pagination .el-pagination.is-background .el-pager li:not(.disabled).active {
-  background-color: #7B68EE;
+  background-color: #6c5ce7;
   color: white;
-  border-radius: 50%;
+  font-weight: 600;
 }
 
-/* 按钮悬停效果 */
-.action-btn:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+.tech-pagination .el-pagination.is-background .el-pager li:hover {
+  color: #6c5ce7;
 }
 
-.action-btn:active {
-  transform: translateY(0);
+.tech-message-box {
+  border-radius: 12px;
+  border: 1px solid #6c5ce7;
+}
+
+.tech-message-box .el-message-box__title {
+  color: #3d4766;
+  font-weight: 600;
+}
+
+.tech-message-box .el-message-box__content {
+  color: #5a6487;
+}
+
+.tech-message {
+  border-radius: 8px;
+  background-color: #ffffff;
+  box-shadow: 0 6px 18px rgba(100, 87, 255, 0.15);
+  border: none;
+}
+
+.tech-message .el-message__content {
+  color: #3d4766;
+  font-weight: 500;
+}
+
+.el-popconfirm__action {
+  text-align: center;
+}
+
+.el-popconfirm__action button {
+  border-radius: 16px;
+  padding: 6px 14px;
+  font-size: 12px;
+  transition: all 0.3s ease;
+}
+
+.el-popconfirm__action button:first-child {
+  background: linear-gradient(135deg, #6c5ce7, #5a4bd6);
+  border: none;
+  color: white;
+}
+
+.el-popconfirm__action button:last-child {
+  color: #6c5ce7;
+  border: 1px solid #e0ddf5;
+  background: #f5f4ff;
+}
+
+/* 移除输入框图标 */
+.tech-input .el-input__prefix {
+  display: none;
+}
+.tech-input .el-input__inner {
+  padding-left: 15px;
+}
+
+/* 禁用状态按钮样式 */
+.el-button.is-disabled {
+  opacity: 0.6;
+}
+
+/* 标签样式 */
+.el-tag {
+  display: inline-flex;
+  align-items: center;
+  padding: 0 8px;
+  height: 24px;
+  line-height: 24px;
+  border: none;
+  font-weight: 500;
+}
+
+.el-tag--success {
+  background: linear-gradient(135deg, #67C23A, #85CE61);
+}
+
+.el-tag--warning {
+  background: linear-gradient(135deg, #E6A23C, #EEB955);
+}
+
+.el-tag--info {
+  background: linear-gradient(135deg, #909399, #A6A9AD);
+}
+
+.el-tag--danger {
+  background: linear-gradient(135deg, #F56C6C, #F78989);
 }
 </style>

@@ -1,157 +1,178 @@
 <template>
-  <div class="message-container">
-    <div class="search-table">
-      <div class="search">
-        <el-row :gutter="10" style="padding:10px">
-          <el-col :xs="24" :sm="12" :md="8" :lg="8" :xl="8">
+  <div class="message-management">
+    <!-- 搜索区域 -->
+    <div class="search-panel">
+      <el-row :gutter="15">
+        <!-- 用户昵称搜索 -->
+        <el-col :xs="24" :sm="12" :md="8" :lg="8" :xl="8">
+          <div class="search-item">
             <span class="search-title">用户昵称:</span>
             <el-input
-              style="margin-top:10px"
-              size="mini"
+              size="small"
               placeholder="请输入用户昵称"
               v-model="search.userName"
               class="tech-input">
-              <i slot="prefix" class="el-icon-user el-input__icon"></i>
             </el-input>
-          </el-col>
-          <el-col :xs="24" :sm="12" :md="8" :lg="8" :xl="8">
+          </div>
+        </el-col>
+        
+        <!-- 提问内容搜索 -->
+        <el-col :xs="24" :sm="12" :md="8" :lg="8" :xl="8">
+          <div class="search-item">
             <span class="search-title">提问内容:</span>
             <el-input
-              style="margin-top:10px"
-              size="mini"
+              size="small"
               placeholder="请输入提问内容"
               v-model="search.content"
               class="tech-input">
-              <i slot="prefix" class="el-icon-chat-dot-round el-input__icon"></i>
             </el-input>
-          </el-col>
-          <el-col :xs="24" :sm="12" :md="8" :lg="8" :xl="8">
-            <el-button style="margin-top:10px" size="mini" icon="el-icon-search" type="primary" @click="searchPage" class="tech-search-btn">查询</el-button>
-            <el-button style="margin-top:10px" size="mini" icon="el-icon-refresh" @click="refresh" class="tech-reset-btn">重置</el-button>
-          </el-col>
-        </el-row>
-      </div>
-      <div class="table">
-          <!-- 操作按钮区域 - 增加底部间距 -->
-          <el-row style="padding:10px 0 15px 10px; margin-bottom: 15px; border-bottom: 1px solid #F0EEF7">
+          </div>
+        </el-col>
+        
+        <!-- 操作按钮 -->
+        <el-col :xs="24" :sm="12" :md="8" :lg="8" :xl="8">
+          <div class="search-actions">
             <el-button 
+              size="small" 
+              icon="el-icon-search" 
               type="primary" 
-              size="mini" 
-              icon="el-icon-edit" 
-              plain 
-              @click="updateDataBtn" 
-              class="tech-action-btn tech-reply-btn" 
-              :disabled="update.length != 1">
-              回复
+              @click="searchPage"
+              class="search-btn">
+              查询
             </el-button>
-                  <el-button 
-                    type="danger" 
-                    size="mini" 
-                    icon="el-icon-delete" 
-                    plain 
-                    @click="deleteDataBtn" 
-                    class="tech-action-btn tech-delete-btn" 
-                    :disabled="update.length <= 0">
-                    删除
+            <el-button 
+              size="small" 
+              icon="el-icon-refresh" 
+              @click="refresh"
+              class="reset-btn">
+              重置
             </el-button>
-          </el-row>
-
-            <!-- 表格区域 -->
-            <el-table
-              v-loading="loading"
-              :data="tableData"
-              :header-cell-style="{
-                'color': '#4A2B90',
-                'background-color': '#ECE9F4',
-                'font-weight': 'bold',
-                'font-size': '14px',
-                'border-bottom': '1px solid #7B68EE'
-              }"
-              :row-style="{
-                'color': '#5F4B8B',
-                'font-size': '14px',
-                'font-family':'Microsoft YaHei',
-                'white-space': 'nowrap',
-                'border-bottom': '1px solid #F0EEF7'
-              }"
-              @selection-change="handleSelectionChange"
-              stripe
-              style="width: 100%"
-              class="tech-table">
-          <el-table-column
-            type="selection"
-            width="55">
-          </el-table-column>
-          <el-table-column
-            prop="userName"
-            label="用户昵称"
-            width="150">
-          </el-table-column>
-          <el-table-column
-            prop="content"
-            label="提问内容"
-            min-width="200">
-          </el-table-column>
-          <el-table-column
-            label="回复"
-            min-width="300"
-            :show-overflow-tooltip="true">
-            <template slot-scope="scope">
-              <div class="tech-reply-content">
-                {{ scope.row.answer | truncate(50) }}
-                <el-link 
-                  v-if="scope.row.answer && scope.row.answer.length > 50"
-                  type="primary"
-                  @click="showFullReply(scope.row.answer)"
-                  class="tech-view-more">
-                  查看全部
-                </el-link>
-              </div>
-            </template>
-          </el-table-column>
-          <el-table-column
-            label="操作"
-            width="180"
-            fixed="right">
-            <template slot-scope="scope">
+          </div>
+        </el-col>
+      </el-row>
+    </div>
+    
+    <!-- 数据面板 -->
+    <div class="data-panel">
+      <!-- 操作栏 -->
+      <div class="action-bar">
+        <el-button 
+          type="primary" 
+          size="small" 
+          icon="el-icon-edit" 
+          plain 
+          @click="updateDataBtn" 
+          class="action-btn edit-btn" 
+          :disabled="update.length != 1">
+          回复
+        </el-button>
+        <el-button 
+          type="danger" 
+          size="small" 
+          icon="el-icon-delete" 
+          plain 
+          @click="deleteDataBtn" 
+          class="action-btn delete-btn" 
+          :disabled="update.length <= 0">
+          删除
+        </el-button>
+      </div>
+      
+      <!-- 数据表格 -->
+      <el-table
+        v-loading="loading"
+        :data="tableData"
+        :header-cell-style="tableHeaderStyle"
+        :row-style="tableRowStyle"
+        @selection-change="handleSelectionChange"
+        stripe
+        class="tech-table">
+        <!-- 选择列 -->
+        <el-table-column
+          type="selection"
+          width="55"
+          align="center">
+        </el-table-column>
+        
+        <!-- 用户昵称列 -->
+        <el-table-column
+          prop="userName"
+          label="用户昵称"
+          width="150">
+        </el-table-column>
+        
+        <!-- 提问内容列 -->
+        <el-table-column
+          prop="content"
+          label="提问内容"
+          min-width="200">
+        </el-table-column>
+        
+        <!-- 回复内容列 -->
+        <el-table-column
+          label="回复"
+          min-width="300"
+          :show-overflow-tooltip="true">
+          <template #default="{row}">
+            <div class="reply-content">
+              {{ row.answer | truncate(50) }}
+              <el-link 
+                v-if="row.answer && row.answer.length > 50"
+                type="primary"
+                @click="showFullReply(row.answer)"
+                class="view-more">
+                查看全部
+              </el-link>
+            </div>
+          </template>
+        </el-table-column>
+        
+        <!-- 操作列 -->
+        <el-table-column
+          label="操作"
+          width="180"
+          fixed="right">
+          <template #default="{row}">
+            <div class="action-buttons">
               <el-button 
                 size="mini" 
-                @click="updateData(scope.row.id)"
-                class="tech-table-btn tech-reply-btn">
+                @click="updateData(row.id)"
+                class="table-action-btn edit-btn">
                 回复
               </el-button>
               <el-popconfirm
-                confirm-button-text='确认'
-                cancel-button-text='取消'
-                icon="el-icon-info"
-                icon-color="#7B68EE"
                 title="确认删除这条留言？"
-                @confirm="deleteDate(scope.row.id)">
+                @confirm="deleteDate(row.id)"
+                confirm-button-text="确认"
+                cancel-button-text="取消"
+                icon="el-icon-warning"
+                icon-color="#6c5ce7">
                 <el-button 
-                  size="mini" 
-                  slot="reference" 
-                  class="tech-table-btn tech-delete-btn">
+                  size="mini"
+                  slot="reference"
+                  class="table-action-btn delete-btn">
                   删除
                 </el-button>
               </el-popconfirm>
-            </template>
-          </el-table-column>
-        </el-table>
-
-        <!-- 分页器 -->
-        <el-pagination
-          background
-          layout="total, sizes, prev, pager, next, jumper"
-          :page-sizes="[10, 20, 50, 100]"
-          :page-size="search.pageSize"
-          :current-page="search.pageNumber"
-          @size-change="handleSizeChange"
-          @current-change="handleCurrentChange"
-          :total="total"
-          class="tech-pagination">
-        </el-pagination>
-      </div>
+            </div>
+          </template>
+        </el-table-column>
+      </el-table>
+      
+      <!-- 分页 -->
+      <el-pagination
+        background
+        layout="total, sizes, prev, pager, next, jumper"
+        :page-sizes="[10, 20, 50, 100]"
+        :page-size="search.pageSize"
+        :current-page="search.pageNumber"
+        @size-change="handleSizeChange"
+        @current-change="handleCurrentChange"
+        :total="total"
+        class="tech-pagination">
+      </el-pagination>
     </div>
+    
     <update @updateFalse="updateFalse" :updateId="updateId" :updateVisible="updateVisible"></update>
   </div>
 </template>
@@ -166,7 +187,6 @@ export default {
       update: [],
       remove: [],
       updateId: "",
-      addVisible: false,
       updateVisible: false,
       search: {
         userId: "",
@@ -192,6 +212,26 @@ export default {
     }
   },
   methods: {
+    // 表格头部样式
+    tableHeaderStyle() {
+      return {
+        'color': '#1E2B45',
+        'background-color': '#ECE9F4',
+        'font-weight': 'bold',
+        'font-size': '14px'
+      }
+    },
+    
+    // 表格行样式
+    tableRowStyle() {
+      return {
+        'color': '#6A5ACD',
+        'font-size': '14px',
+        'font-family':'Microsoft YaHei',
+        'white-space': 'nowrap'
+      }
+    },
+    
     showFullReply(content) {
       this.$alert(content, '完整回复内容', {
         confirmButtonText: '确定',
@@ -291,229 +331,293 @@ export default {
 </script>
 
 <style scoped>
-.message-container {
-  background-color: #F8F7FC;
-  padding: 15px;
-  border-radius: 8px;
+.message-management {
+  padding: 24px;
+  background-color: #f8f9fc;
+  min-height: calc(100vh - 48px);
 }
 
-.search-table {
-  width: 100%;
+.search-panel {
+  background: linear-gradient(135deg, #ffffff, #f9f9ff);
+  border-radius: 12px;
+  padding: 20px;
+  margin-bottom: 24px;
+  box-shadow: 0 6px 18px rgba(100, 87, 255, 0.08);
+  border: 1px solid #e6e8f0;
 }
 
-.search {
-  background: #ffffff;
-  border-radius: 8px;
-  box-shadow: 0 2px 12px 0 rgba(123, 104, 238, 0.1);
-  padding: 10px;
-}
-
-.table {
-  background: #ffffff;
-  border-radius: 8px;
-  box-shadow: 0 2px 12px 0 rgba(123, 104, 238, 0.1);
-  margin-top: 15px;
-  padding: 10px;
-}
-
-.el-col {
+.search-item {
   display: flex;
-  flex-direction: row;
-  align-items: center;
+  flex-direction: column;
+  margin-bottom: 8px;
 }
 
 .search-title {
-  font-family: 'Microsoft YaHei';
-  float: right;
-  white-space: nowrap;
-  font-size: 14px;
-  color: #4A2B90;
-  margin-top:10px;
-  width: 63px;
-  text-align: right;
+  font-size: 13px;
+  color: #5a6487;
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  font-weight: 600;
+  letter-spacing: 0.5px;
 }
 
-.tech-reply-content {
+.search-actions {
+  display: flex;
+  align-items: flex-end;
+  height: 100%;
+  justify-content: flex-end;
+}
+
+.data-panel {
+  background: #ffffff;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 6px 18px rgba(100, 87, 255, 0.08);
+  border: 1px solid #e6e8f0;
+}
+
+.action-bar {
+  padding: 0 0 20px 0;
+  margin-bottom: 20px;
+  display: flex;
+  gap: 12px;
+  border-bottom: 1px solid #f0f2f7;
+}
+
+.reply-content {
   white-space: normal;
   word-break: break-word;
   line-height: 1.6;
   color: #5F4B8B;
 }
+
+.view-more {
+  margin-left: 8px;
+  font-size: 12px;
+}
+
+.action-buttons {
+  display: flex;
+  gap: 8px;
+}
 </style>
 
 <style>
-/* 全局科技感样式 */
+/* 全局样式 */
 .tech-input .el-input__inner {
-  border-radius: 20px;
-  border: 1px solid #D8D8E5;
-  color: #6A5ACD;
-  background-color: #F9F8FD;
-  transition: all 0.3s cubic-bezier(0.645, 0.045, 0.355, 1);
+  border-radius: 8px;
+  border: 1px solid #e0e3ed;
+  color: #3d4766;
+  background-color: #fcfcff;
+  height: 36px;
+  line-height: 36px;
+  transition: all 0.25s ease;
+  font-size: 13px;
 }
 
 .tech-input .el-input__inner:focus {
-  border-color: #7B68EE;
-  box-shadow: 0 0 0 2px rgba(123, 104, 238, 0.2);
+  border-color: #6c5ce7;
+  box-shadow: 0 0 0 2px rgba(108, 92, 231, 0.15);
 }
 
-.tech-input .el-input__icon {
-  color: #7B68EE;
-}
-
-.tech-search-btn {
-  background: linear-gradient(135deg, #7B68EE, #9370DB);
+.search-btn {
+  background: linear-gradient(135deg, #6c5ce7, #5a4bd6);
   border: none;
-  border-radius: 20px;
+  border-radius: 8px;
   color: white;
-  padding: 7px 15px;
-  transition: all 0.3s ease;
+  padding: 9px 18px;
+  height: 36px;
+  box-shadow: 0 4px 12px rgba(108, 92, 231, 0.2);
+  transition: all 0.25s ease;
 }
 
-.tech-search-btn:hover {
-  background: linear-gradient(135deg, #6A5ACD, #7B68EE);
-  box-shadow: 0 4px 12px rgba(123, 104, 238, 0.3);
+.search-btn:hover {
   transform: translateY(-1px);
+  box-shadow: 0 6px 16px rgba(108, 92, 231, 0.3);
 }
 
-.tech-reset-btn {
-  border-radius: 20px;
-  color: #7B68EE;
-  border: 1px solid #D8D8E5;
-  background: #F5F5FA;
-  padding: 7px 15px;
-  transition: all 0.3s ease;
+.reset-btn {
+  border-radius: 8px;
+  color: #6c5ce7;
+  border: 1px solid #e0e3ed;
+  padding: 9px 18px;
+  height: 36px;
+  background: #ffffff;
+  transition: all 0.25s ease;
 }
 
-.tech-reset-btn:hover {
-  color: #6A5ACD;
-  border-color: #C7C7D5;
-  background: #EDEDF7;
-  transform: translateY(-1px);
+.reset-btn:hover {
+  background-color: #f8f9ff;
+  border-color: #d5d9e8;
 }
 
-.tech-action-btn {
-  border-radius: 20px;
+.action-btn {
+  border-radius: 6px;
+  padding: 7px 12px;
+  font-size: 12px;
+  min-width: 70px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  border: none;
   font-weight: 500;
-  padding: 7px 15px;
-  transition: all 0.3s ease;
+  letter-spacing: 0.3px;
 }
 
-.tech-reply-btn {
-  background: linear-gradient(135deg, #7B68EE, #9370DB);
+.action-btn i {
+  margin-right: 5px;
+  font-size: 14px;
+}
+
+.edit-btn {
+  background: linear-gradient(135deg, #6c5ce7, #5a4bd6);
   color: white;
-  border: none;
 }
 
-.tech-reply-btn:hover {
-  background: linear-gradient(135deg, #6A5ACD, #7B68EE);
-  box-shadow: 0 4px 12px rgba(123, 104, 238, 0.3);
-  transform: translateY(-1px);
-}
-
-.tech-delete-btn {
-  background: linear-gradient(135deg, #FF6B6B, #FF8E8E);
+.delete-btn {
+  background: linear-gradient(135deg, #ff7675, #e66767);
   color: white;
-  border: none;
 }
 
-.tech-delete-btn:hover {
-  background: linear-gradient(135deg, #FF5252, #FF6B6B);
-  box-shadow: 0 4px 12px rgba(255, 107, 107, 0.3);
-  transform: translateY(-1px);
+.action-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+  opacity: 0.95;
 }
 
 .tech-table {
-  border-radius: 8px;
-  border: 1px solid #ECE9F4;
+  border-radius: 12px;
+  border: 1px solid #e6e8f0;
   overflow: hidden;
 }
 
+.tech-table .el-table__header th {
+  font-weight: 600;
+}
+
 .tech-table .el-table__body tr:hover>td {
-  background-color: #F5F2FF !important;
+  background-color: #f8f9ff !important;
 }
 
-.tech-table .el-table__row--striped:hover td {
-  background-color: #F0ECFF !important;
+.tech-table .el-table__body td {
+  transition: background-color 0.2s ease;
 }
 
-.tech-table-btn {
-  border-radius: 15px;
-  padding: 5px 12px;
-  font-size: 12px;
-  border: none;
-  color: white;
-  transition: all 0.3s ease;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-  margin: 2px;
-}
-
-.tech-view-more {
-  font-size: 12px;
-  margin-left: 8px;
+.tech-pagination {
+  margin-top: 24px;
+  display: flex;
+  justify-content: flex-end;
 }
 
 .tech-pagination .el-pagination.is-background .el-pager li:not(.disabled).active {
-  background-color: #7B68EE;
+  background-color: #6c5ce7;
   color: white;
-  border-radius: 50%;
+  font-weight: 600;
 }
 
-.tech-pagination .el-pagination.is-background .el-pager li:not(.disabled):hover {
-  color: #7B68EE;
-}
-
-.tech-pagination .el-pagination__jump {
-  color: #5F4B8B;
+.tech-pagination .el-pagination.is-background .el-pager li:hover {
+  color: #6c5ce7;
 }
 
 .tech-message-box {
   border-radius: 12px;
-  border: 1px solid #7B68EE;
+  border: 1px solid #6c5ce7;
 }
 
 .tech-message-box .el-message-box__title {
-  color: #4A2B90;
-  font-weight: bold;
+  color: #3d4766;
+  font-weight: 600;
 }
 
 .tech-message-box .el-message-box__content {
-  color: #5F4B8B;
+  color: #5a6487;
 }
 
 .tech-message {
-  border-radius: 20px;
-  background-color: #F5F2FF;
+  border-radius: 8px;
+  background-color: #ffffff;
+  box-shadow: 0 6px 18px rgba(100, 87, 255, 0.15);
   border: none;
-  box-shadow: 0 2px 12px 0 rgba(123, 104, 238, 0.2);
 }
 
 .tech-message .el-message__content {
-  color: #4A2B90;
+  color: #3d4766;
+  font-weight: 500;
 }
 
-.tech-notification {
-  border-radius: 8px;
-  border-left: 4px solid #7B68EE;
+.table-action-btn {
+  border-radius: 16px;
+  padding: 5px 12px;
+  font-size: 12px;
+  border: none;
+  color: white;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  height: 28px;
+  line-height: 18px;
 }
 
-/* 新增或修改的样式 */
-.table {
-  background: #ffffff;
-  border-radius: 8px;
-  box-shadow: 0 2px 12px 0 rgba(123, 104, 238, 0.1);
-  margin-top: 15px;
-  padding: 0 10px 10px; /* 调整内边距 */
+.table-action-btn.edit-btn {
+  background: linear-gradient(135deg, #6c5ce7, #5a4bd6);
 }
 
-/* 操作按钮容器样式 */
-.action-bar {
-  padding: 10px 0 15px 10px;
-  margin-bottom: 15px;
-  border-bottom: 1px solid #F0EEF7;
+.table-action-btn.edit-btn:hover {
+  background: linear-gradient(135deg, #5a4bd6, #4d3db9);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 10px rgba(108, 92, 231, 0.3);
 }
 
-/* 表格顶部增加间距 */
-.tech-table {
-  margin-top: 10px;
+.table-action-btn.delete-btn {
+  background: linear-gradient(135deg, #ff6b6b, #ff5252);
+}
+
+.table-action-btn.delete-btn:hover {
+  background: linear-gradient(135deg, #ff5252, #ff3d3d);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 10px rgba(255, 107, 107, 0.3);
+}
+
+.el-popconfirm__action {
+  text-align: center;
+}
+
+.el-popconfirm__action button {
+  border-radius: 16px;
+  padding: 6px 14px;
+  font-size: 12px;
+  transition: all 0.3s ease;
+}
+
+.el-popconfirm__action button:first-child {
+  background: linear-gradient(135deg, #6c5ce7, #5a4bd6);
+  border: none;
+  color: white;
+}
+
+.el-popconfirm__action button:last-child {
+  color: #6c5ce7;
+  border: 1px solid #e0ddf5;
+  background: #f5f4ff;
+}
+
+/* 移除输入框图标 */
+.tech-input .el-input__prefix {
+  display: none;
+}
+.tech-input .el-input__inner {
+  padding-left: 15px;
+}
+
+/* 禁用状态按钮样式 */
+.el-button.is-disabled {
+  opacity: 0.6;
+}
+
+/* 链接样式 */
+.el-link {
+  font-weight: 500;
 }
 </style>
