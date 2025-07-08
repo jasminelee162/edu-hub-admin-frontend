@@ -82,14 +82,14 @@
 
     <div class="data-panel">
       <div class="action-bar">
-        <el-button 
-          type="primary" 
-          size="small" 
-          icon="el-icon-plus" 
-          @click="addRole"
-          class="action-btn add-btn">
-          新增
-        </el-button>
+<!--        <el-button -->
+<!--          type="primary" -->
+<!--          size="small" -->
+<!--          icon="el-icon-plus" -->
+<!--          @click="addRole"-->
+<!--          class="action-btn add-btn">-->
+<!--          新增-->
+<!--        </el-button>-->
         <el-button 
           type="success" 
           size="small" 

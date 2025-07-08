@@ -81,7 +81,10 @@
         <el-row :gutter="20" class="index-center">
             <el-col :span="16">
                 <el-card shadow="always" class="item-07">
-                    <div id="chart" style="height: 350px;">
+                  <div style="display: flex; justify-content: center; margin-bottom: 5px;">
+                      <h3 style="color: #4A2B90; font-weight: bold; margin: 0; padding: 5px 0; font-size: 14px;">学生选课数据图</h3>
+                  </div>
+                    <div id="chart" style="height: 300px;">
 
                     </div>
                 </el-card>
