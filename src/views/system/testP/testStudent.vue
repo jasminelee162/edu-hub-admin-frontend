@@ -88,7 +88,21 @@
           <div class="testInfo-item" v-for="(item,index) in assign" :key="index">
               <div style="margin-top:10px;margin-left:10px">{{index + 1}}.{{item.title}} 
                   <span style="color:red">正确答案：{{item.answer}}</span>
-                  <span style="color:green;margin-left:10px;width:50px">得分：<el-input style="width:100px" type="number" v-model="item.point" size="mini"></el-input></span>
+                  <!--<span style="color:green;margin-left:10px;width:50px">得分：<el-input style="width:100px" type="number" v-model="item.point" size="mini"></el-input></span>-->
+                <!--7.8-->
+                <span style="color:green;margin-left:10px;width:50px">得分：
+                  <el-input
+                      style="width:100px"
+                      type="number"
+                      v-model="item.point"
+                      size="mini"
+                      :min="0"
+                      :max="item.score"
+                      @change="validateScore(item)"
+                  >
+                  </el-input>
+                  </span>
+
               </div>
               <div style="margin-top:10px;margin-left:10px;margin-bottom:10px">
                   <el-radio-group disabled v-model="item.solution" v-if="item.type == 0">
@@ -140,6 +154,16 @@
     components: {
     },
     methods: {
+      //7.8
+      validateScore(item) {
+        if (item.point < 0) {
+          item.point = 0;
+          this.$message.warning('分数不能小于0');
+        } else if (item.point > item.score) {
+          item.point = item.score;
+          this.$message.warning(`分数不能超过本题最高分:${item.score}分`);
+        }
+      },
       searchPage() {
         this.search.pageNumber = 1
         this.query()

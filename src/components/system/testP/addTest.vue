@@ -44,7 +44,7 @@
     </span>
               <div style="width:100%">
                   <el-form-item prop="totalTime" style="margin-bottom:0">
-                      <el-input type="number" v-model="form.totalTime" size="mini" disabled autocomplete="off"></el-input>
+                      <el-input type="number" v-model="form.totalTime" size="mini"  autocomplete="off"></el-input>
                   </el-form-item>
               </div>
           </el-col>
