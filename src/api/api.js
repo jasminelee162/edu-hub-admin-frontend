@@ -1,4 +1,5 @@
 import request, { post, get } from "@/utils/request";
+import axios from 'axios';
 
 // export function products(params) {
 //     return request({
@@ -442,5 +443,56 @@ export function getTemplateContent(params) {
     url: '/template/content',
     method: 'get',
     params: params
+  })
+}
+
+//-------------------------------AI阅卷---------------------------------------
+
+export function aiGrading(papers) {
+  return axios.post('/ai/grades', papers)
+}
+
+export function aiChat(message) {
+  return axios.get('/ai/chat', { params: { key: message } })
+}
+
+
+//-------------------------------教师主页图表---------------------------------------
+
+// 获取成绩分布数据
+export function getScoreDistribution(params) {
+    return request({
+        url: '/index/score-distribution',
+        method: 'get',
+        params
+    });
+}
+
+// 获取课程资源分布数据
+export function getCourseResourceDistribution(params) {
+    return request({
+        url: '/index/resource-distribution',
+        method: 'get',
+        params
+    });
+}
+
+//-------------------------------未审核教师---------------------------------------
+
+
+// 获取未审核教师列表
+export const getUnreadTeachers = () => {
+  return request({
+    url: '/user/unread',
+    method: 'get'
+  })
+}
+
+// 审核通过教师
+export const approveTeacher = (data) => {
+  return request({
+    url: '/user/checked',
+    method: 'post',
+    data
   })
 }

@@ -15,7 +15,7 @@
                                 <img src="../../../assets/image/index-01.png" class="card-icon">
                                 <div class="item-01-top-center">
                                     <div class="card-title">课程管理</div>
-<!--                                    <div class="card-value">{{top.userNum}}门</div>-->
+                                    <div class="card-value">{{top.userNum}}门</div>
                                 </div>
                             </div>
                             <div class="card-footer">
@@ -41,7 +41,7 @@
                                 <img src="../../../assets/image/index-02.png" class="card-icon">
                                 <div class="item-01-top-center">
                                     <div class="card-title">章节管理</div>
-<!--                                    <div class="card-value">{{top.studentNum}}章</div>-->
+                                    <div class="card-value">{{top.studentNum}}章</div>
                                 </div>
                             </div>
                             <div class="card-footer">
@@ -67,7 +67,7 @@
                                 <img src="../../../assets/image/avator.png" class="card-icon">
                                 <div class="item-01-top-center">
                                     <div class="card-title">测试管理</div>
-<!--                                    <div class="card-value">{{top.teacherNum}}个</div>-->
+                                    <div class="card-value">{{top.teacherNum}}个</div>
                                 </div>
                             </div>
                             <div class="card-footer">
@@ -93,7 +93,7 @@
                                 <img src="../../../assets/image/index-05.png" class="card-icon">
                                 <div class="item-01-top-center">
                                     <div class="card-title">答疑管理</div>
-<!--                                    <div class="card-value">疑问</div>-->
+                                    <div class="card-value">疑问</div>
                                 </div>
                             </div>
                             <div class="card-footer">

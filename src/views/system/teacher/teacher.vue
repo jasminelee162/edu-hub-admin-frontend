@@ -26,6 +26,7 @@
               placeholder="请输入手机号码"
               v-model="search.tel"
               class="tech-input">
+
             </el-input>
           </div>
         </el-col>
@@ -149,12 +150,13 @@
           width="55"
           align="center">
         </el-table-column>
-        <el-table-column 
-          label="教师名称"
-          width="180">
+        <el-table-column label="教师名称" width="180">
           <template #default="{row}">
             <div class="teacher-cell">
-              <el-avatar :size="35" :src="$store.state.configure.HOST + row.avatar"></el-avatar>
+              <div class="avatar-container">
+                <el-avatar :size="35" :src="$store.state.configure.HOST + row.avatar"></el-avatar>
+                <span v-if="row.unread" class="unread-dot"></span>
+              </div>
               <div class="teacher-info">
                 <span class="teacher-name">{{row.userName}}</span>
                 <span class="teacher-title">{{row.agree}}</span>
@@ -397,12 +399,16 @@ export default {
       this.search.pageNumber = 1
       this.query()
     },
+    // 同时获取未读状态
     query() {
       this.loading = true;
       getUserPage(this.search).then(res => {
         if(res.code == 1000) {
           this.tableData = res.data.records
           this.total = res.data.total
+          
+          // 获取未读状态
+          this.getUnreadStatus()
         } else {
           this.$notify.error({
             title: '错误',
@@ -413,6 +419,16 @@ export default {
       }).catch(() => {
         this.loading = false;
       });
+    },
+    // 获取未读状态
+    getUnreadStatus() {
+      userService.unread().then(res => {
+        if(res.code == 1000) {
+          this.tableData.forEach(item => {
+            this.$set(item, 'unread', res.data[item.userName] || false)
+          })
+        }
+      })
     },
     refresh() {
       this.search = {
@@ -470,7 +486,7 @@ export default {
       } else if(action === 'pass') {
         this.userName = name
         this.openPassword(id)
-      } else {
+      } else if(action === 'remove') {
         this.$confirm('确定删除该教师?', '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
@@ -480,7 +496,23 @@ export default {
         }).then(() => {
           this.deleteDate(id)
         }).catch(() => {});
+      }     
+      // 标记为已读
+      if(action !== 'remove') {
+        this.markAsRead(name)
       }
+    },
+      // 标记为已读
+    markAsRead(userName) {
+      checked({userName: userName}).then(res => {
+        if(res.code == 1000) {
+          // 更新本地数据，移除红点
+          const index = this.tableData.findIndex(item => item.userName === userName)
+          if(index !== -1) {
+            this.$set(this.tableData[index], 'unread', false)
+          }
+        }
+      })
     },
     deleteDateBtn() {
       this.$confirm(`确定删除选中的${this.remove.length}条数据?`, '提示', {
@@ -556,6 +588,40 @@ export default {
 </script>
 
 <style scoped>
+/* 红点样式 */
+.avatar-container {
+  position: relative;
+  display: inline-block;
+}
+
+.unread-dot {
+  position: absolute;
+  top: -2px;
+  right: -2px;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background-color: #ff4d4f;
+  border: 2px solid #fff;
+  box-shadow: 0 0 0 1px rgba(255, 77, 79, 0.5);
+  animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(0.95);
+    box-shadow: 0 0 0 0 rgba(255, 77, 79, 0.7);
+  }
+  70% {
+    transform: scale(1);
+    box-shadow: 0 0 0 5px rgba(255, 77, 79, 0);
+  }
+  100% {
+    transform: scale(0.95);
+    box-shadow: 0 0 0 0 rgba(255, 77, 79, 0);
+  }
+}
+
 .teacher-management {
   padding: 24px;
   background-color: #f8f9fc;
