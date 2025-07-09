@@ -144,7 +144,7 @@
               </el-button>
               <el-button 
                 size="mini" 
-                v-if="row.state == 1" 
+                v-if="row.state == 1 || row.state == 2"
                 @click="listing(row.id)"
                 class="table-action-btn approve-btn">
                 <i class="el-icon-check"></i> 审核通过
