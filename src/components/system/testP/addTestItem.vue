@@ -110,6 +110,7 @@
 
 <script>
 import { saveTestItem } from '../../../api/api'
+
 export default {
   props: ['addVisible', 'testId'],
   data() {
@@ -117,7 +118,7 @@ export default {
       form: {
         testId: '',
         title: '',
-        sort: '',
+        sort: 1, // 默认从1开始
         type: '0',
         score: '',
         keyword: '',
@@ -128,6 +129,7 @@ export default {
       content: [{ value: 'A', option: '' }],
       keyword: [{ value: '', option: '' }],
       multipleAnswers: [],
+      nextSort: 1, // 序号计数器
       rules: {
         title: [{ required: true, message: '请输入题目', trigger: 'blur' }],
         sort: [{ required: true, message: '请输入序号', trigger: 'blur' }],
@@ -149,7 +151,6 @@ export default {
                   callback()
                 }
               } else {
-                // 填空、问答、计算题等
                 if (!value) {
                   callback(new Error('请输入答案'))
                 } else {
@@ -162,6 +163,14 @@ export default {
         ],
         type: [{ required: true, message: '请选择类型', trigger: 'blur' }],
       },
+    }
+  },
+  watch: {
+    addVisible(newVal) {
+      if (newVal) {
+        // 对话框打开时自动设置序号
+        this.form.sort = this.nextSort
+      }
     }
   },
   methods: {
@@ -219,6 +228,7 @@ export default {
         saveTestItem(this.form).then(res => {
           if (res.code === 1000) {
             this.$notify.success({ title: '成功', message: '保存成功' })
+            this.nextSort++ // 成功保存后递增序号
             this.handleClose()
           } else {
             this.$notify.error({ title: '错误', message: res.message })
@@ -231,9 +241,9 @@ export default {
       this.keyword = [{ value: '', option: '' }]
       this.multipleAnswers = []
       this.form = {
-        testId: '',
+        testId: this.testId, // 保留testId
         title: '',
-        sort: '',
+        sort: this.nextSort, // 保留当前序号
         type: '0',
         score: '',
         keyword: '',
@@ -243,7 +253,7 @@ export default {
       }
       this.$emit("addFalse")
     },
-  },
+  }
 }
 </script>
 
