@@ -137,10 +137,23 @@
     },
     props: ['addVisible','flag'],
     methods: {
+      addOneDay(date) {
+        if (!date) return null;
+        const d = new Date(date);
+        d.setDate(d.getDate() + 1);
+        return d;
+      },
       submit() {
         this.$refs["ruleForm"].validate((valid) => {
           if (valid) {
-            saveTest(this.form).then(res => {
+            // 处理日期+1天
+            const formData = {
+              ...this.form,
+              startTime: this.addOneDay(this.form.startTime),
+              endTime: this.addOneDay(this.form.endTime)
+            };
+
+            saveTest(formData).then(res => {
               if(res.code == 1000) {
                 this.$notify.success({
                   title: '成功',
@@ -153,7 +166,12 @@
                   message: res.message
                 });
               }
-            })
+            }).catch(error => {
+              this.$notify.error({
+                title: '错误',
+                message: '保存失败：' + error.message
+              });
+            });
           } else {
             return false;
           }
