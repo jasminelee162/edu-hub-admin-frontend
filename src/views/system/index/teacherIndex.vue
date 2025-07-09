@@ -1,5 +1,6 @@
 <template>
     <div>
+        <!-- 顶部卡片区域 - 保持不变 -->
         <el-row :gutter="20" class="index-top">
             <!-- 第一张卡片 - 跳转到/teacherTask -->
             <el-col :span="6">
@@ -108,12 +109,16 @@
         
         <!-- 中间图表区 - 修改后的版本 -->
         <el-row :gutter="20" class="index-center">
-            <!-- 左侧图表 - 替换为教学进度与成绩分布组合图 -->
+            <!-- 左侧图表 - 教学进度与成绩分布组合图 -->
             <el-col :span="16">
                 <el-card shadow="always" class="item-07">
                     <div class="chart-header">
                         <span>教学进度与成绩分析</span>
-                        <el-select v-model="courseSelect" placeholder="选择课程" size="mini">
+                        <el-select 
+                            v-model="courseSelect" 
+                            placeholder="选择课程" 
+                            size="mini"
+                            @change="handleCourseChange">
                             <el-option
                                 v-for="item in courses"
                                 :key="item.value"
@@ -122,23 +127,34 @@
                             </el-option>
                         </el-select>
                     </div>
-                    <div v-if="!chartDestroyed" id="progress-chart" style="width:100%;height:360px"></div>
-                    <div v-else class="chart-loading">图表加载中...</div>
+                    <div v-if="!chartDestroyed && scoreData.length > 0" id="progress-chart" style="width:100%;height:360px"></div>
+                    <div v-else class="chart-loading">
+                        <el-empty description="暂无数据或加载中"></el-empty>
+                    </div>
                 </el-card>
             </el-col>
             
-            <!-- 右侧图表 - 替换为课程资源旭日图 -->
+            <!-- 右侧图表 - 课程资源旭日图 -->
             <el-col :span="8">
                 <el-card shadow="always" class="item-08">
                     <div class="chart-header">
                         <span>课程资源分布</span>
+                        <el-button 
+                            size="mini" 
+                            @click="refreshResourceData"
+                            icon="el-icon-refresh">
+                            刷新
+                        </el-button>
                     </div>
-                    <div v-if="!chartDestroyed" id="resource-chart" style="width:100%;height:360px"></div>
-                    <div v-else class="chart-loading">图表加载中...</div>
+                    <div v-if="!chartDestroyed && courseResourceData.length > 0" id="resource-chart" style="width:100%;height:360px"></div>
+                    <div v-else class="chart-loading">
+                        <el-empty description="暂无数据或加载中"></el-empty>
+                    </div>
                 </el-card>
             </el-col>
         </el-row>
 
+        <!-- 底部区域 - 保持不变 -->
         <el-row :gutter="20" class="index-under">
             <el-col :span="16">
                 <el-card shadow="always" class="item-10">
@@ -172,13 +188,13 @@
 </template>
 
 <script>
-import {getIndexData,getIndexSexData,getTaskChart,getTaskIndexList} from '../../../api/api'
+import {getIndexData, getIndexSexData, getTaskChart, getTaskIndexList, getScoreDistribution, getCourseResourceDistribution} from '../../../api/api'
 import * as echarts from "echarts";
 import debounce from 'lodash/debounce';
 
 export default {
     data() {
-        return{
+        return {
             top: {},
             sex: [],
             tasks: [],
@@ -189,18 +205,20 @@ export default {
             myChart: null,
             pieChart: null,
             courseSelect: '',
-            courses: [
-                { value: '1', label: '计算机科学导论' },
-                { value: '2', label: '数据结构与算法' },
-                { value: '3', label: '数据库系统原理' }
-            ],
+            courses: [],
             progressChart: null,
             resourceChart: null,
-            chartDestroyed: false
+            chartDestroyed: false,
+            scoreData: [], // 存储成绩分布数据
+            courseResourceData: [], // 存储课程资源数据
+            loading: {
+                score: false,
+                resource: false
+            }
         }
     },
     methods: {
-        // 新增的四个跳转方法
+        // 跳转方法
         toTeacherTask() {
             this.$router.push("/teacherTask");
             this.setActiveMenu("/teacherTask", "课程管理");
@@ -227,6 +245,7 @@ export default {
             this.$store.commit('menu/addActiveMenu', param);
             this.$store.commit('menu/setActiveMenu', path);
         },
+        
         toTask() {
             var param = {
                 "name": "教师课程管理",
@@ -236,23 +255,96 @@ export default {
             this.$router.push("/teacherTask")
             this.$store.commit('menu/setActiveMenu', "/teacherTask")
         },
-        toStudent() {
-            var param = {
-                "name": "学生管理",
-                "url": "/student"
-            }
-            this.$store.commit('menu/addActiveMenu', param)
-            this.$router.push("/student")
-            this.$store.commit('menu/setActiveMenu', "/student")
+        
+        // 课程选择变化处理
+        handleCourseChange(courseId) {
+            this.fetchScoreData(courseId);
         },
-        toTeacher() {
-            var param = {
-                "name": "教师管理",
-                "url": "/teacher"
+        
+        // 刷新资源数据
+        refreshResourceData() {
+            this.fetchCourseResourceData(this.courseSelect || this.courses[0]?.value);
+        },
+        
+        // 获取成绩分布数据
+        async fetchScoreData(taskId) {
+            try {
+                this.loading.score = true;
+                const res = await getScoreDistribution({TaskId: taskId});
+                if (res.code === 1000) {
+                    this.scoreData = res.data;
+                    this.updateProgressChart();
+                } else {
+                    this.$message.error(res.message || '获取成绩分布数据失败');
+                }
+            } catch (error) {
+                console.error('获取成绩分布数据失败:', error);
+                this.$message.error('获取成绩分布数据失败');
+            } finally {
+                this.loading.score = false;
             }
-            this.$store.commit('menu/addActiveMenu', param)
-            this.$router.push("/teacher")
-            this.$store.commit('menu/setActiveMenu', "/teacher")
+        },
+        
+        // 获取课程资源数据
+        async fetchCourseResourceData(taskId) {
+            try {
+                this.loading.resource = true;
+                const res = await getCourseResourceDistribution({TaskId: taskId});
+                if (res.code === 1000) {
+                    this.courseResourceData = res.data;
+                    this.updateResourceChart();
+                } else {
+                    this.$message.error(res.message || '获取课程资源数据失败');
+                }
+            } catch (error) {
+                console.error('获取课程资源数据失败:', error);
+                // 使用模拟数据作为后备
+                this.courseResourceData = [
+                    { name: '教学视频', value: 35 },
+                    { name: '课件资料', value: 25 },
+                    { name: '测试题库', value: 20 },
+                    { name: '阅读材料', value: 15 },
+                    { name: '其他资源', value: 5 }
+                ];
+                this.updateResourceChart();
+            } finally {
+                this.loading.resource = false;
+            }
+        },
+        
+        // 更新进度图表
+        updateProgressChart() {
+            if (!this.progressChart) return;
+            
+            const option = this.progressChart.getOption();
+            
+            // 更新xAxis数据
+            option.xAxis[1].data = this.scoreData.map(item => item.range);
+            
+            // 更新series数据
+            option.series[2].data = this.scoreData.map(item => item.count);
+            
+            this.progressChart.setOption(option);
+        },
+        
+        // 更新资源图表
+        updateResourceChart() {
+            if (!this.resourceChart) return;
+            
+            const option = {
+                series: [{
+                    data: [{
+                        name: '课程资源',
+                        children: this.courseResourceData.map(item => ({
+                            name: item.name,
+                            value: item.value,
+                            itemStyle: { color: this.getRandomColor() }
+                        }))
+                    }]
+                }]
+            };
+            
+            this.resourceChart.setOption(option);
         },
         
         // 安全初始化图表方法
@@ -282,7 +374,7 @@ export default {
             try {
                 this.chartDestroyed = false;
                 
-                // 进度图表
+                // 进度图表 - 初始化基础配置
                 this.progressChart = await this.safeInitChart('progress-chart', {
                     tooltip: {
                         trigger: 'axis',
@@ -294,7 +386,7 @@ export default {
                         }
                     },
                     legend: {
-                        data: ['计划进度', '实际进度', '平均成绩']
+                        data: ['计划进度', '实际进度', '成绩分布']
                     },
                     grid: [
                         {
@@ -317,7 +409,7 @@ export default {
                         },
                         {
                             type: 'category',
-                            data: ['0-59', '60-69', '70-79', '80-89', '90-100'],
+                            data: [],
                             gridIndex: 1
                         }
                     ],
@@ -383,7 +475,7 @@ export default {
                             name: '成绩分布',
                             type: 'bar',
                             barWidth: '60%',
-                            data: [2, 4, 10, 15, 8],
+                            data: [],
                             itemStyle: {
                                 color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
                                     { offset: 0, color: '#83bff6' },
@@ -397,7 +489,7 @@ export default {
                     ]
                 });
                 
-                // 资源图表
+                // 资源图表 - 初始化基础配置
                 this.resourceChart = await this.safeInitChart('resource-chart', {
                     title: {
                         text: '资源类型分布',
@@ -407,36 +499,7 @@ export default {
                     series: {
                         name: '资源分布',
                         type: 'sunburst',
-                        data: [{
-                            name: '课程资源',
-                            children: [
-                                {
-                                    name: '教学视频',
-                                    value: 35,
-                                    itemStyle: { color: '#5470c6' }
-                                },
-                                {
-                                    name: '课件资料',
-                                    value: 25,
-                                    itemStyle: { color: '#91cc75' }
-                                },
-                                {
-                                    name: '测试题库',
-                                    value: 20,
-                                    itemStyle: { color: '#fac858' }
-                                },
-                                {
-                                    name: '阅读材料',
-                                    value: 15,
-                                    itemStyle: { color: '#ee6666' }
-                                },
-                                {
-                                    name: '其他资源',
-                                    value: 5,
-                                    itemStyle: { color: '#73c0de' }
-                                }
-                            ]
-                        }],
+                        data: [],
                         radius: [0, '90%'],
                         label: {
                             rotate: 'radial'
@@ -476,9 +539,23 @@ export default {
                     }
                 });
                 
+                // 默认加载第一个课程的数据
+                if (this.courses.length > 0) {
+                    this.courseSelect = this.courses[0].value;
+                    this.fetchScoreData(this.courseSelect);
+                    this.fetchCourseResourceData(this.courseSelect);
+                }
+                
             } catch (error) {
                 console.error('图表初始化失败:', error);
+                this.$message.error('图表初始化失败');
             }
+        },
+        
+        // 辅助方法 - 生成随机颜色
+        getRandomColor() {
+            const colors = ['#5470c6', '#91cc75', '#fac858', '#ee6666', '#73c0de', '#3ba272', '#fc8452', '#9a60b4', '#ea7ccc'];
+            return colors[Math.floor(Math.random() * colors.length)];
         },
         
         // 处理窗口大小变化
@@ -489,7 +566,7 @@ export default {
             this.pieChart && this.pieChart.resize();
         }, 200)
     },
-    created() {
+    async created() {
         // 获取首页顶部数据
         getIndexData({type:1}).then(res => {
             if (res.code == 1000) {
@@ -631,13 +708,16 @@ export default {
             }
         });
 
-        // 获取任务列表数据
-        getTaskIndexList({type:1}).then(res => {
-            if (res.code == 1000) {
-                this.taskList = res.data.slice(0,5)
-                this.taskCard = res.data.slice(0,3)
-            }
-        });
+        // 获取课程列表数据
+        const taskListRes = await getTaskIndexList({type:1});
+        if (taskListRes.code == 1000) {
+            this.courses = taskListRes.data.map(item => ({
+                value: item.taskId,
+                label: item.courseName
+            }));
+            this.taskList = taskListRes.data.slice(0,5);
+            this.taskCard = taskListRes.data.slice(0,3);
+        }
     },
     mounted() {
         this.initCharts();
@@ -658,6 +738,7 @@ export default {
 </script>
 
 <style scoped>
+/* 原有样式保持不变 */
 .index-top {
     margin-bottom: 20px;
     height: 210px;

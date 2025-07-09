@@ -1,4 +1,5 @@
 import request, { post, get } from "@/utils/request";
+import axios from 'axios';
 
 // export function products(params) {
 //     return request({
@@ -443,4 +444,14 @@ export function getTemplateContent(params) {
     method: 'get',
     params: params
   })
+}
+
+//-------------------------------AI阅卷---------------------------------------
+
+export function aiGrading(papers) {
+  return axios.post('/ai/grades', papers)
+}
+
+export function aiChat(message) {
+  return axios.get('/ai/chat', { params: { key: message } })
 }
