@@ -15,7 +15,7 @@
                                 <img src="../../../assets/image/index-01.png" class="card-icon">
                                 <div class="item-01-top-center">
                                     <div class="card-title">课程管理</div>
-<!--                                    <div class="card-value">{{top.userNum}}门</div>-->
+                                    <div class="card-value">{{top.userNum}}门</div>
                                 </div>
                             </div>
                             <div class="card-footer">
@@ -41,7 +41,7 @@
                                 <img src="../../../assets/image/index-02.png" class="card-icon">
                                 <div class="item-01-top-center">
                                     <div class="card-title">章节管理</div>
-<!--                                    <div class="card-value">{{top.studentNum}}章</div>-->
+                                    <div class="card-value">{{top.studentNum}}章</div>
                                 </div>
                             </div>
                             <div class="card-footer">
@@ -67,7 +67,7 @@
                                 <img src="../../../assets/image/avator.png" class="card-icon">
                                 <div class="item-01-top-center">
                                     <div class="card-title">测试管理</div>
-<!--                                    <div class="card-value">{{top.teacherNum}}个</div>-->
+                                    <div class="card-value">{{top.teacherNum}}个</div>
                                 </div>
                             </div>
                             <div class="card-footer">
@@ -93,7 +93,7 @@
                                 <img src="../../../assets/image/index-05.png" class="card-icon">
                                 <div class="item-01-top-center">
                                     <div class="card-title">答疑管理</div>
-<!--                                    <div class="card-value">疑问</div>-->
+                                    <div class="card-value">疑问</div>
                                 </div>
                             </div>
                             <div class="card-footer">
@@ -126,7 +126,7 @@
                     <div v-else class="chart-loading">图表加载中...</div>
                 </el-card>
             </el-col>
-            
+
             <!-- 右侧图表 - 替换为课程资源旭日图 -->
             <el-col :span="8">
                 <el-card shadow="always" class="item-08">
@@ -217,7 +217,7 @@ export default {
             this.$router.push("/question");
             this.setActiveMenu("/question", "题库管理");
         },
-        
+
         // 公共方法设置激活菜单
         setActiveMenu(path, name) {
             const param = {
@@ -254,7 +254,7 @@ export default {
             this.$router.push("/teacher")
             this.$store.commit('menu/setActiveMenu', "/teacher")
         },
-        
+
         // 安全初始化图表方法
         safeInitChart(chartId, option) {
             return new Promise((resolve) => {
@@ -264,12 +264,12 @@ export default {
                         console.error(`DOM element #${chartId} not found`);
                         return resolve(null);
                     }
-                    
+
                     // 先销毁旧实例
                     if (this[`${chartId.replace('-', '')}Chart`]) {
                         this[`${chartId.replace('-', '')}Chart`].dispose();
                     }
-                    
+
                     const chart = echarts.init(dom);
                     chart.setOption(option);
                     resolve(chart);
@@ -281,7 +281,7 @@ export default {
         async initCharts() {
             try {
                 this.chartDestroyed = false;
-                
+
                 // 进度图表
                 this.progressChart = await this.safeInitChart('progress-chart', {
                     tooltip: {
@@ -396,7 +396,7 @@ export default {
                         }
                     ]
                 });
-                
+
                 // 资源图表
                 this.resourceChart = await this.safeInitChart('resource-chart', {
                     title: {
@@ -475,12 +475,12 @@ export default {
                         ]
                     }
                 });
-                
+
             } catch (error) {
                 console.error('图表初始化失败:', error);
             }
         },
-        
+
         // 处理窗口大小变化
         handleResize: debounce(function() {
             this.progressChart && this.progressChart.resize();
