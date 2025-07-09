@@ -331,6 +331,9 @@ export default {
 </script>
 
 <style scoped>
+.el-icon-user-solid {
+  display: none !important;
+}
 .message-management {
   padding: 24px;
   background-color: #f8f9fc;

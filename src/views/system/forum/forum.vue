@@ -12,7 +12,7 @@
               placeholder="请输入讨论名称"
               v-model="search.name"
               class="tech-input">
-              <i slot="prefix" class="el-icon-edit-outline"></i>
+              <!--<i slot="prefix" class="el-icon-edit-outline"></i>-->
             </el-input>
           </div>
         </el-col>
@@ -26,7 +26,7 @@
               placeholder="请输入讨论内容"
               v-model="search.content"
               class="tech-input">
-              <i slot="prefix" class="el-icon-tickets"></i>
+              <!--<i slot="prefix" class="el-icon-tickets"></i>-->
             </el-input>
           </div>
         </el-col>
@@ -379,6 +379,8 @@
   display: flex;
   align-items: flex-end;
   height: 100%;
+  float: right;
+  margin-top: 30px;
 }
 
 .data-panel {

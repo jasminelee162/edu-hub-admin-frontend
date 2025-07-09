@@ -13,7 +13,7 @@
               placeholder="请输入课程名称"
               v-model="search.taskName"
               class="tech-input">
-              <i slot="prefix" class="el-icon-collection"></i>
+              <!--<i slot="prefix" class="el-icon-collection"></i>-->
             </el-input>
           </div>
         </el-col>
@@ -27,7 +27,7 @@
               placeholder="请输入标题"
               v-model="search.title"
               class="tech-input">
-              <i slot="prefix" class="el-icon-edit-outline"></i>
+              <!--<i slot="prefix" class="el-icon-edit-outline"></i>-->
             </el-input>
           </div>
         </el-col>
@@ -40,7 +40,7 @@
               clearable 
               size="small" 
               v-model="search.state" 
-              placeholder="请选择"
+              placeholder="   请选择"
               class="tech-select">
               <el-option
                 label="审核通过"
@@ -478,9 +478,10 @@
 }
 
 .search-actions {
-  display: flex;
-  align-items: flex-end;
+margin-right: 10px;
   height: 100%;
+  float: right;
+  margin-top: 10px;
 }
 
 .data-panel {

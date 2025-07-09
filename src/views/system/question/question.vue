@@ -12,7 +12,7 @@
               placeholder="请输入用户昵称"
               v-model="search.userName"
               class="tech-input">
-              <i slot="prefix" class="el-icon-user-solid"></i>
+              <!--<i slot="prefix" class="el-icon-user-solid"></i>-->
             </el-input>
           </div>
         </el-col>
@@ -26,7 +26,7 @@
               placeholder="请输入提问内容"
               v-model="search.content"
               class="tech-input">
-              <i slot="prefix" class="el-icon-question"></i>
+              <!--<i slot="prefix" class="el-icon-question"></i>-->
             </el-input>
           </div>
         </el-col>
@@ -40,7 +40,7 @@
               placeholder="请输入回复"
               v-model="search.answer"
               class="tech-input">
-              <i slot="prefix" class="el-icon-chat-line-square"></i>
+              <!--<i slot="prefix" class="el-icon-chat-line-square"></i>-->
             </el-input>
           </div>
         </el-col>
@@ -54,7 +54,7 @@
               placeholder="请输入课程名称"
               v-model="search.taskName"
               class="tech-input">
-              <i slot="prefix" class="el-icon-collection"></i>
+              <!--<i slot="prefix" class="el-icon-collection"></i>-->
             </el-input>
           </div>
         </el-col>
@@ -365,6 +365,8 @@
   display: flex;
   align-items: flex-end;
   height: 100%;
+  float: right;
+  margin-top: 20px;
 }
 
 .data-panel {

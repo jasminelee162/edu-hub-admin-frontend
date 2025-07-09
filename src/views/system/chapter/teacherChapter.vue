@@ -13,7 +13,7 @@
                 placeholder="请输入课程名称"
                 v-model="search.taskName"
                 class="purple-input">
-              <i slot="prefix" class="el-icon-notebook-2"></i>
+              <!--<i slot="prefix" class="el-icon-notebook-2"></i>-->
             </el-input>
           </div>
         </el-col>
@@ -27,7 +27,7 @@
                 placeholder="请输入章节名称"
                 v-model="search.name"
                 class="purple-input">
-              <i slot="prefix" class="el-icon-folder-opened"></i>
+              <!--<i slot="prefix" class="el-icon-folder-opened"></i>-->
             </el-input>
           </div>
         </el-col>
@@ -413,6 +413,8 @@ export default {
   align-items: flex-end;
   height: 100%;
   padding-top: 22px;
+  margin-top: 10px;
+  float: right;
 }
 
 .data-card {

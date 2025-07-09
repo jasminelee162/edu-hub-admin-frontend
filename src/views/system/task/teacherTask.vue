@@ -13,7 +13,7 @@
                 placeholder="请输入课程名称"
                 v-model="search.name"
                 class="tech-input">
-                <i slot="prefix" class="el-icon-edit-outline"></i>
+                <!--<i slot="prefix" class="el-icon-edit-outline"></i>-->
               </el-input>
             </div>
           </el-col>
@@ -26,7 +26,7 @@
                 clearable 
                 size="small" 
                 v-model="search.major" 
-                placeholder="请选择"
+                placeholder="   请选择"
                 class="tech-select">
                 <el-option 
                   v-for="(item,index) in major" 
@@ -49,7 +49,7 @@
                 clearable 
                 size="small" 
                 v-model="search.classification" 
-                placeholder="请选择"
+                placeholder="   请选择"
                 class="tech-select">
                 <el-option 
                   v-for="(item,index) in classification" 
@@ -63,23 +63,26 @@
               </el-select>
             </div>
           </el-col>
-          <el-col :xs="24" :sm="12" :md="8" :lg="8" :xl="8">
-            <div class="search-actions">
-              <el-button 
-                size="small" 
-                icon="el-icon-search" 
-                type="primary" 
-                @click="searchPage"
-                class="search-btn">
-                查询
-              </el-button>
-              <el-button 
-                size="small" 
-                icon="el-icon-refresh" 
-                @click="refresh"
-                class="reset-btn">
-                重置
-              </el-button>
+          <!-- 新增一个专门用于按钮的列 -->
+          <el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24">
+            <div class="search-actions-container">
+              <div class="search-actions">
+                <el-button
+                    size="small"
+                    icon="el-icon-search"
+                    type="primary"
+                    @click="searchPage"
+                    class="search-btn">
+                  查询
+                </el-button>
+                <el-button
+                    size="small"
+                    icon="el-icon-refresh"
+                    @click="refresh"
+                    class="reset-btn">
+                  重置
+                </el-button>
+              </div>
             </div>
           </el-col>
         </el-row>
@@ -801,5 +804,10 @@ export default {
 
 .el-tag i {
   margin-right: 4px;
+}
+
+.search-actions-container {
+  margin-top: 10px;
+  float: right;
 }
 </style>

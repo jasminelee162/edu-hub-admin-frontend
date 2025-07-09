@@ -620,6 +620,7 @@ export default {
 </script>
 
 <style scoped>
+
 .course-management {
   padding: 24px;
   background-color: #f8f9fc;

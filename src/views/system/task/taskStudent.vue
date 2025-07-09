@@ -12,7 +12,8 @@
               placeholder="请输入学生姓名"
               v-model="search.userName"
               class="tech-input">
-              <i slot="prefix" class="el-icon-user-solid"></i>
+              <!--7.9-->
+              <!--<i slot="prefix" class="el-icon-user-solid"></i>-->
             </el-input>
           </div>
         </el-col>

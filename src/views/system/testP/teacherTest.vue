@@ -12,7 +12,7 @@
               placeholder="请输入考试名称"
               v-model="search.name"
               class="tech-input">
-              <i slot="prefix" class="el-icon-edit-outline"></i>
+              <!--<i slot="prefix" class="el-icon-edit-outline"></i>-->
             </el-input>
           </div>
         </el-col>
@@ -26,7 +26,7 @@
               placeholder="请输入课程名称"
               v-model="search.taskName"
               class="tech-input">
-              <i slot="prefix" class="el-icon-collection"></i>
+              <!--<i slot="prefix" class="el-icon-collection"></i>-->
             </el-input>
           </div>
         </el-col>
@@ -39,7 +39,7 @@
               clearable 
               size="small" 
               v-model="search.state" 
-              placeholder="请选择"
+              placeholder="   请选择"
               class="tech-select">
               <el-option
                 label="审核通过"
@@ -69,29 +69,32 @@
               placeholder="请输入创建者"
               v-model="search.createBy"
               class="tech-input">
-              <i slot="prefix" class="el-icon-user-solid"></i>
+              <!--<i slot="prefix" class="el-icon-user-solid"></i>-->
             </el-input>
           </div>
         </el-col>
-        <el-col :xs="24" :sm="12" :md="8" :lg="8" :xl="8">
-          <div class="search-actions">
-            <el-button 
-              size="small" 
-              icon="el-icon-search" 
-              type="primary" 
-              @click="searchPage"
-              class="search-btn">
-              查询
-            </el-button>
-            <el-button 
-              size="small" 
-              icon="el-icon-refresh" 
-              @click="refresh"
-              class="reset-btn">
-              重置
-            </el-button>
-          </div>
-        </el-col>
+        <el-row :gutter="15">
+          <!-- 其他搜索列保持不变 -->
+          <el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24">
+            <div class="search-actions" style="display: flex; justify-content: flex-end;">
+              <el-button
+                  size="small"
+                  icon="el-icon-search"
+                  type="primary"
+                  @click="searchPage"
+                  class="search-btn">
+                查询
+              </el-button>
+              <el-button
+                  size="small"
+                  icon="el-icon-refresh"
+                  @click="refresh"
+                  class="reset-btn">
+                重置
+              </el-button>
+            </div>
+          </el-col>
+        </el-row>
       </el-row>
     </div>
 
