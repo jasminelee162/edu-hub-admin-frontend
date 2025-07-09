@@ -58,7 +58,7 @@
             </el-input>
           </div>
         </el-col>
-        <el-col :xs="24" :sm="12" :md="8" :lg="8" :xl="8">
+        <el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24">
           <div class="search-actions">
             <el-button 
               size="small" 
@@ -366,7 +366,6 @@
   align-items: flex-end;
   height: 100%;
   float: right;
-  margin-top: 20px;
 }
 
 .data-panel {
