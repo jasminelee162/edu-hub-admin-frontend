@@ -28,7 +28,7 @@
                 <el-option label="多选" value="1" />
                 <el-option label="填空" value="2" />
                 <el-option label="判断" value="3" />
-                <el-option label="问答" value="4" />
+                <el-option label="问答(需人工阅卷)" value="4" />
                 <el-option label="计算(需人工阅卷)" value="5" />
               </el-select>
             </el-form-item>
