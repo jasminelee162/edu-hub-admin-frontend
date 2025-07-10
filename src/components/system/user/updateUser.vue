@@ -123,7 +123,7 @@
             { required: true, message: '请输入登录密码', trigger: 'blur' },
           ],
         }
-      }r
+      }
     },
     props: ['updateUserVisible','updateId','data','post','role'],
     methods: {
