@@ -13,7 +13,7 @@
               v-model="search.userName"
               @keyup.enter.native="searchPage"
               class="tech-input">
-              <i slot="prefix" class="el-icon-user-solid"></i>
+              <!--<i slot="prefix" class="el-icon-user-solid"></i>-->
             </el-input>
           </div>
         </el-col>

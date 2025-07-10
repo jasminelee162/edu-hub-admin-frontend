@@ -12,7 +12,7 @@
               placeholder="请输入评论内容"
               v-model="search.content"
               class="tech-input">
-              <i slot="prefix" class="el-icon-edit-outline"></i>
+              <!--<i slot="prefix" class="el-icon-edit-outline"></i>-->
             </el-input>
           </div>
         </el-col>
@@ -26,7 +26,7 @@
               placeholder="请输入评论人"
               v-model="search.createBy"
               class="tech-input">
-              <i slot="prefix" class="el-icon-s-custom"></i>
+              <!--<i slot="prefix" class="el-icon-s-custom"></i>-->
             </el-input>
           </div>
         </el-col>
@@ -323,6 +323,7 @@ export default {
 }
 
 .search-actions {
+  margin-top: 30px;
   display: flex;
   align-items: flex-end;
   height: 100%;
