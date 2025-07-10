@@ -26,7 +26,6 @@
               placeholder="请输入手机号码"
               v-model="search.tel"
               class="tech-input">
-
             </el-input>
           </div>
         </el-col>
@@ -72,7 +71,6 @@
         </el-col>
       </el-row>
       
-      <!-- 操作按钮 - 单独一行靠右 -->
       <el-row>
         <el-col :span="24" class="search-actions-col">
           <div class="search-actions">
@@ -98,7 +96,6 @@
 
     <!-- 数据面板 -->
     <div class="data-panel">
-      <!-- 操作栏 -->
       <div class="action-bar">
         <el-button 
           type="primary" 
@@ -136,7 +133,6 @@
         </el-popconfirm>
       </div>
 
-      <!-- 数据表格 -->
       <el-table
         v-loading="loading"
         :data="tableData"
@@ -150,12 +146,14 @@
           width="55"
           align="center">
         </el-table-column>
+
+        <!-- 教师名称列（添加红点显示） -->
         <el-table-column label="教师名称" width="180">
           <template #default="{row}">
             <div class="teacher-cell">
               <div class="avatar-container">
                 <el-avatar :size="35" :src="$store.state.configure.HOST + row.avatar"></el-avatar>
-                <span v-if="row.unread" class="unread-dot"></span>
+                <span v-if="hasUnread(row.userName)" class="unread-dot"></span>
               </div>
               <div class="teacher-info">
                 <span class="teacher-name">{{row.userName}}</span>
@@ -164,6 +162,7 @@
             </div>
           </template>
         </el-table-column>
+        
         <el-table-column 
           prop="loginAccount" 
           label="登陆账号"
@@ -243,7 +242,7 @@
                 <el-dropdown-menu slot="dropdown" class="tech-dropdown">
                   <el-dropdown-item 
                     icon="el-icon-edit" 
-                    :command="row.id + '#edit'"
+                    :command="row.id + '#edit#' + row.userName"
                     class="dropdown-item">
                     修改
                   </el-dropdown-item>
@@ -257,7 +256,7 @@
                   <el-dropdown-item 
                     icon="el-icon-delete" 
                     v-if="row.loginAccount != 'admin'" 
-                    :command="row.id + '#remove'"
+                    :command="row.id + '#remove#' + row.userName"
                     class="dropdown-item delete-item">
                     删除
                   </el-dropdown-item>
@@ -268,7 +267,6 @@
         </el-table-column>
       </el-table>
 
-      <!-- 分页 -->
       <el-pagination
         background
         layout="total, sizes, prev, pager, next, jumper"
@@ -282,11 +280,9 @@
       </el-pagination>
     </div>
 
-    <!-- 弹窗组件 -->
     <add-user @addUserFalse="addUserFalse" :addUserVisible="addUserVisible"></add-user>
     <update-user @updateUserFalse="updateUserFalse" :updateId="updateId" :updateUserVisible="updateUserVisible"></update-user>
     
-    <!-- 重置密码对话框 -->
     <el-dialog
       title="重置密码"
       :visible.sync="passwordDialogVisible"
@@ -317,7 +313,7 @@
 </template>
 
 <script>
-import {getUserPage,removeUser,resetPassword,getSchoolList,getMajorList} from '../../../api/api'
+import {getUserPage,removeUser,resetPassword,getSchoolList,getMajorList,getUnreadTeachers,approveTeacher} from '../../../api/api'
 import addUser from "../../../components/system/teacher/addTeacher"
 import updateUser from "../../../components/system/teacher/updateTeacher"
 
@@ -348,7 +344,8 @@ export default {
       total: 0,
       tableData: [],
       school: [],
-      major: []
+      major: [],
+      unreadTeachers: []
     }
   },
   components: {
@@ -356,6 +353,9 @@ export default {
     updateUser
   },
   methods: {
+    hasUnread(userName) {
+      return this.unreadTeachers.includes(userName);
+    },
     tableHeaderStyle() {
       return {
         'color': '#4A2B90',
@@ -399,36 +399,36 @@ export default {
       this.search.pageNumber = 1
       this.query()
     },
-    // 同时获取未读状态
-    query() {
+
+    // 查询教师列表
+    async query() {
       this.loading = true;
-      getUserPage(this.search).then(res => {
-        if(res.code == 1000) {
-          this.tableData = res.data.records
-          this.total = res.data.total
-          
-          // 获取未读状态
-          this.getUnreadStatus()
-        } else {
-          this.$notify.error({
-            title: '错误',
-            message: res.message
-          });
+      try {
+        // 获取未读状态
+        const unreadRes = await getUnreadTeachers();
+        if(unreadRes.code === 1000) {
+          this.unreadTeachers = unreadRes.data || [];
         }
-        this.loading = false;
-      }).catch(() => {
-        this.loading = false;
-      });
-    },
-    // 获取未读状态
-    getUnreadStatus() {
-      userService.unread().then(res => {
-        if(res.code == 1000) {
-          this.tableData.forEach(item => {
-            this.$set(item, 'unread', res.data[item.userName] || false)
-          })
+        
+        // 获取教师列表
+        const pageRes = await getUserPage(this.search);
+        if(pageRes.code == 1000) {
+          // 将教师列表与未读状态合并
+          this.tableData = pageRes.data.records.map(teacher => ({
+            ...teacher,
+            unread: this.unreadTeachers.includes(teacher.userName)
+          }));
+          this.total = pageRes.data.total;
         }
-      })
+      } catch (error) {
+        console.error('获取数据失败:', error);
+        this.$notify.error({
+          title: '错误',
+          message: '获取数据失败，请重试'
+        });
+      } finally {
+        this.loading = false;
+      }
     },
     refresh() {
       this.search = {
@@ -479,41 +479,68 @@ export default {
     updateUserBtn() {
       this.updateUser(this.update[0])
     },
-    handleCommand(command) {
-      const [id, action, name] = command.split("#")
-      if(action === 'edit') {
-        this.updateUser(id)
-      } else if(action === 'pass') {
-        this.userName = name
-        this.openPassword(id)
-      } else if(action === 'remove') {
-        this.$confirm('确定删除该教师?', '提示', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          type: 'warning',
-          iconClass: 'el-icon-warning',
-          customClass: 'tech-confirm'
-        }).then(() => {
-          this.deleteDate(id)
-        }).catch(() => {});
-      }     
-      // 标记为已读
-      if(action !== 'remove') {
-        this.markAsRead(name)
+
+    // 处理下拉菜单命令
+    async handleCommand(command) {
+      const [id, action, userName] = command.split("#");
+      
+      try {
+        // 先标记为已读
+        const success = await this.markTeacherAsRead(userName);
+        if (!success) return;
+
+        // 再执行对应操作
+        if (action === 'edit') {
+          this.updateUser(id);
+        } else if (action === 'pass') {
+          this.userName = userName;
+          this.openPassword(id);
+        } else if (action === 'remove') {
+          this.$confirm('确定删除该教师?', '提示', {
+            confirmButtonText: '确定',
+            cancelButtonText: '取消',
+            type: 'warning'
+          }).then(() => {
+            this.deleteDate(id);
+          }).catch(() => {});
+        }
+      } catch (error) {
+        console.error('操作失败:', error);
+        this.$message.error('操作失败');
       }
     },
-      // 标记为已读
-    markAsRead(userName) {
-      checked({userName: userName}).then(res => {
-        if(res.code == 1000) {
-          // 更新本地数据，移除红点
-          const index = this.tableData.findIndex(item => item.userName === userName)
-          if(index !== -1) {
-            this.$set(this.tableData[index], 'unread', false)
+
+    // 标记教师为已读
+    async markTeacherAsRead(userName) {
+      try {
+        const res = await approveTeacher(userName);
+        if (res.code === 1000) {
+          // 立即更新本地状态
+          this.unreadTeachers = this.unreadTeachers.filter(name => name !== userName);
+          
+          // 更新表格数据中的unread状态
+          const index = this.tableData.findIndex(item => item.userName === userName);
+          if (index !== -1) {
+            this.$set(this.tableData, index, {
+              ...this.tableData[index],
+              unread: false
+            });
           }
+          
+          this.$message.success('审核中');
+          return true;
+        } else {
+          this.$message.error(res.message);
+          return false;
         }
-      })
+      } catch (error) {
+        console.error('标记已读失败:', error);
+        this.$message.error('操作失败');
+        return false;
+      }
     },
+
+    // 删除选中的数据
     deleteDateBtn() {
       this.$confirm(`确定删除选中的${this.remove.length}条数据?`, '提示', {
         confirmButtonText: '确定',
@@ -583,45 +610,19 @@ export default {
     this.getSchoolList()
     this.getMajorList()
     this.query()
+    
+    // 每5分钟检查一次未读状态
+    this.unreadCheckInterval = setInterval(() => {
+      this.query();
+    }, 300000);
+  },
+  beforeDestroy() {
+    clearInterval(this.unreadCheckInterval);
   }
 }
 </script>
 
 <style scoped>
-/* 红点样式 */
-.avatar-container {
-  position: relative;
-  display: inline-block;
-}
-
-.unread-dot {
-  position: absolute;
-  top: -2px;
-  right: -2px;
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-  background-color: #ff4d4f;
-  border: 2px solid #fff;
-  box-shadow: 0 0 0 1px rgba(255, 77, 79, 0.5);
-  animation: pulse 1.5s infinite;
-}
-
-@keyframes pulse {
-  0% {
-    transform: scale(0.95);
-    box-shadow: 0 0 0 0 rgba(255, 77, 79, 0.7);
-  }
-  70% {
-    transform: scale(1);
-    box-shadow: 0 0 0 5px rgba(255, 77, 79, 0);
-  }
-  100% {
-    transform: scale(0.95);
-    box-shadow: 0 0 0 0 rgba(255, 77, 79, 0);
-  }
-}
-
 .teacher-management {
   padding: 24px;
   background-color: #f8f9fc;
@@ -690,6 +691,32 @@ export default {
   align-items: center;
 }
 
+.avatar-container {
+  position: relative;
+  display: inline-block;
+  margin-right: 10px;
+}
+
+.unread-dot {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background-color: #ff4d4f;
+  border: 2px solid #fff;
+  box-shadow: 0 0 0 1px rgba(255, 77, 79, 0.5);
+  animation: pulse 1.5s infinite;
+  z-index: 1;
+}
+
+@keyframes pulse {
+  0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(255,77,79,0.7); }
+  70% { transform: scale(1); box-shadow: 0 0 0 10px rgba(255,77,79,0); }
+  100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(255,77,79,0); }
+}
+
 .teacher-info {
   margin-left: 10px;
   display: flex;
@@ -754,7 +781,6 @@ export default {
 </style>
 
 <style>
-/* 全局样式 */
 .tech-input .el-input__inner {
   border-radius: 8px;
   border: 1px solid #e0e3ed;

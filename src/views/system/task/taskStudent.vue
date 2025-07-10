@@ -95,12 +95,10 @@
           width="55"
           align="center">
         </el-table-column>
-        <el-table-column
-          prop="userName"
-          label="学生姓名"
-          width="120">
+        <el-table-column prop="userName" label="学生姓名" width="120">
           <template #default="{row}">
             <div class="user-cell">
+              <div class="unread-badge" v-if="row.showBadge"></div>
               <i class="el-icon-user" style="color:#9370DB; margin-right:8px"></i>
               <span>{{ row.userName }}</span>
             </div>
@@ -160,7 +158,7 @@
                 v-if="row.state == 0" 
                 size="mini" 
                 type="warning" 
-                @click="updateData(row.id,1)"
+                @click="updateData(row,1)"
                 class="action-btn reject-btn">
                 <i class="el-icon-close" style="margin-right:4px"></i> 不通过
               </el-button>
@@ -168,7 +166,7 @@
                 v-if="row.state == 1" 
                 size="mini" 
                 type="success" 
-                @click="updateData(row.id,0)"
+                @click="updateData(row,0)"
                 class="action-btn approve-btn">
                 <i class="el-icon-check" style="margin-right:4px"></i> 通过
               </el-button>
@@ -208,14 +206,14 @@
 </template>
 
 <script>
-import {getApeTaskStudentPage,removeTaskStudent,editTaskStudent} from '../../../api/api'
+import {getApeTaskStudentPage,removeTaskStudent,editTaskStudent,checkTaskStudent} from '../../../api/api'
+
 export default {
   data() {
     return{
       loading: true,
       update: [],
       remove: [],
-      updateId: "",
       search: {
           taskId: "",
           userName: "",
@@ -224,7 +222,9 @@ export default {
           pageSize:10
       },
       total: 0,
-      tableData: []
+      tableData: [],
+      readStatus: JSON.parse(localStorage.getItem('studentReadStatus')) || {}
+
     }
   },
   methods: {
@@ -247,35 +247,66 @@ export default {
       this.search.pageNumber = 1
       this.query()
     },
-    query() {
-      getApeTaskStudentPage(this.search).then(res => {
-        if(res.code == 1000) {
-          this.tableData = res.data.records
-          this.total = res.data.total
-          this.loading = false
-        } else {
-          this.$notify.error({
-            title: '错误',
-            message: res.message
+    async query() {
+      this.loading = true;
+      try {
+        const res = await getApeTaskStudentPage(this.search);
+        if (res.code == 1000) {
+          this.tableData = res.data.records.map(item => {
+            // 判断是否显示红点：checked=1且未在已读记录中
+            const isUnread = item.checked === 1 && 
+                           !this.readStatus[`${item.taskName}_${item.userName}`];
+            return {
+              ...item,
+              showBadge: isUnread
+            };
+          });
+          this.total = res.data.total;
+        }
+      } catch (error) {
+        console.error('获取数据失败:', error);
+      } finally {
+        this.loading = false;
+      }
+    },
+    
+    async updateData(row, state) {
+      try {
+        // 1. 立即更新本地状态（无需等待接口返回）
+        const index = this.tableData.findIndex(item => item.id === row.id);
+        if (index !== -1) {
+          this.$set(this.tableData, index, {
+            ...row,
+            state,
+            showBadge: false // 立即隐藏红点
           });
         }
-      })
-    },
-    updateData(id,state) {
-        var param = {
-            id: id,
-            state: state
+
+        // 2. 更新已读状态存储
+        this.$set(this.readStatus, `${row.taskName}_${row.userName}`, true);
+        localStorage.setItem('studentReadStatus', JSON.stringify(this.readStatus));
+
+        // 3. 调用接口
+        await Promise.all([
+          editTaskStudent({ id: row.id, state }),
+          checkTaskStudent({
+            taskName: row.taskName,
+            userName: row.userName
+          })
+        ]);
+
+        this.$message.success('操作成功');
+      } catch (error) {
+        // 回滚本地状态
+        const index = this.tableData.findIndex(item => item.id === row.id);
+        if (index !== -1) {
+          this.$set(this.tableData, index, {
+            ...row,
+            showBadge: true
+          });
         }
-        editTaskStudent(param).then(res => {
-            if (res.code == 1000) {
-                this.$message({
-                  type: 'success',
-                  message: '操作成功!',
-                  customClass: 'tech-message'
-                });
-                this.query()
-            }
-        })
+        this.$message.error(error.message || '操作失败');
+      }
     },
     refresh() {
       this.search.userName = ""
@@ -309,23 +340,30 @@ export default {
         this.deleteDate(this.remove.join(","))
       }).catch(() => {});
     },
-    deleteDate(ids) {
-      removeTaskStudent({ids:ids}).then(res => {
-          if(res.code == 1000) {
-            this.$message({
-              type: 'success',
-              message: '删除成功!',
-              customClass: 'tech-message'
-            });
-            this.pageNumber = 1
-            this.query()
-          } else {
-            this.$notify.error({
-              title: '错误',
-              message: res.message
-            });
-          }
-        })
+    async deleteDate(ids) {
+      try {
+        const res = await removeTaskStudent({ids:ids});
+        if(res.code == 1000) {
+          this.$message({
+            type: 'success',
+            message: '删除成功!',
+            customClass: 'tech-message'
+          });
+          this.search.pageNumber = 1
+          this.query()
+        } else {
+          this.$notify.error({
+            title: '错误',
+            message: res.message
+          });
+        }
+      } catch (error) {
+        console.error('删除失败:', error);
+        this.$notify.error({
+          title: '错误',
+          message: '删除失败'
+        });
+      }
     },
   },
   mounted() {
@@ -396,7 +434,28 @@ export default {
   align-items: center;
 }
 
-.user-cell, .teacher-cell, .course-cell {
+.user-cell {
+  position: relative;
+  display: flex;
+  align-items: center;
+  padding-top: 3px; /* 为红点预留空间 */
+}
+
+.unread-badge {
+  position: absolute;
+  top: 6px;
+  left: 12px;
+  width: 8px;
+  height: 8px;
+  background-color: #FF4757;
+  border-radius: 50%;
+  border: 1.5px solid white;
+  box-shadow: 0 0 3px rgba(255, 71, 87, 0.8);
+  animation: pulse 1.5s infinite;
+  z-index: 2;
+}
+
+.teacher-cell, .course-cell {
   display: flex;
   align-items: center;
 }
@@ -454,10 +513,25 @@ export default {
   transform: translateY(-1px);
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
+
+.badge-item >>> .el-badge__content {
+  top: 1px;
+  right: 1px;
+  width: 6px;
+  height: 6px;
+  background-color: #FF4757;
+  border: 1px solid white;
+  box-shadow: 0 0 2px rgba(0,0,0,0.2);
+}
+
+@keyframes pulse {
+  0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(255, 71, 87, 0.7); }
+  70% { transform: scale(1.05); box-shadow: 0 0 0 4px rgba(255, 71, 87, 0); }
+  100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(255, 71, 87, 0); }
+}
 </style>
 
 <style>
-/* 全局样式 */
 .tech-input .el-input__inner {
   border-radius: 20px;
   border: 1px solid #D8D8E5;
@@ -547,5 +621,11 @@ export default {
 .el-popconfirm__action button:last-child {
   color: #7B68EE;
   border: 1px solid #D8D8E5;
+}
+
+.user-cell .el-icon-user {
+  position: relative;
+  z-index: 1;
+  margin-top: 2px; /* 微调图标位置保持对齐 */
 }
 </style>

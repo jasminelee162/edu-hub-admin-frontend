@@ -217,14 +217,14 @@
             </div>
           </template>
         </el-table-column>
-        <el-table-column
+        <el-table-column 
           label="状态"
           width="100">
           <template #default="{row}">
-            <el-tag
+            <el-tag 
               size="small"
-              :type="row.status === 1 ? 'danger' : 'success'">
-              {{row.status === 1 ? '禁用' : '活跃'}}
+              :type="row.status === 1 ? 'success' : 'danger'">
+              {{row.status === 1 ? '活跃' : '禁用'}}
             </el-tag>
           </template>
         </el-table-column>
