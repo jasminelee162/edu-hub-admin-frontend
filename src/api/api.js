@@ -489,10 +489,35 @@ export const getUnreadTeachers = () => {
 }
 
 // 审核通过教师
-export const approveTeacher = (data) => {
+export const approveTeacher = (userName) => {
   return request({
     url: '/user/checked',
     method: 'post',
-    data
+    params: { userName },  // 改为使用params传递参数
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded'
+    }
   })
 }
+
+// //-------------------------------课程审核红点---------------------------------------
+
+// //这个是课程列表内学生的红点
+// export const getTaskStudentUnread = (params) => {
+//   return get("/student/unread", { 
+//     taskName: params.taskName || params.taskId 
+//   }).then(res => {
+//     // 统一返回数组格式
+//     if (res.code === 1000) {
+//       if (!Array.isArray(res.data)) {
+//         return { ...res, data: res.data ? [res.data] : [] };
+//       }
+//     }
+//     return res;
+//   });
+// };
+
+// export const checkTaskStudent = (params) => post("/student/checked", {
+//   taskName: params.taskName || params.taskId,
+//   userName: params.userName
+// });
