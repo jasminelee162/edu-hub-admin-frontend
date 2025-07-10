@@ -500,24 +500,24 @@ export const approveTeacher = (userName) => {
   })
 }
 
-// //-------------------------------课程审核红点---------------------------------------
+//-------------------------------课程审核红点---------------------------------------
 
-// //这个是课程列表内学生的红点
-// export const getTaskStudentUnread = (params) => {
-//   return get("/student/unread", { 
-//     taskName: params.taskName || params.taskId 
-//   }).then(res => {
-//     // 统一返回数组格式
-//     if (res.code === 1000) {
-//       if (!Array.isArray(res.data)) {
-//         return { ...res, data: res.data ? [res.data] : [] };
-//       }
-//     }
-//     return res;
-//   });
-// };
+//这个是课程列表内学生的红点
+export const getTaskStudentUnread = (params) => {
+  return get("/student/unread", { 
+    taskName: params.taskName || params.taskId 
+  }).then(res => {
+    // 统一返回数组格式
+    if (res.code === 1000) {
+      if (!Array.isArray(res.data)) {
+        return { ...res, data: res.data ? [res.data] : [] };
+      }
+    }
+    return res;
+  });
+};
 
-// export const checkTaskStudent = (params) => post("/student/checked", {
-//   taskName: params.taskName || params.taskId,
-//   userName: params.userName
-// });
+export const checkTaskStudent = (params) => post("/student/checked", {
+  taskName: params.taskName || params.taskId,
+  userName: params.userName
+});

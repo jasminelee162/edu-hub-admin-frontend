@@ -20,7 +20,7 @@
         </el-col>
         
         <!-- 创建时间搜索 -->
-        <el-col :xs="24" :sm="12" :md="8" :lg="8" :xl="8">
+        <!-- <el-col :xs="24" :sm="12" :md="8" :lg="8" :xl="8">
           <div class="search-item">
             <span class="search-title">
               <i class="el-icon-date"></i> 创建时间:
@@ -36,7 +36,7 @@
               class="tech-date-picker">
             </el-date-picker>
           </div>
-        </el-col>
+        </el-col> -->
         
         <!-- 操作按钮 -->
         <el-col :xs="24" :sm="12" :md="8" :lg="8" :xl="8">
@@ -120,7 +120,7 @@
         </el-table-column>
         
         <!-- 创建时间列 -->
-        <el-table-column
+        <!-- <el-table-column
           prop="createdAt"
           label="创建时间"
           width="180">
@@ -130,7 +130,7 @@
               <span>{{ row.createdAt }}</span>
             </div>
           </template>
-        </el-table-column>
+        </el-table-column> -->
         
         <!-- 操作列 -->
         <el-table-column
