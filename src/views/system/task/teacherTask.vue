@@ -13,7 +13,6 @@
                 placeholder="请输入课程名称"
                 v-model="search.name"
                 class="tech-input">
-                <!--<i slot="prefix" class="el-icon-edit-outline"></i>-->
               </el-input>
             </div>
           </el-col>
@@ -63,7 +62,6 @@
               </el-select>
             </div>
           </el-col>
-          <!-- 新增一个专门用于按钮的列 -->
           <el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24">
             <div class="search-actions-container">
               <div class="search-actions">
@@ -136,7 +134,12 @@
             label="课程名称"
             width="120">
             <template #default="{row}">
-              <div class="name-cell">
+              <div class="name-cell" style="position:relative">
+                <div 
+                  v-if="hasUnreadStudents(row.name)" 
+                  class="unread-course-badge"
+                  @click.stop>
+                </div>
                 <i class="el-icon-notebook-2" style="color:#7B68EE; margin-right:8px"></i>
                 <span>{{ row.name }}</span>
               </div>
@@ -329,6 +332,24 @@ export default {
   components: {
     add,
     update
+  },
+  computed: {
+    hasUnreadStudents() {
+      return (taskName) => {
+        const readStatus = JSON.parse(localStorage.getItem('studentReadStatus')) || {};
+        console.log('Checking unread for:', taskName);
+        
+        // 查找该课程下是否有任何学生的报名状态为false
+        for (const key in readStatus) {
+          const [storedTaskName, userName] = key.split('_');
+          if (storedTaskName === taskName && readStatus[key] === false) {
+            console.log('Found unread student:', userName, 'for course:', taskName);
+            return true;
+          }
+        }
+        return false;
+      }
+    }
   },
   methods: {
     tableHeaderStyle() {
@@ -548,6 +569,8 @@ export default {
     },
   },
   mounted() {
+    console.log('LocalStorage studentReadStatus:', 
+    JSON.parse(localStorage.getItem('studentReadStatus')));
     this.getMajorList()
     this.getClassificationList()
     this.query()
@@ -646,10 +669,30 @@ export default {
 .status-option i {
   margin-right: 5px;
 }
+
+.unread-course-badge {
+  position: absolute;
+  top: 0;
+  left: 12px;
+  width: 8px;
+  height: 8px;
+  background-color: #FF4757;
+  border-radius: 50%;
+  border: 1.5px solid white;
+  box-shadow: 0 0 3px rgba(255, 71, 87, 0.8);
+  animation: pulse 1.5s infinite;
+  z-index: 999; /* 提高z-index确保在最上层 */
+  display: block !important; /* 确保不会被隐藏 */
+}
+
+@keyframes pulse {
+  0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(255, 71, 87, 0.7); }
+  70% { transform: scale(1.05); box-shadow: 0 0 0 4px rgba(255, 71, 87, 0); }
+  100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(255, 71, 87, 0); }
+}
 </style>
 
 <style>
-/* 全局样式 */
 .tech-input .el-input__inner {
   border-radius: 20px;
   border: 1px solid #D8D8E5;
