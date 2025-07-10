@@ -11,11 +11,17 @@
             </el-form-item>
           </el-col>
 
-          <!-- 序号 -->
+          <!-- 序号部分修改为 -->
           <el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24">
             <span class="search-title">序号:</span>
             <el-form-item prop="sort" style="margin-bottom:0">
-              <el-input-number size="mini" v-model="form.sort" :min="1" label="请输入序号"></el-input-number>
+              <el-input-number
+                  size="mini"
+                  v-model="form.sort"
+                  :min="1"
+                  :controls="false"
+                  label="序号"
+              ></el-input-number>
             </el-form-item>
           </el-col>
 
@@ -119,7 +125,7 @@ export default {
         chapterId: '',
         chapterName: '',
         title: '',
-        sort: '',
+        sort: 1 ,
         answer: '',
         type: '0',
         content: '',
@@ -130,9 +136,10 @@ export default {
         { value: 'A', option: '' }
       ],
       multipleAnswers: [],
+      nextSort: 1, // 序号计数器
       rules: {
         title: [{ required: true, message: '请输入题目', trigger: 'blur' }],
-        sort: [{ required: true, message: '请输入序号', trigger: 'blur' }],
+        sort: [{ required: true, message: '请输入序号', trigger: 'blur', type: 'number' }],
         score: [{ required: true, message: '请输入分数', trigger: 'blur' }],
         type: [{ required: true, message: '请选择类型', trigger: 'blur' }],
         answer: [
@@ -164,6 +171,14 @@ export default {
   mounted() {
     this.form.chapterId = this.$route.query.id || this.chapterId
   },
+  watch: {
+    addVisible(newVal) {
+      if (newVal) {
+        // 确保赋值为数字类型
+        this.form.sort = Number(this.nextSort)
+      }
+    }
+  },
   methods: {
     addContent() {
       const nextChar = String.fromCharCode(65 + this.content.length)
@@ -178,6 +193,9 @@ export default {
     submit() {
       this.$refs.ruleForm.validate((valid) => {
         if (!valid) return
+
+        // 确保sort是数字类型
+        this.form.sort = Number(this.form.sort)
 
         const type = this.form.type
 
@@ -216,6 +234,7 @@ export default {
         saveHomework(this.form).then(res => {
           if (res.code === 1000) {
             this.$notify.success({ title: '成功', message: '保存成功' })
+            this.nextSort++ // 递增序号
             this.handleClose()
           } else {
             this.$notify.error({ title: '错误', message: res.message })
@@ -232,7 +251,7 @@ export default {
         chapterId: this.form.chapterId,
         chapterName: '',
         title: '',
-        sort: '',
+        sort: Number(this.nextSort), // 确保是数字类型
         answer: '',
         type: '0',
         content: '',

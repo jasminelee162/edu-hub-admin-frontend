@@ -266,6 +266,8 @@ export const removeChapter = (params) => get("/chapter/removeChapter",params)
 export const getHomeworkPage = (params) => post("/homework/getHomeworkPage",params)
 //根据id查询作业
 export const getHomeworkById = (params) => get("/homework/getHomeworkById",params)
+//根据章节名查询作业
+export const getHomeworkByChapterId = (params) => get("/homework/getHomeworkByChapterId",params)
 //保存作业
 export const saveHomework = (params) => post("/homework/saveHomework",params)
 //更新作业
