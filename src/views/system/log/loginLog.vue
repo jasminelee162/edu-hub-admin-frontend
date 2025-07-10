@@ -83,7 +83,7 @@
           cancel-button-text='取消'
           icon="el-icon-warning"
           icon-color="#7B68EE"
-          title="确认要清空登陆日志？"
+          title="确认要清空登录日志？"
           @confirm="clear">
           <el-button 
             size="small" 
@@ -132,7 +132,7 @@
         </el-table-column>
         <el-table-column
           prop="loginIp"
-          label="登陆地址"
+          label="登录地址"
           width="180">
           <template slot-scope="scope">
             <div class="ip-cell">
@@ -188,7 +188,7 @@
         </el-table-column>
         <el-table-column
           prop="loginTime"
-          label="登陆时间">
+          label="登录时间">
           <template slot-scope="scope">
             <div class="time-cell">
               <i class="el-icon-time" style="color:#888897; margin-right:8px"></i>

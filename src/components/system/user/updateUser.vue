@@ -23,9 +23,9 @@
             </el-form-item>
         </el-col>
         <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
-            <span class="search-title">登陆账号:</span>
+            <span class="search-title">登录账号:</span>
             <el-form-item prop="loginAccount" style="margin-bottom:0">
-              <el-input v-model="form.loginAccount" size="mini" placeholder="请输入登陆账号" autocomplete="off"></el-input>
+              <el-input v-model="form.loginAccount" size="mini" placeholder="请输入登录账号" autocomplete="off"></el-input>
             </el-form-item>
         </el-col>
         <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
@@ -117,13 +117,13 @@
             { required: true, message: '请输入用户昵称', trigger: 'blur' },
           ],
           loginAccount: [
-            { required: true, message: '请输入登陆账号', trigger: 'blur' },
+            { required: true, message: '请输入登录账号', trigger: 'blur' },
           ],
           password: [
-            { required: true, message: '请输入登陆密码', trigger: 'blur' },
+            { required: true, message: '请输入登录密码', trigger: 'blur' },
           ],
         }
-      }
+      }r
     },
     props: ['updateUserVisible','updateId','data','post','role'],
     methods: {

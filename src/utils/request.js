@@ -76,7 +76,7 @@ instance.interceptors.response.use(
 
 // 提取公共处理方法
 function handleSessionExpired() {
-    MessageBox.alert('系统登陆已过期，请重新登录', '错误', {
+    MessageBox.alert('系统登录已过期，请重新登录', '错误', {
         confirmButtonText: '确定',
         type: 'error'
     }).then(() => {

@@ -10,8 +10,8 @@ import axios from 'axios';
 //     });
 // }
 
-//-------------------------------登陆---------------------------------------
-// 登陆
+//-------------------------------登录---------------------------------------
+// 登录
 export const login = (params) => post("/login",params)
 //登出
 export const logout = () => get("/login/logout")
@@ -96,7 +96,7 @@ export const editUser = (params) => post("/user/editUser",params)
 export const removeUser = (params) => get("/user/removeUser",params)
 //重置密码
 export const resetPassword = (params) => post("/user/resetPassword",params)
-//获取登陆用户信息
+//获取登录用户信息
 export const getUser = () => get("/user/getUserInfo")
 //修改个人信息
 export const setUserInfo = (params) => post("/user/setUserInfo",params)
@@ -132,11 +132,11 @@ export const editAccount = (params) => post("/account/editAccount",params)
 export const removeAccount = (params) => get("/account/removeAccount",params)
 
 //-------------------------------日志---------------------------------------
-// 查询登陆日志
+// 查询登录日志
 export const getLogPage = (params) => post("/loginLog/getLogPage",params)
-// 删除登陆日志
+// 删除登录日志
 export const removeLog = (params) => get("/loginLog/removeLog",params)
-// 清空登陆日志
+// 清空登录日志
 export const clearLog = () => get("/loginLog/clearLog")
 // 查询操作日志
 export const getOperLogPage = (params) => post("/operLog/getLogPage",params)

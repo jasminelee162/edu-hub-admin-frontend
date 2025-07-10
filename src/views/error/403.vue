@@ -31,7 +31,7 @@
         </div>
         <div class="subtitle">哎呀。你没有访问权限。</div>
         <div class="btn">
-          <button @click="goLogin" style="margin-right: 30px">返回登陆页</button>
+          <button @click="goLogin" style="margin-right: 30px">返回登录页</button>
           <button @click="goBack" style="margin-left: 20px">返回上一页</button>
         </div>
       </div>
@@ -65,7 +65,7 @@ export default {
             this.$store.commit('menu/setBtnMenus', [])
             this.$router.push("/login")
             this.$message({
-                message: "退出登陆",
+                message: "退出登录",
                 type: 'success'
             });
         } else {

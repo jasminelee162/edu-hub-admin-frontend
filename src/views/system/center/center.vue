@@ -11,11 +11,11 @@
       <div class="profile-content">
         <div class="profile-form">
           <el-form :model="user" :rules="rules" ref="ruleForm">
-            <!-- 登陆账号 -->
+            <!-- 登录账号 -->
             <div class="form-row">
               <div class="form-label">
                 <i class="el-icon-user"></i>
-                <span>登陆账号</span>
+                <span>登录账号</span>
               </div>
               <el-form-item prop="loginAccount" class="form-value">
                 <el-input 
@@ -92,11 +92,11 @@
               </el-form-item>
             </div>
             
-            <!-- 登陆IP -->
+            <!-- 登录IP -->
             <div class="form-row">
               <div class="form-label">
                 <i class="el-icon-link"></i>
-                <span>登陆IP</span>
+                <span>登录IP</span>
               </div>
               <el-form-item prop="loginIp" class="form-value">
                 <el-input 
@@ -109,11 +109,11 @@
               </el-form-item>
             </div>
             
-            <!-- 登陆时间 -->
+            <!-- 登录时间 -->
             <div class="form-row">
               <div class="form-label">
                 <i class="el-icon-time"></i>
-                <span>登陆时间</span>
+                <span>登录时间</span>
               </div>
               <el-form-item prop="loginDate" class="form-value">
                 <el-input 

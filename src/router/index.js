@@ -10,7 +10,7 @@ Vue.use(VueRouter)
 const routes = [
   {
     path: '/login',
-    name: '登陆',
+    name: '登录',
     component: login,
   },
   {
