@@ -12,8 +12,6 @@
               placeholder="请输入学生姓名"
               v-model="search.userName"
               class="tech-input">
-              <!--7.9-->
-              <!--<i slot="prefix" class="el-icon-user-solid"></i>-->
             </el-input>
           </div>
         </el-col>
@@ -224,7 +222,6 @@ export default {
       total: 0,
       tableData: [],
       readStatus: JSON.parse(localStorage.getItem('studentReadStatus')) || {}
-
     }
   },
   methods: {
@@ -253,9 +250,13 @@ export default {
         const res = await getApeTaskStudentPage(this.search);
         if (res.code == 1000) {
           this.tableData = res.data.records.map(item => {
-            // 判断是否显示红点：checked=1且未在已读记录中
-            const isUnread = item.checked === 1 && 
-                           !this.readStatus[`${item.taskName}_${item.userName}`];
+            // 新报名的学生（checked=1）默认未读（false）
+            if (item.checked === 1 && !this.readStatus[`${item.taskName}_${item.userName}`]) {
+              this.$set(this.readStatus, `${item.taskName}_${item.userName}`, false);
+              localStorage.setItem('studentReadStatus', JSON.stringify(this.readStatus));
+            }
+            
+            const isUnread = this.readStatus[`${item.taskName}_${item.userName}`] === false;
             return {
               ...item,
               showBadge: isUnread
@@ -272,21 +273,18 @@ export default {
     
     async updateData(row, state) {
       try {
-        // 1. 立即更新本地状态（无需等待接口返回）
         const index = this.tableData.findIndex(item => item.id === row.id);
         if (index !== -1) {
           this.$set(this.tableData, index, {
             ...row,
             state,
-            showBadge: false // 立即隐藏红点
+            showBadge: false
           });
         }
 
-        // 2. 更新已读状态存储
         this.$set(this.readStatus, `${row.taskName}_${row.userName}`, true);
         localStorage.setItem('studentReadStatus', JSON.stringify(this.readStatus));
 
-        // 3. 调用接口
         await Promise.all([
           editTaskStudent({ id: row.id, state }),
           checkTaskStudent({
@@ -297,7 +295,6 @@ export default {
 
         this.$message.success('操作成功');
       } catch (error) {
-        // 回滚本地状态
         const index = this.tableData.findIndex(item => item.id === row.id);
         if (index !== -1) {
           this.$set(this.tableData, index, {
@@ -438,7 +435,7 @@ export default {
   position: relative;
   display: flex;
   align-items: center;
-  padding-top: 3px; /* 为红点预留空间 */
+  padding-top: 3px;
 }
 
 .unread-badge {
@@ -512,16 +509,6 @@ export default {
 .action-btn:hover {
   transform: translateY(-1px);
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-}
-
-.badge-item >>> .el-badge__content {
-  top: 1px;
-  right: 1px;
-  width: 6px;
-  height: 6px;
-  background-color: #FF4757;
-  border: 1px solid white;
-  box-shadow: 0 0 2px rgba(0,0,0,0.2);
 }
 
 @keyframes pulse {
@@ -626,6 +613,6 @@ export default {
 .user-cell .el-icon-user {
   position: relative;
   z-index: 1;
-  margin-top: 2px; /* 微调图标位置保持对齐 */
+  margin-top: 2px;
 }
 </style>
