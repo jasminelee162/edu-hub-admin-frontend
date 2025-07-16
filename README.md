@@ -4,7 +4,7 @@
 Edu Hub 项目为一站式教学与学习平台，包含学生端、管理端和后端服务，适用于学校、教育机构等多场景。
 
 - **学生端前端**：[edu-hub-student-frontend](https://github.com/jasminelee162/edu-hub-student-frontend)
-- **管理端前端**：[edu-hub-admin-frontend](https://github.com/jasminelee162/edu-hub-admin-frontend.git)
+- **教师/管理端前端**：[edu-hub-admin-frontend](https://github.com/jasminelee162/edu-hub-admin-frontend.git)
 - **后端服务**：[edu-hub-backend](https://github.com/jasminelee162/edu-hub-backend.git)
 
 ---
