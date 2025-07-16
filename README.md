@@ -1,7 +1,7 @@
-# Edu Hub 管理端前端 (edu-hub-admin-frontend)
+# Edu Hub 教师/管理端前端 (edu-hub-admin-frontend)
 
-本项目为 Edu Hub 教育平台的**管理端前端**，主要服务于学校管理者、教师等后台用户，实现对平台各项资源和用户的统一管理。  
-Edu Hub 项目为一站式教学与学习平台，包含学生端、管理端和后端服务，适用于学校、教育机构等多场景。
+本项目为 Edu Hub 教育平台的**教师/管理端前端**，主要服务于学校管理者、教师等后台用户，实现对平台各项资源和用户的统一管理。  
+Edu Hub 项目为一站式教学与学习平台，包含学生端、教师端、管理端和后端服务，适用于学校、教育机构等多场景。
 
 - **学生端前端**：[edu-hub-student-frontend](https://github.com/jasminelee162/edu-hub-student-frontend)
 - **教师/管理端前端**：[edu-hub-admin-frontend](https://github.com/jasminelee162/edu-hub-admin-frontend.git)
