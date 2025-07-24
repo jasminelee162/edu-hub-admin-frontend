@@ -165,7 +165,7 @@
         
         <el-table-column 
           prop="loginAccount" 
-          label="登录账号"
+          label="登陆账号"
           width="150">
           <template #default="{row}">
             <div class="account-cell">

@@ -4,7 +4,7 @@ import { Message, MessageBox } from 'element-ui'
 
 const instance = axios.create({
     baseURL: "http://localhost:8080",
-    timeout: 20000
+    timeout: 17000
 })
 
 // 不需要登录验证的白名单路径
